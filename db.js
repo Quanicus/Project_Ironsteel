@@ -6,7 +6,7 @@ const pool = new Pool({
     user: "quanicus",
     host: "localhost",
     database: "iron_steel",
-    password: "Muahahapost1!",
+    password: process.env.DB_PASSWORD,
     port: 5432
 })
 
