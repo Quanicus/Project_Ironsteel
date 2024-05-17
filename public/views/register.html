@@ -1,0 +1,130 @@
+<section id="new-user-form">
+    <h1>register here daddy</h1>
+    <div id="error-messages" hx-swap-oob="afterbegin"></div>
+    <form hx-post="/api/v1/users/register" hx-swap="outerHTML swap:1.2s" hx-target="#new-user-form" id="register-form">
+        <div>
+            <input type="text" id="name" name="name" placeholder="Name" >
+        </div>
+        <div id="email-wrap">
+            <input 
+                hx-post="/api/v1/users/checkEmail" 
+                hx-trigger="validateEmail" 
+                hx-target="#email-wrap"
+                hx-swap="outerHTML swap:0s"
+                type="email" id="email" name="email" placeholder="Email" required>
+        </div>
+        <div>
+            <input type="password" id="password" name="password" placeholder="Password">
+        </div>
+        <div>
+            <input type="password" id="password-confirm" name="passwordConfirm" placeholder="Retype password">
+        </div>
+        <button type="submit" id="submit-new-user-form" disabled>Submit</button>
+        <button hx-get="/views/login.html" hx-swap="outerHTML swap:1.2s" hx-target="#new-user-form" type="button">log in</button>
+    </form>
+    <style>
+        #register-form {
+            & [valid="false"] {
+                box-shadow: inset 2px 2px red, inset -2px -2px red;
+            }
+            & [valid="true"] {
+                box-shadow: inset 2px 2px green, inset -2px -2px green;
+            }
+        }
+    </style>
+    <script>
+        {
+            const name = document.getElementById("name");
+            let email = document.getElementById("email");
+            const password = document.getElementById("password");
+            const passwordConfirm = document.getElementById("password-confirm");
+            const submitButton = document.getElementById("submit-new-user-form");
+
+            const nameRegex = /^[a-zA-Z0-9]{3,}$/;
+            name.addEventListener("change", () => {
+                name.value = name.value.trim();
+                if (nameRegex.test(name.value)) {
+                    name.setAttribute("valid", "true");
+                    //trigger submit button
+                } else {
+                    name.setAttribute("valid", "false");
+                    name.rem
+                    submitButton.setAttribute("disabled", true);
+                    //display error msg
+                }
+                submitButton.dispatchEvent(new Event("enable"));
+            });
+
+            function addEmailListener() {
+                email = document.getElementById("email");
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                email.addEventListener("change", () => {
+                    email.value = email.value.trim();
+                    if (emailRegex.test(email.value)) {
+                        email.dispatchEvent(new Event("validateEmail"));
+                        //email.setAttribute("valid", "true");
+                    } else {
+                        email.setAttribute("valid", "false");
+                        //display error: pls enter a valid email
+                    }
+                    submitButton.dispatchEvent(new Event("enable"));
+                });
+            };
+            addEmailListener();
+
+            const passwordRegex = /[\s\x00-\x1F\x7F"'/<>%&|]/g;
+            password.addEventListener("change", () => {
+                if (password.value.length < 8) {
+                    password.setAttribute("valid", "false");
+                    //display error: password must contain at least 8 valid characters.
+                } else {
+                    const illegalChars = password.value.match(passwordRegex);
+                    if (illegalChars === null) {
+                        password.setAttribute("valid", "true");
+                        //trigger to submitButton to check if still disabled
+                        console.log(password.value);
+                    } else {
+                        password.setAttribute("valid", "false");
+                        const bannedCharsSet = new Set(illegalChars);
+                        const bannedCharsArray = Array.from(bannedCharsSet);
+
+                        //display error: pw cannot contain the characters: illegalChars
+                        console.log(bannedCharsArray);
+                    }
+                }
+                //trigger passwordConfirm to check if its same now( or empty?)
+                passwordConfirm.dispatchEvent(new Event("change"));
+                submitButton.dispatchEvent(new Event("enable"));
+            });
+
+            passwordConfirm.addEventListener("change", () => {
+                if (passwordConfirm.value === password.value) {
+                    passwordConfirm.setAttribute("valid", "true");
+                } else {
+                    passwordConfirm.setAttribute("valid", "false");
+                }
+                submitButton.dispatchEvent(new Event("enable"));
+            });
+
+            submitButton.addEventListener("enable", () => {
+                console.log("enabling");
+                for (const input of [name, email, password, passwordConfirm]) {
+                    console.log(input.getAttribute("valid"));
+                    if (input.getAttribute("valid") !== "true") {
+                        console.log("failed");
+                        submitButton.setAttribute("disabled", "true");
+                        return;
+                    }
+                }
+                submitButton.removeAttribute("disabled");
+            });
+
+            const section = document.getElementById("new-user-form");
+            section.addEventListener("htmx:afterSwap", () => {
+                addEmailListener();
+                submitButton.dispatchEvent(new Event("enable"));
+            });
+            
+        }
+    </script>
+</section>

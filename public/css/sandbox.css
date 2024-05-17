@@ -1,0 +1,59 @@
+* {
+    box-sizing: border-box;
+    
+}
+
+body, html {
+    font-family: 'Raleway', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+footer {
+    background-color: black;
+    height: 100%;
+}
+
+
+.parallax-container::-webkit-scrollbar {
+    display: none;
+  }
+.parallax-container {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    perspective: 10px;
+}
+
+.parallax-page {
+    height: 200vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+}
+.parallax-item {
+    width: fit-content;
+    position: absolute;
+    transform: translateZ(-1px);
+}
+#page-1 {
+    background-color: darkblue;
+}
+
+#page-5 {
+    background-color: teal;
+}
+#para1 {
+    background-color: crimson;
+}
+#para2 {
+    background-color: darkgreen;
+}
+#para3 {
+    background-color: maroon;
+}
