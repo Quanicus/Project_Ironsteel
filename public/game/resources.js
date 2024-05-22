@@ -1,4 +1,4 @@
-export const resources = {
+const resources = {
     constructor() {
         this.toLoad = {
             terrain: {

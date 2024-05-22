@@ -1,6 +1,6 @@
 class Sprite {
     constructor({
-        type,
+        resource,
         frameSize,
         frame,
 

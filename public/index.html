@@ -5,20 +5,33 @@
         <meta name="viewport=" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/sandbox.css">
         <script src="https://unpkg.com/htmx.org@2.0.0-alpha1/dist/htmx.min.js"></script>
-        <script src="/game/chatbox.js" defer></script>
-        <script src="/game/game.js" defer></script>
         <script src="components/eventBus.js"></script>        
         <script src="components/scroll-bar.js"></script>
         <script src="components/htmx-modal.js"></script>
         <script src="components/htmx-modal-button.js"></script>
         <script src="components/app-display.js"></script>
         <script src="components/side-nav.js"></script>
+        <script src="components/radio-wrap.js"></script>
 
     </head>
     <body>
         <div class="parallax-container">
             <div class="parallax-page page-content" id="page-1">
-                
+                <div class="button-box">
+                    <radio-wrap data-group="butt-group" data-color="red">
+                       <input>
+                    </radio-wrap>
+                    <radio-wrap data-group="butt-group" data-color="blue">
+                        <input>
+                    </radio-wrap>
+                    <radio-wrap data-group="butt-group" data-color="green">
+                        <input>
+        
+                    </radio-wrap>
+                    <radio-wrap data-group="butt-group" data-color="yellow">
+                        <input>
+                    </radio-wrap>
+                </div>
                 <span class="page-title">WELCOME TO THE CLICKITY CLACK EXPERIENCE</span>  
                 <div class="parallax-item">
                 </div>
@@ -63,4 +76,7 @@
         <htmx-modal ></htmx-modal>
         <app-display></app-display>
     </body>
+    <script src="/game/chatbox.js" defer></script>
+    <script src="/game/resources.js" defer></script>
+    <script src="/game/game.js" defer></script>
 </html>

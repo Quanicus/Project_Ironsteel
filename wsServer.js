@@ -1,8 +1,10 @@
 const jwt = require("jsonwebtoken");
 const gameQuery = require("./src/api/game/queries");
 const GameLoop = require("./src/game/GameLoop");
+const gameEngine = require("./src/game/GameEngine");
 const pool = require("./db");
 
+//const gameEngine = new GameEngine();
 const gameLoop = new GameLoop();
 const decoder = new TextDecoder('utf-8');
 const wsServer = require("uWebSockets.js").App().ws("/*", {
@@ -72,6 +74,12 @@ const wsServer = require("uWebSockets.js").App().ws("/*", {
                 msgObj.name = user.character.name;
                 console.log(msgObj);
                 wsServer.publish("chat", JSON.stringify(msgObj));
+                break;
+            case "direction":
+                //console.log(msgObj.payload);
+                gameEngine.processDirection(ws, msgObj.payload);
+                //const direction = msgObj.payload.direction;
+                
                 break;
             default:
                 console.log("default", msgObj.content);
