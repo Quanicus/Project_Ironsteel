@@ -42,9 +42,14 @@ footer {
     transform: translateZ(-1px);
 }
 #page-1 {
-    background-color: darkblue;
+    /* background-color: darkblue; */
 }
-
+.parallax-page {
+    pointer-events: none;
+}
+.parallax-item {
+    pointer-events: auto;
+}
 #page-5 {
     background-color: teal;
 }
