@@ -46,7 +46,7 @@ class GameLoop {
             const myData = charactersOnline.find(character => character.player_id == user.id);
             const message = {
                 type: "update",
-                payload: charactersOnline,
+                playersOnline: charactersOnline,
                 myData: myData,
             };
             ws.send(JSON.stringify(message));

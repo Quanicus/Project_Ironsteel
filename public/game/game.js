@@ -91,7 +91,8 @@ class Game {
                     this.chatbox.postChat(msgObj);
                     break;
                 case "update":
-                    this.renderer.updateCanvas(msgObj.myData);
+                    console.log(msgObj);
+                    this.renderer.updateCanvas(msgObj);
                     //this.updateCanvas(msgObj.myData);
                     //requestAnimationFrame();
                     break;

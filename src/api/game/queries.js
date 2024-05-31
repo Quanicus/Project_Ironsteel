@@ -10,7 +10,7 @@ const addCharacter = `
 const getOnlineCharacters = `
     SELECT * 
     FROM characters
-    WHERE isOnline = TRUE;
+    WHERE isOnline = TRUE
 `;
 const setOnline = `
     UPDATE characters

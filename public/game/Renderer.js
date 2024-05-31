@@ -18,18 +18,19 @@ export default class Renderer {
         return canvas;
     }
 
-    updateCanvas(characterData, ) {
+    updateCanvas(msgObj) {
         //position_x + tile.frameSize.x/2 - innerWidth/2 = shift amount 
-        const {position_x, position_y} = characterData;
+        const {position_x, position_y} = msgObj.myData;
         const ctx = this.canvasContex;
         ctx.clearRect(0, 0, this.viewWidth, this.viewHeight);
         ctx.save();
         ctx.translate(-(position_x + 224 - innerWidth/2), -(position_y + 96 - Math.floor(innerHeight/2)));
         this.drawTerrain(position_x, position_y);
         //console.log(`x: ${position_x}, y: ${position_y}`);
-        
+        //TODO: DRAW OTHER PLAYERS
         ctx.fillRect(position_x, position_y, 32, 32);
-        this.drawMyCharacter(position_x, position_y);
+        //this.drawMyCharacter(position_x, position_y);
+        this.drawPlayers(msgObj.playersOnline, msgObj.myData.id, position_x, position_y);
         ctx.restore();
     }
 
@@ -37,6 +38,22 @@ export default class Renderer {
         const ctx = this.canvasContex;
         const img = resources.images.factions.red.archer;
         ctx.drawImage(img,64,64, 128,128, position_x,position_y, 64,64);
+    }
+
+    drawPlayers(playersOnline, myId, position_x, position_y){
+        const ctx = this.canvasContex;
+        let img = null;
+        playersOnline.forEach(player => {
+            if (player.id === myId) {
+                img = resources.images.factions.blue.archer;
+            } else {
+                img = resources.images.factions.red.archer;
+            }
+            //draw player in his location
+            const x = player.position_x;
+            const y = player.position_y;
+            ctx.drawImage(img, 32,32, 128,128, x-16,y-16, 64,64);
+        });
     }
 
     drawTerrain(position_x, position_y) {

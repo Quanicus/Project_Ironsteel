@@ -12,7 +12,10 @@ class Resources {
             factions: {
                 red: {
                     warrior: "/game/sprites/Factions/Knights/Troops/Warrior/Red/Warrior_Red.png",
-                    archer: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Red.png"
+                    archer: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Red.png",
+                },
+                blue: {
+                    archer: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Blue.png",
                 },
             },
         }
