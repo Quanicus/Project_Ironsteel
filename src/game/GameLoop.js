@@ -10,7 +10,7 @@ class GameLoop {
     }
     start() {
         console.log("starting loop")
-        this.loop = setInterval(this.publishToClients.bind(this), 1000/10); //loop at 10 fps
+        this.loop = setInterval(this.publishToClients.bind(this), 1000/60); //loop at /60 fps
     }
     stop() {
         clearInterval(this.loop);

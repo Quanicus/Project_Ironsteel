@@ -9,7 +9,6 @@
         <script src="components/scroll-bar.js"></script>
         <script src="components/htmx-modal.js"></script>
         <script src="components/htmx-modal-button.js"></script>
-        <script src="components/app-display.js"></script>
         <script src="components/side-nav.js"></script>
         <script src="components/radio-wrap.js"></script>
         <script src="components/particle-canvas.js"></script>
@@ -33,13 +32,13 @@
                           <path style="fill:none;stroke:#000000;stroke-width:1" d="M 87.312499,15.874999 H 119.0625 L 127,23.812498 v 63.499996 l -7.9375,7.9375 H 87.312499 l -7.9375,-7.9375 V 23.812498 Z" id="path17"/>
                           <path style="fill:none;stroke:#000000;stroke-width:1" d="M 95.249999,31.749997 H 111.125 V 79.374994 H 95.249999 Z" id="path18"/>
                         </g>
-                      </svg>
-                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" width="50" height="80" viewBox="0 0 50 80" version="1.1" id="svg1">
-                        <defs id="defs1"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" width="50" height="80" viewBox="0 0 50 80" version="1.1" id="svg1">
+                    <defs id="defs1"/>
                         <g id="layer1" transform="translate(-79.242708,-31.617706)">
-                          <path style="fill:none;stroke:#000000;stroke-width:1" d="M 95.000002,31.749997 H 111.125 v 63.25 H 127 V 111.12499 H 79.374999 V 95.249994 l 15.875,-0.249997 v -39.4375 c -3.571166,4.473835 -8.928134,7.050287 -15.875,7.9375 v -15.875 c 7.497559,-1.986956 13.987442,-5.428586 15.625003,-15.875 z" id="path8"/>
+                            <path style="fill:none;stroke:#000000;stroke-width:1" d="M 95.000002,31.749997 H 111.125 v 63.25 H 127 V 111.12499 H 79.374999 V 95.249994 l 15.875,-0.249997 v -39.4375 c -3.571166,4.473835 -8.928134,7.050287 -15.875,7.9375 v -15.875 c 7.497559,-1.986956 13.987442,-5.428586 15.625003,-15.875 z" id="path8"/>
                         </g>
-                      </svg>
+                    </svg>
                 </div>
             </div>
             <div class="parallax-page page-content" id="page-3">
@@ -64,7 +63,11 @@
         <htmx-modal ></htmx-modal>
         <app-display></app-display>
     </body>
+    <script src="components/app-display.js" ></script>
+    <!-- <script src="/game/v1/resource/terrainMatrix"></script> -->
+    <!-- <script src="/game/Renderer.js" defer></script>
     <script src="/game/chatbox.js" defer></script>
-    <script src="/game/resources.js" defer></script>
-    <script src="/game/game.js" defer></script>
+    <script src="/game/resources.js" defer></script> -->
+    <script src="/game/game.js" type="module" defer></script>
+
 </html>

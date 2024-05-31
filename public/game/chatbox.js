@@ -1,6 +1,18 @@
-function makeChatbox() {
+export default class Chatbox {
+    constructor(display) {
 
-    function makeChatContainer() {
+        this.element = this.makeChatContainer();
+        this.wrap = this.makeScrollWrap();
+        this.display = this.makeChatDisplay();
+        this.input = this.makeChatInput();
+    
+        this.wrap.appendChild(this.display);
+        this.element.append(this.wrap, this.input);
+
+        display.appendChild(this.element);
+    }
+
+    makeChatContainer() {
         const container = document.createElement("div");
         container.setAttribute("class", "chat-container");
         container.style.width = `${16 * 32 - 16}px`;
@@ -14,7 +26,7 @@ function makeChatbox() {
         return container;
     }
 
-    function makeScrollWrap() {
+    makeScrollWrap() {
         const wrap = document.createElement("div");
         wrap.setAttribute("class", "scroll-wrap");
         wrap.style.backgroundColor = "hsla(210, 100%, 50%, 0.5)";
@@ -23,7 +35,7 @@ function makeChatbox() {
         return wrap;
     }
 
-    function makeChatDisplay() {
+    makeChatDisplay() {
         const display = document.createElement("div");
         display.setAttribute("class", "chat-display");
         display.style.minHeight = `${6 * 32}px`;
@@ -33,7 +45,7 @@ function makeChatbox() {
         return display;
     }
 
-    function makeChatInput() {
+    makeChatInput() {
         const chatInput = document.createElement("input");
         chatInput.setAttribute("type", "text");
         chatInput.setAttribute("name", "chatInput");
@@ -45,13 +57,18 @@ function makeChatbox() {
         return chatInput;    
     }
 
-    const container = makeChatContainer();
-    const wrap = makeScrollWrap();
-    const display = makeChatDisplay();
-    const input = makeChatInput();
+    postChat(msgObj) {
+        const post = document.createElement("div");
+        post.setAttribute("class", "chat-msg");
+        post.style.flex = "0 0 auto";
+        const name = document.createElement("span");
+        name.textContent = `${msgObj.name}: `;
+        const msg = document.createElement("span");
+        msg.textContent = `${msgObj.payload}`;
 
-    wrap.appendChild(display);
-    container.append(wrap, input);
-
-    return container;
+        post.append(name, msg);
+        this.element.querySelector(".chat-display").appendChild(post);
+        this.wrap.scrollTop = this.wrap.scrollHeight;
+    }
 }
+

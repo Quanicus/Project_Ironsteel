@@ -37,6 +37,8 @@ class AppDisplay extends HTMLElement {
         
         //this.canvas = shadow.querySelector("canvas");
         this.display = shadow.querySelector(".display");
+        this.app = null;
+        this.appIsLoaded = false;
     }
     connectedCallback() {
         this.addListeners();
@@ -48,7 +50,10 @@ class AppDisplay extends HTMLElement {
                 this.setAttribute("active", "false");
                 console.log("wtf");
                 //close connection
-                game.closeWebSocket();
+                if (this.appIsLoaded) {
+                    this.app.closeWebSocket();
+                }
+                
             } else {
                 //authorize
                 await fetch("/api/v1/users/authenticate", {method: "POST"})
@@ -64,9 +69,10 @@ class AppDisplay extends HTMLElement {
                     return;
                 }); 
                 //open connection
-                //TODO: PASS IN THE CAVAS
-                //openWebSocket(this.canvas);
-                game.openWebSocket();
+                if (this.appIsLoaded) {
+                    this.app.openWebSocket();
+                }
+                
             }
         });
     }

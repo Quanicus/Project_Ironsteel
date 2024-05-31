@@ -239,7 +239,7 @@ class ParticleCanvas extends HTMLElement {
     getDivision() {
         const division = document.createElement("div");
         division.classList.add("division");
-        division.style.width = "1px";
+        division.style.width = "2px";
         division.style.height = "100%";
         division.style.position = "absolute";
         division.style.top = "0";

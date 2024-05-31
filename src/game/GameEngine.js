@@ -4,7 +4,7 @@ const gameEngine = {
 
     processDirection: async (ws, directionVector) => {
         const { directionX, directionY } = directionVector;
-        const moveSpeed = 5;
+        const moveSpeed = 10;
         console.log("directionX: ", directionX);
         console.log("directionY: ", directionY);
         let query = "UPDATE characters SET ";
@@ -26,7 +26,7 @@ const gameEngine = {
         const queryParams = [0, ws.user.id];
         if (updates.length === 2) {
             query += updates.join(", ");
-            queryParams[0] = moveSpeed * 0.707;
+            queryParams[0] = moveSpeed * 0.7;
         } else {
             query += updates;
             queryParams[0] = moveSpeed;
