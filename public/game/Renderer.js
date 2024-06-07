@@ -1,8 +1,11 @@
 import resources from "./resources.js";
+import gameState from "./gameState.js";
+
 export default class Renderer {
-    constructor(display, viewWidth, viewHeight) {        
+    constructor(display, resolution, viewWidth, viewHeight) {        
         this.viewWidth = viewWidth;
         this.viewHeight = viewHeight;
+        this.resolution = resolution;
         this.canvas = this.getCanvas(viewWidth, viewHeight);
         this.canvasContex = this.canvas.getContext("2d");
         display.appendChild(this.canvas);
@@ -11,97 +14,107 @@ export default class Renderer {
     getCanvas(width, height) {
         const canvas = document.createElement("canvas");
         canvas.setAttribute("id", "game-canvas");
-        canvas.setAttribute("width", `${width}`); //32 x 18 grid of 32x32 tiles
+        canvas.setAttribute("width", `${width}`); 
         canvas.setAttribute("height", `${height}`);
         canvas.setAttribute("tabindex", "0");
         canvas.style.background = "white";
         return canvas;
     }
 
-    updateCanvas(msgObj) {
-        //position_x + tile.frameSize.x/2 - innerWidth/2 = shift amount 
-        const {position_x, position_y} = msgObj.myData;
+    updateCanvas() {
+        //TODO NOW: convert serverMsg source to gameState
+        const myHero = gameState.myHero;
+        const {position_x, position_y} = myHero;
         const ctx = this.canvasContex;
         ctx.clearRect(0, 0, this.viewWidth, this.viewHeight);
         ctx.save();
-        ctx.translate(-(position_x + 224 - innerWidth/2), -(position_y + 96 - Math.floor(innerHeight/2)));
+        
+        ctx.translate((Math.floor(this.viewWidth/2) - this.resolution/2 - position_x),
+                      (Math.floor(this.viewHeight/2) - this.resolution/2 - position_y));
+                      
         this.drawTerrain(position_x, position_y);
-        //console.log(`x: ${position_x}, y: ${position_y}`);
-        //TODO: DRAW OTHER PLAYERS
-        ctx.fillRect(position_x, position_y, 32, 32);
-        //this.drawMyCharacter(position_x, position_y);
-        this.drawPlayers(msgObj.playersOnline, msgObj.myData.id, position_x, position_y);
+     
+        ctx.fillRect(position_x, position_y, this.resolution, this.resolution);
+        
+        this.drawOtherHeros();
+        
+        this.drawHero(gameState.myHero, position_x, position_y);
         ctx.restore();
     }
 
-    drawMyCharacter(position_x, position_y) {
-        const ctx = this.canvasContex;
-        const img = resources.images.factions.red.archer;
-        ctx.drawImage(img,64,64, 128,128, position_x,position_y, 64,64);
-    }
-
-    drawPlayers(playersOnline, myId, position_x, position_y){
-        const ctx = this.canvasContex;
-        let img = null;
-        playersOnline.forEach(player => {
-            if (player.id === myId) {
-                img = resources.images.factions.blue.archer;
-            } else {
-                img = resources.images.factions.red.archer;
-            }
-            //draw player in his location
-            const x = player.position_x;
-            const y = player.position_y;
-            ctx.drawImage(img, 32,32, 128,128, x-16,y-16, 64,64);
+    drawOtherHeros() {
+        gameState.otherHeros.forEach(hero => {
+            const x = hero.position_x;
+            const y = hero.position_y;
+            this.drawHero(hero, x, y);
         });
     }
 
+    drawHero(hero, position_x, position_y) {
+        
+        const sprite = hero.sprite;
+        const sX = sprite.sourceRectSize.width * sprite.currentFrame.col;
+        const sY = sprite.sourceRectSize.height * sprite.currentFrame.row;
+        const sWidth = sprite.sourceRectSize.width;
+        const sHeight = sprite.sourceRectSize.height;
+        const dX = position_x + sprite.centerOffset.x;
+        const dY = position_y + sprite.centerOffset.y;
+        const dWidth = sprite.destinationRectSize.width;
+        const dHeight = sprite.destinationRectSize.height;
+
+        if (gameState.myHero.direction_facing === "left") {
+            this.canvasContex.save();
+            this.canvasContex.scale(-1,1);
+            this.canvasContex.drawImage(sprite.img, sX, sY, sWidth, sHeight, -dX - sprite.sourceRectSize.width/2 - this.resolution/2, dY, dWidth, dHeight);
+            this.canvasContex.restore();
+        } else {
+            this.canvasContex.drawImage(sprite.img, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+        }
+        
+    }
+
     drawTerrain(position_x, position_y) {
+        const resolution = this.resolution;
         const ctx = this.canvasContex;
         if (!resources.terrainIsLoaded) return;
 
         //calculate window based on player position.
-        const tile_x = Math.floor(position_x/32);
-        const tile_y = Math.floor(position_y/32);
-        const sub_x = position_x % 32;
-        const sub_y = position_y % 32;
-        const start_x = tile_x - 17;
-        const start_y = tile_y - 10;
+        const tile_x = Math.floor(position_x/resolution);
+        const tile_y = Math.floor(position_y/resolution);
+        const sub_x = position_x % resolution;
+        const sub_y = position_y % resolution;
+        const start_x = tile_x - 14;
+        const start_y = tile_y - 8;
 
-        for (let x = start_x; x < start_x + 36; x++) {
-            for (let y = start_y; y < start_y + 22; y++) {
+        for (let x = start_x; x < start_x + 30; x++) {
+            for (let y = start_y; y < start_y + 18; y++) {
                 //draw tileMatrix[x][y] at position (x*32, y*32) on the canvas
-                
                 let tile = null;
                 if (x < 0 || y < 0 || x >= resources.terrainMatrix.length || y >= resources.terrainMatrix[0].length) {
                     tile = {
                         type: "water",
                         frameStart: {x: 0, y: 0},
-                        frameSize: {x: 32, y: 32},
+                        frameSize: {x: resolution, y: resolution},
                         elevation: 0,
                         walls: ["N","S","E","W"],
                         scale: 1
                     };
                 } else {
-                    //console.log(x, y);
                     tile = resources.terrainMatrix[x][y];
                 }
                 
                 const imgElement = resources.images.terrain[tile.type];
-                //console.log(resources.terrainMatrix[x][y], imgElement);
-                //position_x/y + char size/2 = distance from 0,0 to center of char.
-                //innerHeight/width/2 = distance from SW viewport to center of char
-                //position_x + tile.frameSize.x/2 - innerWidth/2 = shift amount 
+
                 ctx.drawImage(
                     imgElement, 
                     tile.frameStart.x * tile.frameSize.x,
                     tile.frameStart.y * tile.frameSize.y,
-                    tile.frameSize.x * tile.scale,
-                    tile.frameSize.y * tile.scale,
-                    x * tile.frameSize.x,
-                    y * tile.frameSize.y,
                     tile.frameSize.x,
-                    tile.frameSize.y
+                    tile.frameSize.y,
+                    x * resolution,
+                    y * resolution,
+                    resolution,
+                    resolution
                 );
                 //ctx.drawImage()
                 

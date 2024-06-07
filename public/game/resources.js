@@ -10,12 +10,12 @@ class Resources {
             },
             resources: {},
             factions: {
-                red: {
-                    warrior: "/game/sprites/Factions/Knights/Troops/Warrior/Red/Warrior_Red.png",
-                    archer: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Red.png",
+                warrior: {
+                    red: "/game/sprites/Factions/Knights/Troops/Warrior/Red/Warrior_Red.png",
                 },
-                blue: {
-                    archer: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Blue.png",
+                archer: {
+                    red: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Red.png",
+                    blue: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Blue.png",
                 },
             },
         }

@@ -30,11 +30,11 @@ class GameLoop {
     }
     async publishToClients() {
         //get collection of online characters
-        let charactersOnline = null;
+        let herosOnline = null;
 
         try {
-            const onlineResults = await pool.query(gameQuery.getOnlineCharacters);
-            charactersOnline = onlineResults.rows;
+            const onlineResults = await pool.query(gameQuery.getOnlineHeros);
+            herosOnline = onlineResults.rows;
 
         } catch (error) {
             console.log("Error retrieving online characters, ", error);
@@ -43,27 +43,17 @@ class GameLoop {
         this.connectionSet.forEach(ws => {
             const user = ws.user;
             //retrieve and organize data
-            const myData = charactersOnline.find(character => character.player_id == user.id);
+            const myHero = herosOnline.find(hero => hero.player_id == user.id);
+            const otherHeros = herosOnline.filter(hero => hero.id !== myHero.id);
             const message = {
                 type: "update",
-                playersOnline: charactersOnline,
-                myData: myData,
+                playersOnline: herosOnline,
+                otherHeros: otherHeros,
+                myHero: myHero,
             };
             ws.send(JSON.stringify(message));
             //send data
         });
-    }
-    async getDrawData(ws) {
-        //get character and server data
-        try {
-            const results = await pool.query(gameQuery.getCharacterById, [ws.user.id]);
-            const characterData = results.rows[0];
-        } catch (error) {
-            console.log("Unable to obtain draw data: ", error);
-        }
-    }
-    calculateViewport(characterData) {
-        const {position_x: x, position_y: y} = characterData;
     }
 }
 module.exports = GameLoop;

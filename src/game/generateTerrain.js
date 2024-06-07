@@ -12,7 +12,7 @@ function tileFactory({
     return {
         type: type,
         frameStart: frameStart ?? {x: 0, y: 0},
-        frameSize: frameSize ?? {x: 32, y: 32},
+        frameSize: frameSize ?? {x: 64, y: 64},
         elevation: elevation ?? 0,
         walls: walls ?? wallMatrix[0],
         scale: scale ?? 1
@@ -34,8 +34,7 @@ for (let x = 0; x < cols; x++) {
         } else {
             terrainMatrix[x][y] = tileFactory({
                 type: "flatGround",
-                frameStart: {x: 2, y: 2},
-                scale: 2
+                frameStart: {x: 1, y: 1},
             });
         }
     }

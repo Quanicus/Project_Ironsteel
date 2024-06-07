@@ -73,7 +73,6 @@ class ScrollBar extends HTMLElement {
             
             //iterate through content pages
             const content = pageContainer.querySelectorAll('.page-content');
-            console.log(content);
             content.forEach((page, pageNum) => {
                 
        

@@ -212,7 +212,6 @@ class ParticleCanvas extends HTMLElement {
         });
         document.addEventListener("mouseout", () => {
             this.isDragging = false;
-            console.log("we outtie");
         });
 
         document.addEventListener("mousemove", (event) => {

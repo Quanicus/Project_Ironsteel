@@ -1,45 +1,57 @@
-import Chatbox  from "./chatbox.js";
+import Chatbox  from "./Chatbox.js";
 import Renderer from "./Renderer.js";
+import gameState from "./gameState.js";
+import inputManager from "./inputManager.js";
 
 class Game {
     constructor() {
-        const viewWidth = 16 * 32 * 2;
-        const viewHeight = 9 * 32 * 2;
-        const display = this.getDisplay();
-        // experimental
-        const renderer = new Renderer(display, viewWidth, viewHeight);
-        const chatbox = new Chatbox(display);
+        const resolution = 40;
+        const viewWidth = 28 * resolution;
+        const viewHeight = 16 * resolution;
 
-        renderer.canvas.addEventListener("keydown", (event) => {
-            const chat = chatbox.element;
-            if(event.key === "Enter") {
-                if (chat.style.display === "none") {
-                    chat.style.display = "block";
-                    chat.querySelector("input").focus();
-                } else {
-                    chat.style.display = "none";
-                }
-            }
-        });
-
-        display.addEventListener("keydown", (event) => {
-            if (event.key === "Escape") {
-                chatbox.element.style.display = "none";
-                renderer.canvas.focus();
-            }
-        });
-
-        const chatInput = chatbox.input;
-        chatInput.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" && chatInput.value !== "") {
-                this.ws.sendMessage("chat", chatInput.value);
-                chatbox.element.querySelector("input").value = "";
-            }
-        });
-
+        this.display = this.getDisplay();
+        this.renderer = new Renderer(this.display, resolution, viewWidth, viewHeight);
+        this.chatbox = new Chatbox(this.display);
         this.ws = null;
-        this.renderer = renderer;
-        this.chatbox = chatbox;
+        this.lastAnimateTime = 0;
+        this.animateInterval = 1000 / 10; //100 ms for 10 FPS
+        this.running = false;
+
+    }
+
+    animate(timestamp) {
+        if (!this.running) return;
+        //stage next frame
+        requestAnimationFrame(this.animate.bind(this));
+        //send held direction to server
+        if (inputManager.heldDirectionX[0] || inputManager.heldDirectionY[0]) {
+            this.ws.sendMessage("direction", { directionX: inputManager.heldDirectionX[0], directionY: inputManager.heldDirectionY[0]});
+        }
+        
+        //animate sprites
+        if (timestamp - this.lastAnimateTime > this.animateInterval) {
+            //increment animation frames
+            const keyFrames = gameState.myHero.sprite.keyFrames;
+            const currentAction = gameState.myHero.current_action;
+            let currentFrame = gameState.myHero.sprite.currentFrame;
+
+            if (keyFrames[currentAction] && keyFrames[currentAction].animationRow !== currentFrame.row) {
+                currentFrame.row = keyFrames[currentAction].animationRow;
+                currentFrame.col = keyFrames[currentAction].maxAnimationCol;
+            }
+
+            if (keyFrames[currentAction] && currentFrame.col >= keyFrames[currentAction].maxAnimationCol) {
+                currentFrame.col = keyFrames[currentAction].minAnimationCol;
+            } else {
+                currentFrame.col += 1;
+            }
+            this.lastAnimateTime = timestamp;
+        }
+
+        //update canvas
+        this.renderer.updateCanvas();
+        //send input
+        console.log(gameState.myHero.direction_facing);
     }
 
     getDisplay() {
@@ -52,61 +64,34 @@ class Game {
 
     openWebSocket() {
 
-        let heldDirectionX = [];
-        let heldDirectionY = [];
-        const directions = ["w", "a", "s", "d"];
-
         this.ws = new WebSocket("ws://localhost:9001/");
         // Event handler: WebSocket connection established
         this.ws.onopen = () => {
-            console.log('WebSocket connection established');      
-            this.renderer.canvas.addEventListener("keydown", (event) => {
-
-                if ((event.key === "a" || event.key === "d") && !heldDirectionX.includes(event.key)) {
-                    heldDirectionX.unshift(event.key);
-                } else if ((event.key === "w" || event.key === "s") && !heldDirectionY.includes(event.key)) {
-                    heldDirectionY.unshift(event.key);
-                }
-            });
-            this.renderer.canvas.addEventListener("keyup", (event) => {
-                let index = 0;
-                if (event.key === "a" || event.key === "d") {
-                    index = heldDirectionX.indexOf(event.key);
-                    heldDirectionX.splice(index,1);
-                } else if (event.key === "w" || event.key === "s") {
-                    index = heldDirectionY.indexOf(event.key);
-                    heldDirectionY.splice(index,1);
-                }
-            });
+            console.log('WebSocket connection established');
+            inputManager.bindChatbox(this.renderer.canvas, this.chatbox, this.display, this.ws);
+            inputManager.bindWASD(this.renderer.canvas, this.ws);
+            this.running = true;
+            this.animate();
         };
     
         // Event handler: Message received from the server
         this.ws.onmessage = (event) => {
-            if (heldDirectionX[0] || heldDirectionY[0]) {
-                this.ws.sendMessage("direction", { directionX: heldDirectionX[0], directionY: heldDirectionY[0]});
-            }
-            const msgObj = JSON.parse(event.data);
-            switch (msgObj.type) {
+            const serverMsg = JSON.parse(event.data);
+            switch (serverMsg.type) {
                 case "chat":
-                    this.chatbox.postChat(msgObj);
+                    this.chatbox.postChat(serverMsg);
                     break;
                 case "update":
-                    console.log(msgObj);
-                    this.renderer.updateCanvas(msgObj);
-                    //this.updateCanvas(msgObj.myData);
-                    //requestAnimationFrame();
+                    gameState.updateState(serverMsg);
                     break;
                 default:
-                    console.log(msgObj);
+                    console.log(serverMsg);
             }
-            //REFRESH CANVAS 
-            
         };
     
         // Event handler: WebSocket connection closed
         this.ws.onclose = () => {
             console.log('WebSocket connection closed');
-            //TODO: REMOVE LISTENERS
         };
     
         // Function to send a message to the server
@@ -121,6 +106,8 @@ class Game {
     }
     closeWebSocket() {
         this.ws.close();
+        this.running = false;
+        //TODO: REMOVE LISTENERS FROM BINDING STUFF IN ONOPEN
     }
 }
 const game = new Game();

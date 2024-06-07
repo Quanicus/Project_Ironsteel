@@ -49,7 +49,7 @@ const wsServer = require("uWebSockets.js").App().ws("/*", {
         console.log(`User ${user.id} has connected`)
         //GET CHARDATA
         try {
-            await pool.query(gameQuery.addCharacter, [user.id]);
+            await pool.query(gameQuery.addHero, [user.id]);
 
         } catch (error) {
             if (error.code == 23505) {
@@ -57,8 +57,8 @@ const wsServer = require("uWebSockets.js").App().ws("/*", {
                 await pool.query(gameQuery.setOnline, [user.id])
             }   
         }
-        const characterResult = await pool.query(gameQuery.getCharacterById, [user.id]);
-        user.character = characterResult.rows[0];
+        const heroResult = await pool.query(gameQuery.getHeroById, [user.id]);
+        user.hero = heroResult.rows[0];
 
         ws.subscribe("chat");
         gameLoop.addConnection(ws);
@@ -71,7 +71,7 @@ const wsServer = require("uWebSockets.js").App().ws("/*", {
         
         switch (msgObj.type) {
             case "chat":
-                msgObj.name = user.character.name;
+                msgObj.name = user.hero.name;
                 console.log(msgObj);
                 wsServer.publish("chat", JSON.stringify(msgObj));
                 break;

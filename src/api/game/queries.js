@@ -1,31 +1,43 @@
-const getCharacterById = `
+const getHeroById = `
     SELECT *
-    FROM characters
+    FROM heros
     WHERE player_id = $1
 `;
-const addCharacter = `
-    INSERT INTO characters (player_id)
+const addHero = `
+    INSERT INTO heros (player_id)
     VALUES ($1)
 `;
-const getOnlineCharacters = `
+const getOnlineHeros = `
     SELECT * 
-    FROM characters
+    FROM heros
     WHERE isOnline = TRUE
 `;
 const setOnline = `
-    UPDATE characters
+    UPDATE heros
     SET isOnline = TRUE
     WHERE player_id = $1
 `;
 const setOffline = `
-UPDATE characters
-SET isOnline = FALSE
-WHERE player_id = $1
+    UPDATE heros
+    SET isOnline = FALSE
+    WHERE player_id = $1
+`;
+const getCurrentActionById = `
+    SELECT current_action
+    FROM heros
+    WHERE player_id = $1
+`;
+const setActionById = `
+    UPDATE heros
+    SET current_action = $1
+    WHERE player_id = $2
 `;
 module.exports = {
-    getCharacterById,
-    addCharacter,
-    getOnlineCharacters,
+    getHeroById,
+    addHero,
+    getOnlineHeros,
     setOnline,
     setOffline,
+    getCurrentActionById,
+    setActionById,
 }
