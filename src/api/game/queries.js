@@ -32,6 +32,28 @@ const setActionById = `
     SET current_action = $1
     WHERE player_id = $2
 `;
+const setBowChargeById = `
+    UPDATE heros
+    SET 
+        charge_lvl = $2,
+        charge_pct = $3
+    WHERE player_id = $1
+        
+`;
+const releaseBowById = `
+    UPDATE heros
+    SET
+        charge_lvl = 0,
+        charge_pct = 0,
+        current_action = 'idle'
+    WHERE player_id = $1
+`;
+const setDirectionAimingById = `
+    UPDATE heros
+    SET direction_aiming = $2
+    WHERE player_id = $1
+`;
+
 module.exports = {
     getHeroById,
     addHero,
@@ -40,4 +62,7 @@ module.exports = {
     setOffline,
     getCurrentActionById,
     setActionById,
+    setBowChargeById,
+    releaseBowById,
+    setDirectionAimingById,
 }

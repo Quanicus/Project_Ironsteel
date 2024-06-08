@@ -43,7 +43,8 @@ export default class Renderer {
     }
 
     drawOtherHeros() {
-        gameState.otherHeros.forEach(hero => {
+        gameState.herosOnline.forEach(hero => {
+            if (hero.id === gameState.myHero.id) return;
             const x = hero.position_x;
             const y = hero.position_y;
             this.drawHero(hero, x, y);
@@ -62,7 +63,8 @@ export default class Renderer {
         const dWidth = sprite.destinationRectSize.width;
         const dHeight = sprite.destinationRectSize.height;
 
-        if (gameState.myHero.direction_facing === "left") {
+        if ((hero.direction_facing === "left" && (hero.current_action === "running" || hero.current_action === "idle"))
+            || hero.direction_aiming === "SW" || hero.direction_aiming === "W" || hero.direction_aiming === "NW" ){
             this.canvasContex.save();
             this.canvasContex.scale(-1,1);
             this.canvasContex.drawImage(sprite.img, sX, sY, sWidth, sHeight, -dX - sprite.sourceRectSize.width/2 - this.resolution/2, dY, dWidth, dHeight);
@@ -113,8 +115,8 @@ export default class Renderer {
                     tile.frameSize.y,
                     x * resolution,
                     y * resolution,
-                    resolution,
-                    resolution
+                    resolution+1,
+                    resolution+1
                 );
                 //ctx.drawImage()
                 

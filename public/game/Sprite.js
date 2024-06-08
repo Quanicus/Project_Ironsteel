@@ -36,32 +36,21 @@ class ArcherSprite extends Sprite {
                 minAnimationCol: 0,
                 maxAnimationCol: 5
             },
-            walking: {
+            running: {
                 animationRow: 1,
                 minAnimationCol: 0,
                 maxAnimationCol: 5
             },
             chargeBow: {
-                N: {
-                    animationRow: 2,
-                    minAnimationCol: 0,
-                    maxAnimationCol: 5
-                },
-                NE: {
-                    animationRow: 3,
-                    minAnimationCol: 0,
-                    maxAnimationCol: 5
-                },
-                E: {
-                    animationRow: 4,
-                    minAnimationCol: 0,
-                    maxAnimationCol: 5
-                },
-                SE: {
-                    animationRow: 5,
-                    minAnimationCol: 0,
-                    maxAnimationCol: 5
-                },
+                N: { animationRow: 2 },
+                NE: { animationRow: 3 },
+                E: { animationRow: 4 },
+                SE: { animationRow: 5 },
+
+                S: { animationRow: 2 },
+                SW: { animationRow: 5 },
+                W: { animationRow: 4 },
+                NW: { animationRow: 3 },
             },
             fireArrow: {
                 N: {

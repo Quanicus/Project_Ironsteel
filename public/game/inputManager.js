@@ -1,7 +1,10 @@
+import gameState from "./gameState.js";
+
 class InputManager {
     constructor() {
         this.heldDirectionX = [];
         this.heldDirectionY = [];
+        this.isCharging = false;
     }
 
     bindWASD(app, ws) {
@@ -54,6 +57,27 @@ class InputManager {
                 chatbox.element.querySelector("input").value = "";
             }
         });
+    }
+
+    bindBowCharge(canvas, ws) {
+        canvas.addEventListener("mousedown", (event) => {
+            this.isCharging = true;
+            ws.sendMessage("startCharge", {x: event.offsetX, y: event.offsetY, displayWidth: canvas.width, displayHeight: canvas.height});
+            canvas.addEventListener("mousemove", aimBow);
+        });
+        canvas.addEventListener("mouseup", (event) => {
+            this.isCharging = false;
+            ws.sendMessage("releaseBow", {x: event.offsetX, y: event.offsetY, displayWidth: canvas.width, displayHeight: canvas.height});
+            canvas.removeEventListener("mousemove", aimBow);
+        });
+        function aimBow(event) {
+            //console.log("aiming");
+            ws.sendMessage("aimBow", {x: event.offsetX, y: event.offsetY, displayWidth: canvas.width, displayHeight: canvas.height});
+        }
+    }
+     
+    releaseBow() {
+        this.isCharging = false;
     }
 }
 const inputManager = new InputManager();

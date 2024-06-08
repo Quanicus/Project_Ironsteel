@@ -27,31 +27,40 @@ class Game {
         if (inputManager.heldDirectionX[0] || inputManager.heldDirectionY[0]) {
             this.ws.sendMessage("direction", { directionX: inputManager.heldDirectionX[0], directionY: inputManager.heldDirectionY[0]});
         }
-        
-        //animate sprites
+        //send bow charge to server
+        if (inputManager.isCharging) {
+            this.ws.sendMessage("chargeBow", null);
+        }
+        //animate sprites at every interval, currently set to every 10sec aka 10fps
         if (timestamp - this.lastAnimateTime > this.animateInterval) {
-            //increment animation frames
-            const keyFrames = gameState.myHero.sprite.keyFrames;
-            const currentAction = gameState.myHero.current_action;
-            let currentFrame = gameState.myHero.sprite.currentFrame;
-
-            if (keyFrames[currentAction] && keyFrames[currentAction].animationRow !== currentFrame.row) {
-                currentFrame.row = keyFrames[currentAction].animationRow;
-                currentFrame.col = keyFrames[currentAction].maxAnimationCol;
-            }
-
-            if (keyFrames[currentAction] && currentFrame.col >= keyFrames[currentAction].maxAnimationCol) {
-                currentFrame.col = keyFrames[currentAction].minAnimationCol;
-            } else {
-                currentFrame.col += 1;
-            }
-            this.lastAnimateTime = timestamp;
+            //increment animation frames of each online hero
+            gameState.herosOnline.forEach(hero => {
+                const keyFrames = hero.sprite.keyFrames;
+                const currentAction = hero.current_action;
+                let currentFrame = hero.sprite.currentFrame;
+                //if transitioning to another animation, set 
+                if (currentAction === "idle" || currentAction === "running") {
+                    if (keyFrames[currentAction] && keyFrames[currentAction].animationRow !== currentFrame.row) {
+                        currentFrame.row = keyFrames[currentAction].animationRow;
+                        currentFrame.col = keyFrames[currentAction].minAnimationCol;
+                    }
+                    if (keyFrames[currentAction] && currentFrame.col >= keyFrames[currentAction].maxAnimationCol) {
+                        currentFrame.col = keyFrames[currentAction].minAnimationCol;
+                    } else {
+                        currentFrame.col += 1;
+                    }
+                } else if (currentAction === "chargingBow") {
+                    currentFrame.row = keyFrames.chargeBow[hero.direction_aiming].animationRow;//direction facing (like NE or E)
+                    currentFrame.col = hero.charge_lvl;//chargelvl
+                }
+                this.lastAnimateTime = timestamp;
+            });
         }
 
         //update canvas
         this.renderer.updateCanvas();
         //send input
-        console.log(gameState.myHero.direction_facing);
+        console.log(gameState.myHero.direction_aiming);
     }
 
     getDisplay() {
@@ -70,6 +79,7 @@ class Game {
             console.log('WebSocket connection established');
             inputManager.bindChatbox(this.renderer.canvas, this.chatbox, this.display, this.ws);
             inputManager.bindWASD(this.renderer.canvas, this.ws);
+            inputManager.bindBowCharge(this.renderer.canvas, this.ws);
             this.running = true;
             this.animate();
         };
@@ -98,7 +108,7 @@ class Game {
         this.ws.sendMessage = (type, content) => {
             const message = {
                 type: type,
-                payload: content, 
+                payload: content ?? null, 
             };
 
             this.ws.send(JSON.stringify(message));
