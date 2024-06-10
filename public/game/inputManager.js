@@ -25,7 +25,7 @@ class InputManager {
                 this.heldDirectionY.splice(index,1);
             }
             if (this.heldDirectionX.length === 0 && this.heldDirectionY.length === 0) {
-                ws.sendMessage("direction", null);
+                ws.sendMessage("idle");
             }
         });
     }

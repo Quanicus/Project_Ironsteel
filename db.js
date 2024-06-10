@@ -3,11 +3,12 @@ const fs = require("fs");
 const path = require("path");
 
 const pool = new Pool({
-    user: "quanicus",
+    connectionString: process.env.DATABASE_URL
+    /* user: process.env.DB_USER,
     host: "localhost",
-    database: "iron_steel",
+    database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
-    port: 5432
+    port: 5432 */
 })
 
 //RUNNER LOGIC

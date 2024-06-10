@@ -34,7 +34,7 @@ export default class Renderer {
                       
         this.drawTerrain(position_x, position_y);
      
-        ctx.fillRect(position_x, position_y, this.resolution, this.resolution);
+        ctx.strokeRect(position_x, position_y, this.resolution, this.resolution);
         
         this.drawOtherHeros();
         
@@ -63,6 +63,7 @@ export default class Renderer {
         const dWidth = sprite.destinationRectSize.width;
         const dHeight = sprite.destinationRectSize.height;
 
+        //mirror horizontally
         if ((hero.direction_facing === "left" && (hero.current_action === "running" || hero.current_action === "idle"))
             || hero.direction_aiming === "SW" || hero.direction_aiming === "W" || hero.direction_aiming === "NW" ){
             this.canvasContex.save();

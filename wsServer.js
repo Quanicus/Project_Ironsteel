@@ -5,10 +5,12 @@ const gameEngine = require("./src/game/GameEngine");
 const pool = require("./db");
 
 //const gameEngine = new GameEngine();
-const gameLoop = new GameLoop();
+const herosOnline = new Map();
+const gameLoop = new GameLoop(herosOnline);
 const decoder = new TextDecoder('utf-8');
+
 const wsServer = require("uWebSockets.js").App().ws("/*", {
-    upgrade: (res, req, context) => {
+    upgrade: async (res, req, context) => {
         const cookieHeader = req.getHeader("cookie");
         if (!cookieHeader) {
             console.error("Cookie header not found");
@@ -34,11 +36,11 @@ const wsServer = require("uWebSockets.js").App().ws("/*", {
             console.error("JWT verification failed:", errormessage);
             return res.writeStatus('401').end();
         }
-        //TODO: USE USER_ID TO GET CHARACTER INFO LIKE NAME
 
         res.upgrade( // upgrade to websocket
             { // 1st argument sets which properties to pass to ws object, in this case ip address
-                user: user, 
+                user: user,
+                lastMessageTimestamp: 0, 
                 lastChargeTimestamp: 0,
                 lastAimTimestamp: 0,
             }, 
@@ -61,15 +63,23 @@ const wsServer = require("uWebSockets.js").App().ws("/*", {
                 await pool.query(gameQuery.setOnline, [user.id])
             }   
         }
-        const heroResult = await pool.query(gameQuery.getHeroById, [user.id]);
-        user.hero = heroResult.rows[0];
-
+        //use user_id to get character data
+        try {
+            const result = await pool.query(gameQuery.getHeroById,[user.id]);
+            ws.hero = result.rows[0];
+            herosOnline.set(user.id, ws.hero);
+        } catch (error) {
+            console.error("problem fetching player hero", error);
+        }
+ 
         ws.subscribe("chat");
         gameLoop.addConnection(ws);
     },
     message: (ws, message, isBinary) => {
         //calculate movement and update db entries
         const user = ws.user;
+        const hero = ws.hero;
+
         const text = decoder.decode(message);
         const msgObj = JSON.parse(text);
         const currentTimestamp = Date.now();
@@ -81,23 +91,34 @@ const wsServer = require("uWebSockets.js").App().ws("/*", {
                 wsServer.publish("chat", JSON.stringify(msgObj));
                 break;
             case "direction":
-                gameEngine.processDirection(ws.user.id, msgObj.payload);
+                /* if (currentTimestamp - ws.lastMessageTimestamp < 60) {return;}
+                ws.lastMessageTimestamp = currentTimestamp; */
+                //gameEngine.processDirection(ws.user.id, msgObj.payload);
+                gameEngine.processDirection(hero, msgObj.payload);
+                break;
+            case "idle":
+                if (hero.current_action !== "chargingBow"){
+                    hero.current_action = "idle";
+                }
+                
                 break;
             case "startCharge":
-                gameEngine.processChargeStart(ws.user.id, msgObj.payload);
+                gameEngine.processChargeStart(hero, msgObj.payload);
                 break;
             case "chargeBow":
-                if (currentTimestamp - ws.lastChargeTimestamp < 100) {return;}
+                if (currentTimestamp - ws.lastChargeTimestamp < 60) {return;}
                 ws.lastChargeTimestamp = currentTimestamp;
-                gameEngine.processBowCharge(ws.user.id, msgObj.payload);
+
+                gameEngine.processBowCharge(hero, msgObj.payload);
                 break;
             case "aimBow":
                 if (currentTimestamp - ws.lastAimTimestamp < 10) {return;}
                 ws.lastAimTimestamp = currentTimestamp;
-                gameEngine.processAimBow(ws.user.id, msgObj.payload);
+
+                gameEngine.processAimBow(hero, msgObj.payload);
                 break;
             case "releaseBow":
-                gameEngine.processBowRelease(ws.user.id, msgObj.payload);
+                gameEngine.processBowRelease(hero, msgObj.payload);
                 break;
             default:
                 console.log("default", msgObj.content);
@@ -105,6 +126,7 @@ const wsServer = require("uWebSockets.js").App().ws("/*", {
     },
     close: async (ws, code, message) => {
         const user = ws.user;
+        herosOnline.delete(user.id);
         gameLoop.removeConnection(ws);//remove connection from the game loop
         await pool.query(gameQuery.setOffline, [user.id]);
         console.log(`User ${user.id} has disconnected`);
