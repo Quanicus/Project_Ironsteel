@@ -73,7 +73,8 @@ class Game {
 
     openWebSocket() {
         const url = "ws://localhost:9001/";
-        this.ws = new WebSocket("wss://sok.onrender.com");
+        //
+        this.ws = new WebSocket("wss://project-fireflame.onrender.com");
         // Event handler: WebSocket connection established
         this.ws.onopen = () => {
             console.log('WebSocket connection established');

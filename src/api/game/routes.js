@@ -1,4 +1,4 @@
-const terrainMatrix = require("../../game/generateTerrain");
+const terrainMatrix = require("./generateTerrain");
 const controller = require("./controller");
 const Router = require('express');
 const router = Router();
