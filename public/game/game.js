@@ -71,10 +71,21 @@ class Game {
         return displayElement;
     }
 
-    openWebSocket() {
+    async openWebSocket() {
+        //FETCH GAME KEY FROM HTTP SERVER TO USE IN WEBSOCKET
+        let gameKey;
+        try {
+            const keyResponse = await fetch("/game/v1/game-key");
+            gameKey = await keyResponse.json();
+            const domain = `project-fireflame.onrender.com`;
+            //document.cookie = `gameKey=${gameKey}; path=/; SameSite=None; Secure`;
+            console.log("gamekey:", gameKey);
+        } catch (error) {
+            console.error("failed to acquire game key", error);
+        }
         const url = "ws://localhost:9001/";
-        //
-        this.ws = new WebSocket("wss://project-fireflame.onrender.com");
+        //"wss://project-fireflame.onrender.com"
+        this.ws = new WebSocket(`wss://project-fireflame.onrender.com?game-key=${gameKey}`);
         // Event handler: WebSocket connection established
         this.ws.onopen = () => {
             console.log('WebSocket connection established');

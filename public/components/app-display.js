@@ -56,7 +56,7 @@ class AppDisplay extends HTMLElement {
                 
             } else {
                 //authorize
-                await fetch("/api/v1/users/authenticate", {method: "POST"})
+                fetch("/api/v1/users/authenticate", {method: "POST"})
                 .then(response => {
                     if(!response.ok) {
                         throw new Error("Authentication failed");

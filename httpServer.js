@@ -2,8 +2,8 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const pool = require("./db");
 const app = express();
-const userRoutes = require("./src/api/users/routes");
-const gameRoutes = require("./src/api/game/routes");
+const userRoutes = require("./src/api/users/routes.js");
+const gameRoutes = require("./src/api/game/routes.js");
 
 app.use(express.json());
 app.use(cookieParser());

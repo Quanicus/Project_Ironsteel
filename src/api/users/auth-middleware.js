@@ -140,24 +140,24 @@ async function authenticateToken(req, res, next) {
     if (!accessToken) {
         return res.sendStatus(401);
     }
-
+    //verify access token
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) {
+        if (err) {//access token denied
             const refreshToken = req.cookies.refreshToken;
-            if (!refreshToken) {
+            if (!refreshToken) {//user not logged in
                 return res.status(401);
             }
-            //refresh the accesstoken
+            //verify refresh token
             jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-                if (err) {
+                if (err) {//refresh token denied
                     return res.status(401);
                 }
-
+                //issue new access token, grant access
                 const newAccessToken = jwt.sign({user: user}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"});
                 res.cookie('accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
                 return next();
             });
-        } else {
+        } else {//access token valid, grant acess
             req.user = user;
             return next();
         }
