@@ -39,7 +39,7 @@ class ParticleCanvas extends HTMLElement {
         window.addEventListener("resize", () => {
             this.canvas.width = innerWidth;
             this.canvas.height = innerHeight;
-            this.mouse.radius = (canvas.height/100) * (canvas.width/100);
+            this.mouse.radius = (innerHeight/100) * (innerWidth/100);
             this.initParticles();
         });
     }
