@@ -83,7 +83,7 @@ class Game {
         }
         const local = `ws://localhost:9001?game-key=${gameKey}`;
         const deploy = `wss://project-fireflame.onrender.com?game-key=${gameKey}`;
-        this.ws = new WebSocket(local);
+        this.ws = new WebSocket(deploy);
         // Event handler: WebSocket connection established
         this.ws.onopen = () => {
             console.log('WebSocket connection established');
