@@ -10,6 +10,8 @@
         <script src="components/htmx-modal.js"></script>
         <script src="components/htmx-modal-button.js"></script>
         <script src="components/side-nav.js"></script>
+        <script src="components/tab-display.js"></script>
+        <script src="components/mail-app.js"></script>
         <script src="components/radio-wrap.js"></script>
         <script src="components/particle-canvas.js"></script>
 
@@ -58,7 +60,12 @@
         </div>
         <scroll-bar></scroll-bar>
         <side-nav>
-            <htmx-modal-button slot="middle" hx-get="views/login.html"></htmx-modal-button>
+            <tab-display slot="main">
+                <section data-tab-name="Mail">
+                    <mail-app></mail-app>
+                </section>
+                <section>sup foo</section>
+            </tab-display>
         </side-nav>
         <htmx-modal ></htmx-modal>
         <app-display></app-display>
