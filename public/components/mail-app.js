@@ -27,7 +27,7 @@ class MailApp extends HTMLElement {
                         height: 100%;
                         
                         max-width: 250px;
-                        flex-grow: 1;
+                        flex-grow: 0;
                         
 
                         & icon-nav {
@@ -146,6 +146,9 @@ class MailApp extends HTMLElement {
             document.addEventListener("mousemove", this.resize);
         });
         document.addEventListener("mouseup", () => {
+            this.nav.style.setProperty("width", `${this.nav.getBoundingClientRect().width}px`);
+            this.navContainer.style.flexGrow = "0";
+            
             document.body.style.userSelect = "";
             document.removeEventListener("mousemove", this.resize);
         });
@@ -157,8 +160,8 @@ class MailApp extends HTMLElement {
     resize = (event) => {
         if (this.nav.hasAttribute("collapsed")) {
             this.navContainer.style.flexGrow = "0";
-        } else {
-            this.nav.style.setProperty("width", "100%");
+        } else {//${this.nav.widthThreshold}px
+            this.nav.style.setProperty("width", `100%`);
             this.navContainer.style.flexGrow = "1";
         }
 
@@ -174,3 +177,5 @@ class MailApp extends HTMLElement {
     
 }
 customElements.define("mail-app", MailApp);
+//this new bug happens when resize-container is resized aka dragged. presumably bc the width attribute is "removed" from icon-nav when we try to set it to 100% presumably bc the nav-container is set to flex-grow: 1;
+

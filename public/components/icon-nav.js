@@ -77,12 +77,15 @@ class IconNav extends HTMLElement {
                 data.classList.add("data");
                 data.textContent = "c:"
 
+                this.resizeObserver.observe(label);
+
                 label.append(name, data);
                 nav_item.append(svg, label);
                 this.nav_items.push(nav_item);
+
                 this.shadowRoot.appendChild(nav_item);
 
-                this.resizeObserver.observe(label);
+                this.widthThreshold = name.getBoundingClientRect().width + data.getBoundingClientRect();
             }
         });
         this.activateResizeHandle();
@@ -125,5 +128,8 @@ class IconNav extends HTMLElement {
             //console.log(element);
         });
     };
+    getMinWidth() {
+
+    }
 }
 customElements.define("icon-nav", IconNav);
