@@ -11,16 +11,16 @@
         <script src="components/htmx-modal-button.js"></script>
         <script src="components/side-nav.js"></script>
         <script src="components/tab-display.js"></script>
+        <script src="components/icon-nav.js"></script>
         <script src="components/mail-app.js"></script>
         <script src="components/radio-wrap.js"></script>
         <script src="components/particle-canvas.js"></script>
-
+        <script src="components/game-console.js"></script>
     </head>
     <body>
         <div class="parallax-container">
             <particle-canvas></particle-canvas>
             <div class="parallax-page page-content" id="page-1">
-                
                 <span class="page-title">WELCOME TO THE CLICKITY CLACK EXPERIENCE</span>  
                 <div class="parallax-item">
                 </div>
@@ -60,6 +60,8 @@
         </div>
         <scroll-bar></scroll-bar>
         <side-nav>
+            <!-- <htmx-modal-button slot="top" hx-get="views/login.html"></htmx-modal-button> -->
+            <game-console slot="top"></game-console>
             <tab-display slot="main">
                 <section data-tab-name="Mail">
                     <mail-app></mail-app>

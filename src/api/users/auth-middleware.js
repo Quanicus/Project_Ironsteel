@@ -136,6 +136,7 @@ async function issueTokens(req, res) {
 }
 
 async function authenticateToken(req, res, next) {
+    console.log("authing dog");
     const accessToken = req.cookies.accessToken;
     if (!accessToken) {
         return res.sendStatus(401);

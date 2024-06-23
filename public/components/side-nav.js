@@ -34,8 +34,23 @@ class SideNav extends HTMLElement {
                     background-color: grey;
                     transform: translateX(-100%);
                     transition: transform 0.5s ease-in-out;
+
+                    &[active] {
+                        transform: translateX(0);
+                    }
                 }
-                ::slotted([slot="middle"]) {
+                .close_btn {
+                    position: absolute;
+                    width: 2em;
+                    height: 2em;
+                    top: 1em;
+                    right: 1em;
+                    background-color: white;
+                }
+                ::slotted([slot="top"]) {
+                    display: grid;
+                    place-content: center;
+                    height: 100%;
                 }
             </style>
 
@@ -46,12 +61,17 @@ class SideNav extends HTMLElement {
             </div>
 
             <div class="top display">
+                <div class="close_btn"></div>
                 <slot name="top"></slot>
             </div>
+
             <div class="main display">
+                <div class="close_btn"></div>
                 <slot name="main"></slot>
             </div>
+
             <div class="bottom display">
+                <div class="close_btn"></div>
                 <slot name="bottom"></slot>
             </div>
 
@@ -59,22 +79,34 @@ class SideNav extends HTMLElement {
         `;
         const shadow = this.attachShadow({mode: "open"});
         shadow.appendChild(template.content.cloneNode(true));
+
         this.topBtn = shadow.querySelector(".top_btn");
         this.mainBtn = shadow.querySelector(".main_btn");
-        this.mainDisplay = shadow.querySelector(".main.display");
+        this.bottomBtn = shadow.querySelector(".bottom_btn");
+        this.topDisplay = shadow.querySelector(".top");
+        this.mainDisplay = shadow.querySelector(".main");
+        this.bottomDisplay = shadow.querySelector(".bottom");
     }
     connectedCallback() {
+        this.attachDisplays();
+    }
+    attachDisplays() {
         this.topBtn.addEventListener("click", () => {
-            eventBus.emit("activate-app", {});
+            this.topDisplay.toggleAttribute("active");
         });
         this.mainBtn.addEventListener("click", () => {
-            if(this.mainDisplay.getAttribute("active")) {
-                this.mainDisplay.removeAttribute("active");
-                this.mainDisplay.style.removeProperty("transform");
-            } else {
-                this.mainDisplay.setAttribute("active", "true");
-                this.mainDisplay.style.setProperty("transform", "translateX(0)");
-            }
+            this.mainDisplay.toggleAttribute("active");
+        });
+        this.bottomBtn.addEventListener("click", () => {
+            console.log("huh");
+            this.bottomDisplay.toggleAttribute("active");
+        });
+        const displays = this.shadowRoot.querySelectorAll(".display");
+        displays.forEach(display => {
+            const closeBtn = display.querySelector(".close_btn");
+            closeBtn.addEventListener("click", () => {
+                display.toggleAttribute("active");
+            });
         });
     }
 }

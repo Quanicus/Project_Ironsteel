@@ -40,8 +40,9 @@ class TabDisplay extends HTMLElement {
                 .page_container {
                     margin: 0 1em 1em 1em;
                     border: 1px solid #303030;
-                    border-radius: 5px;
+                    border-radius: 8px;
                     flex-grow: 1;
+                    overflow: hidden;
                 }
             </style>
             <div class="tab_container"></div>

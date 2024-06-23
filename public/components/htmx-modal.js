@@ -227,6 +227,7 @@ class HTMXModal extends HTMLElement {
     attachButtons() {
         const modalButtons = document.querySelectorAll('htmx-modal-button');
         modalButtons.forEach((button) => {
+            console.log("modaling");
             button.setAttribute('hx-target', 'htmx-modal');
             button.setAttribute('hx-swap', 'innerHTML');
             button.setAttribute('hx-trigger', 'click');

@@ -4,12 +4,12 @@ import gameState from "./gameState.js";
 import inputManager from "./inputManager.js";
 
 class Game {
-    constructor() {
+    constructor(display) {
         const resolution = 40;
         const viewWidth = 28 * resolution;
         const viewHeight = 16 * resolution;
 
-        this.display = this.getDisplay();
+        this.display = display;
         this.renderer = new Renderer(this.display, resolution, viewWidth, viewHeight);
         this.chatbox = new Chatbox(this.display);
         this.ws = null;
@@ -61,14 +61,6 @@ class Game {
         this.renderer.updateCanvas();
         //send input
         console.log(gameState.myHero.direction_aiming);
-    }
-
-    getDisplay() {
-        const display = document.querySelector("app-display");
-        const displayElement = display.shadowRoot.querySelector(".display");
-        display.app = this;
-        display.appIsLoaded = true;
-        return displayElement;
     }
 
     async openWebSocket() {
@@ -130,7 +122,7 @@ class Game {
         //TODO: REMOVE LISTENERS FROM BINDING STUFF IN ONOPEN
     }
 }
-const game = new Game();
+window.Game = Game;
 
 
 
