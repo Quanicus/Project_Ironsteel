@@ -10,7 +10,7 @@ async function up (client) {
   
   await client.query(`
     INSERT INTO schema_migrations (version, description)
-    VALUES ('001_create_schema_migrations.sql', 'Create schema_migrations table.');
+    VALUES ('001_create_schema_migrations.js', 'Create schema_migrations table.');
   `);
 }
 

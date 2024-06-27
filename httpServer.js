@@ -15,7 +15,7 @@ app.use("/game/v1", gameRoutes);
 app.post("/burn-it-down", async (req, res) => {
     console.log(req.body);
     if (req.body.fire === "ignite") {
-        pool.query("DROP TABLE schema_migrations, users.user_info, users.refresh_tokens, heros", (err, result) => {
+        pool.query("DROP TABLE schema_migrations, users.user_info, refresh_tokens, heros", (err, result) => {
             if (err) {
                 console.log("error wiping db");
                 res.status(500).send("unable to wipe drive");

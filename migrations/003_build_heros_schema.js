@@ -20,7 +20,7 @@ async function up(client) {
             def INT DEFAULT 5,
             isOnline BOOLEAN DEFAULT TRUE,
             
-            FOREIGN KEY (player_id) REFERENCES users.user_info(id) ON DELETE CASCADE
+            FOREIGN KEY (player_id) REFERENCES users(id) ON DELETE CASCADE
         );
     `);
 

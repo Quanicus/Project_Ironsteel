@@ -116,14 +116,14 @@ async function issueTokens(req, res) {
     //STORE SESSION INFO IN DB
     try {
         await pool.query(`
-            INSERT INTO users.refresh_tokens (user_id, token, expires_at)
+            INSERT INTO refresh_tokens (user_id, token, expires_at)
             VALUES ($1, $2, CURRENT_DATE + INTERVAL '4 weeks');
         `, [req.body.user.id, refreshToken]);    
     } catch (error) {
         if (error.code == 23505) {
             console.log("You are already logged in.");
             await pool.query(`
-                UPDATE users.refresh_tokens
+                UPDATE refresh_tokens
                 SET token = $1, expires_at = CURRENT_DATE + INTERVAL '4 weeks'
                 WHERE user_id = $2
             `, [refreshToken, req.body.user.id]);

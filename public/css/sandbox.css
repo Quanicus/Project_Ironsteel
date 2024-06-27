@@ -1,7 +1,10 @@
 * {
     box-sizing: border-box;
-    
 }
+mail-app {
+    border: none;
+}
+
 
 body, html {
     font-family: 'Raleway', sans-serif;
