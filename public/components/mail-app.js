@@ -151,6 +151,9 @@ class MailApp extends HTMLElement {
                                 align-items: center;
                                 padding-top: 1rem;
                                 
+                                & shad-toggle {
+                                    
+                                }
                                 & #send_message {
                                
                                 }
@@ -250,7 +253,7 @@ class MailApp extends HTMLElement {
                     <div class="reply_container">
                         <textarea id="reply" placeholder="Type your message here..."></textarea>
                         <div class="submit_container">
-                            <shad-toggle></shad-toggle>
+                            <shad-toggle data-label="Mute this thread"></shad-toggle>
                             <button id="send_message">Send</button>
                         </div>
                         
