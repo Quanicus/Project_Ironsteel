@@ -7,6 +7,7 @@ class ShadButton extends HTMLButtonElement {
         this.style.backgroundColor = "white";
         this.style.border = "1px solid #303030";
         this.style.cursor = "pointer";
+        this.style.transition = "background-color 0.1s ease-in";
         this.eventName = "";
         this.mousedown = false;
     }
