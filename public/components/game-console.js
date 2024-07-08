@@ -4,7 +4,9 @@ class GameConsole extends HTMLElement {
         this.game = null;
     }
     connectedCallback() {
+        this.style.overflow = "hidden";
         document.addEventListener("DOMContentLoaded", () => {
+            //initiate game from <script> module
             this.game = new window.Game(this);
         })
     }

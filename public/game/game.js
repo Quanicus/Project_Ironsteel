@@ -122,6 +122,7 @@ class Game {
         //TODO: REMOVE LISTENERS FROM BINDING STUFF IN ONOPEN
     }
 }
+//"exporting" the game to make accessible from global context AKA custom element definitions.
 window.Game = Game;
 
 

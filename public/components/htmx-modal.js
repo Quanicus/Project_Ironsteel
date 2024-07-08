@@ -4,30 +4,31 @@ class HTMXModal extends HTMLElement {
         const template = document.createElement('template');
         template.innerHTML = `
             <style>
-                :host {
+                :host([active]) {
+                    & .modal-container {
+                        transform: translateY(0);
+                        transition-delay: 0s;
+                    }
+                } 
+                .modal-container {
                     display: grid;
                     place-items: center;
-                    position: absolute;
+                    position: fixed;
                     top: 0;
+                    left: 0;
                     width: 100vw;
                     height: 100vh;
                     background-color: rgba(0,0,0,0.8);
                     z-index: 9999;
                     transform: translateY(-100%);
                     transition: transform 0.4s ease-in-out;
-                    transition-delay: 1.8s;
                 }
-                :host([active]) {
-                    transform: translateY(0);
-                    transition-delay: 0s;
-                } 
-
                 .wrapper {
                     width: min(66vw, 1000px);
                     height: min(66vh, 800px);
                 }
 
-                .modal-container {
+                .view-container {
                     position: relative;
                     width: 0;
                     height: 0;
@@ -147,8 +148,6 @@ class HTMXModal extends HTMLElement {
                     height: 100%;
                     overflow: hidden;
                 }
-                
-
                 .close-button {
                     position: absolute;
                     top: 50px;
@@ -157,58 +156,66 @@ class HTMXModal extends HTMLElement {
                     height: 50px;
                     background-color: white;
                 }
+                .activate-button {
+                    
+                }
             </style>
-            <div class="wrapper">
-                <div class="modal-container" >
-                    <svg class="corner left" width="50" height="50">
-                        <path d="M0 0 H50"></path>
-                        <path d="M0 0 V50"></path>
-                    </svg>
-                    <svg class="corner right" width="50" height="50">
-                        <path d="M50 50 H-50"></path>
-                        <path d="M50 50 V-50"></path>
-                    </svg>
-                    <svg class="border">
-                        <line class="left" x1="0.15rem" y1="60px" x2="0.15rem" y2="calc(100% - 0.15rem)"></line>
-                        <line class="bottom" x1="0.15rem" y1="calc(100% - 0.15rem)" x2="calc(100% - 60px)" y2="calc(100% - 0.15rem)"></line>
-                    </svg>
-                    <div class="content-wrap">
-                        <div class="content-container" >
-                            <slot></slot>
-                        </div> 
+            <div class="modal-container">
+                <div class="wrapper">
+                    <div class="view-container" >
+                        <svg class="corner left" width="50" height="50">
+                            <path d="M0 0 H50"></path>
+                            <path d="M0 0 V50"></path>
+                        </svg>
+                        <svg class="corner right" width="50" height="50">
+                            <path d="M50 50 H-50"></path>
+                            <path d="M50 50 V-50"></path>
+                        </svg>
+                        <svg class="border">
+                            <line class="left" x1="0.15rem" y1="60px" x2="0.15rem" y2="calc(100% - 0.15rem)"></line>
+                            <line class="bottom" x1="0.15rem" y1="calc(100% - 0.15rem)" x2="calc(100% - 60px)" y2="calc(100% - 0.15rem)"></line>
+                        </svg>
+                        <div class="content-wrap">
+                            <div class="content-container" >
+                                <slot></slot>
+                            </div> 
+                        </div>
                     </div>
                 </div>
+                <div class="close-button"></div>
             </div>
-            <div class="close-button"></div>
-
+            <button is="shad-button" class="activate-button">Login Modal</button>
         `;
-        this.attachShadow({mode: 'open'});
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
-        this.closeButton = this.shadowRoot.querySelector('.close-button');
-        this.modalContainer = this.shadowRoot.querySelector('.modal-container');
-        this.contentContainer = this.shadowRoot.querySelector('.content-container');
+        const shadow = this.attachShadow({mode: 'open'});
+        shadow.appendChild(template.content.cloneNode(true));
+        this.closeButton = shadow.querySelector('.close-button');
+        this.viewContainer = shadow.querySelector('.view-container');
+        this.modalContainer = shadow.querySelector(".modal-container");
+        this.contentContainer = shadow.querySelector('.content-container');
+        this.activateButton = shadow.querySelector(".activate-button");
+        this.activateButtons();
     }
     connectedCallback() {
         document.addEventListener("DOMContentLoaded", () => {
             this.handleHTMXSwap();
-            this.attachButtons();
+            //this.attachButtons();
         });
-        this.setupCloseButton();
+        //this.setupCloseButton();
         eventBus.on("toggle-modal", () => {
             this.setAttribute('active', null);
-            this.modalContainer.setAttribute('active', null);
+            this.viewContainer.setAttribute('active', null);
             this.contentContainer.setAttribute('active', null);
         });
     }
     handleHTMXSwap() {
         this.addEventListener('htmx:beforeRequest', () => {
-            this.modalContainer.setAttribute('active', 'preswap');
+            this.viewContainer.setAttribute('active', 'preswap');
 
         });
         this.addEventListener('htmx:afterSwap', (event) => {
             const response = event.detail.xhr.response;
             if (response) {
-                this.modalContainer.setAttribute('active', 'postswap');
+                this.viewContainer.setAttribute('active', 'postswap');
             }
         })
         this.addEventListener("htmx:afterRequest", (event) => {
@@ -235,7 +242,7 @@ class HTMXModal extends HTMLElement {
             button.addEventListener('click', () => {
                 //activate all relavent modal elements
                 //this.setAttribute('active', null);
-                this.modalContainer.setAttribute('active', null);
+                this.viewContainer.setAttribute('active', null);
                 this.contentContainer.setAttribute('active', null);
             });
         });
@@ -243,8 +250,24 @@ class HTMXModal extends HTMLElement {
     setupCloseButton() {
         this.closeButton.addEventListener('click', () => {
             this.removeAttribute('active');
-            this.modalContainer.removeAttribute('active');
+            this.viewContainer.removeAttribute('active');
             this.contentContainer.removeAttribute('active');
+        });
+    }
+    activateButtons() {
+        this.closeButton.addEventListener('click', () => {
+            this.removeAttribute('active');
+            this.modalContainer.style.transform = "translateY(-100%)";
+            this.modalContainer.style.transitionDelay = "1.8s";
+            this.viewContainer.removeAttribute('active');
+            this.contentContainer.removeAttribute('active');
+        });
+        this.activateButton.addEventListener("click", () => {
+            console.log("clig");
+            this.modalContainer.style.transform = "translateY(0)";
+            this.modalContainer.style.transitionDelay = "0s";
+            this.viewContainer.setAttribute('active', null);
+            this.contentContainer.setAttribute('active', null); 
         });
     }
 }

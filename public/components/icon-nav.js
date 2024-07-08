@@ -4,40 +4,52 @@ template.innerHTML = `
         :host  {
             box-sizing: border-box;
             position: relative;
-            display: flex;
-            flex-direction: column;
             border: 1px solid #303030;
             height: 100%;
             min-width: min-content;
-            gap: 0.3em;
-            padding: 0.5rem;                    
+                                
             max-width: 100%;
-            flex-grow: 1;
         }
-        .nav_item {
-            display: flex;
-            align-items: center;
-            padding: .5rem;
-            background-color: black;
-            border-radius: 6px;
-
-            & .label {
-                display: inline-flex;
-                justify-content: space-between;
-                width: 100%;
-                margin-left: 0.7em;
-            }
-            & svg {
-                flex-shrink: 0;
-            }
+        :host([collapsed]) {
             
-            &:hover, &[selected] {
-                background-color: #303030;
-                cursor: pointer;
-            }
+            & .nav_item .label {
+                display: none;
+                width: 0;
+            } 
         }
-        .nav_item > * {
-            pointer-events: none;
+        .nav_container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3em;
+            padding: 0.5rem;
+            height: 100%;
+            overflow: scroll;
+
+            .nav_item {
+                display: flex;
+                align-items: center;
+                padding: .5rem;
+                background-color: black;
+                border-radius: 6px;
+
+                & .label {
+                    display: inline-flex;
+                    justify-content: space-between;
+                    width: 100%;
+                    margin-left: 0.7em;
+                }
+                & svg {
+                    flex-shrink: 0;
+                }
+                
+                &:hover, &[selected] {
+                    background-color: #303030;
+                    cursor: pointer;
+                }
+            }
+            .nav_item > * {
+                pointer-events: none;
+            }
         }
         .handle {
             display: grid;
@@ -55,19 +67,13 @@ template.innerHTML = `
                 cursor: grab;
             }
         }
-        :host([collapsed]) {
-            
-            & .label {
-                display: none;
-                width: 0;
-            } 
-        }
     </style>
     <div class="handle">
         <svg width="10" height="10" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5">
             <path d="M5.5 4.625C6.12132 4.625 6.625 4.12132 6.625 3.5C6.625 2.87868 6.12132 2.375 5.5 2.375C4.87868 2.375 4.375 2.87868 4.375 3.5C4.375 4.12132 4.87868 4.625 5.5 4.625ZM9.5 4.625C10.1213 4.625 10.625 4.12132 10.625 3.5C10.625 2.87868 10.1213 2.375 9.5 2.375C8.87868 2.375 8.375 2.87868 8.375 3.5C8.375 4.12132 8.87868 4.625 9.5 4.625ZM10.625 7.5C10.625 8.12132 10.1213 8.625 9.5 8.625C8.87868 8.625 8.375 8.12132 8.375 7.5C8.375 6.87868 8.87868 6.375 9.5 6.375C10.1213 6.375 10.625 6.87868 10.625 7.5ZM5.5 8.625C6.12132 8.625 6.625 8.12132 6.625 7.5C6.625 6.87868 6.12132 6.375 5.5 6.375C4.87868 6.375 4.375 6.87868 4.375 7.5C4.375 8.12132 4.87868 8.625 5.5 8.625ZM10.625 11.5C10.625 12.1213 10.1213 12.625 9.5 12.625C8.87868 12.625 8.375 12.1213 8.375 11.5C8.375 10.8787 8.87868 10.375 9.5 10.375C10.1213 10.375 10.625 10.8787 10.625 11.5ZM5.5 12.625C6.12132 12.625 6.625 12.1213 6.625 11.5C6.625 10.8787 6.12132 10.375 5.5 10.375C4.87868 10.375 4.375 10.8787 4.375 11.5C4.375 12.1213 4.87868 12.625 5.5 12.625Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
         </svg>
     </div>
+    <div class="nav_container"></div>
 `;
 class IconNav extends HTMLElement {
     constructor() {
@@ -76,6 +82,7 @@ class IconNav extends HTMLElement {
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.entries = [];
         this.resizeHandle = this.shadowRoot.querySelector(".handle");
+        this.container = this.shadowRoot.querySelector(".nav_container");
         this.resizeObserver = new ResizeObserver(this.handleResize);
         this.widthThreshold = 0;
         this.selectedEntry = null;
@@ -111,7 +118,7 @@ class IconNav extends HTMLElement {
             navEntry.append(svg, label);
 
             this.entries.push(navEntry);
-            this.shadowRoot.appendChild(navEntry);
+            this.container.appendChild(navEntry);
 
             const labelWidth = label.getBoundingClientRect().width;
             if (labelWidth > this.widthThreshold) {

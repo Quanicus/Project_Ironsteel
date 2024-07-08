@@ -31,12 +31,12 @@ class MailApp extends HTMLElement {
                         height: 100%;
                         
                         max-width: 250px;
-                        flex-grow: 0;
-                        
+                        max-height: 100%;
 
                         & icon-nav {
                             width: 250px;
                             border: none;
+                            flex-grow: 1;
                         }
                     }
 
@@ -56,7 +56,9 @@ class MailApp extends HTMLElement {
                             font-size: 1.25em;
                             line-height: 1.75em;
                         }
-
+                        & .content {
+                            overflow: scroll;
+                        }
                         & .resize_handle {
                             display: grid;
                             place-content: center;
@@ -92,74 +94,90 @@ class MailApp extends HTMLElement {
                     height: 100%;
                     flex-grow: 1;
                     min-width: 300px;
+                    max-height: 100%;
+                    
+                    & .header {
+                        padding-inline: .5rem;
 
-                    & .mail {
-                        display: flex;
-                        flex-direction: column;
-                        flex-grow: 1;
-
-                        & .head {
+                        & .toolbar {
                             display: flex;
-                            border-bottom: 1px solid #303030;
-                            
-                            & profile-icon {
-                                padding: 1rem;
-                                
-                            }
-                            & .info_container {
-                                display: flex;
-                                flex-direction: column;
-                                flex-grow: 1;
-                                padding: 1rem;
-                                padding-left: 0;
-                                gap: 0.5rem;
-                                
-                                & .heading {
-                                    display: flex;
-                                    justify-content: space-between;
-                                }
-                            }
-                        }
-                        & .body {
-                            padding: 1rem;
-                            flex-grow: 1;
-                        }
-                        .reply_container {
-                            padding: 1rem;
-                            border-top: 1px solid #303030;
 
-                            & textarea {
-                                width: 100%;
-                                border-radius: 8px;
-                                border: 1px solid #303030;
-                                background-color: black;
-                                color: white;
-                                outline: none;
-                                resize: none;
+                            & .icon {
                                 padding: .5rem;
-                                overflow: auto;
-                                min-height: 4rem;
-                                max-height: 300px;
+                                border-radius: 8px;
+                                cursor: pointer;
 
-                                &:focus {
-                                    border-color: white;
+                                &:hover {
+                                    background-color: #303030;
                                 }
                             }
-                            & .submit_container {
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                padding-top: 1rem;
-                                
-                                & shad-toggle {
-                                    
-                                }
-                                & #send_message {
-                               
-                                }
-                            } 
                         }
                     }
+
+                    & .head {
+                        display: flex;
+                        border-bottom: 1px solid #303030;
+                        
+                        & profile-icon {
+                            padding: 1rem;
+                            
+                        }
+                        & .info_container {
+                            display: flex;
+                            flex-direction: column;
+                            flex-grow: 1;
+                            padding: 1rem;
+                            padding-left: 0;
+                            gap: 0.5rem;
+                            
+                            & .heading {
+                                display: flex;
+                                justify-content: space-between;
+                            }
+                        }
+                    }
+                    & .body {
+                        padding: 1rem;
+                        flex-grow: 1;
+
+                        overflow: scroll;
+                    }
+                    .reply_container {
+                        padding: 1rem;
+                        border-top: 1px solid #303030;
+
+                        & textarea {
+                            width: 100%;
+                            border-radius: 8px;
+                            border: 1px solid #303030;
+                            background-color: black;
+                            color: white;
+                            outline: none;
+                            resize: none;
+                            padding: .5rem;
+                            overflow: auto;
+                            min-height: 4rem;
+                            max-height: 300px;
+
+                            &:focus {
+                                border-color: white;
+                            }
+                        }
+                        & .submit_container {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            padding-top: 1rem;
+                            
+                            & shad-toggle {
+                                
+                            }
+                            & #send_message {
+                            
+                            }
+                        } 
+                    }
+                    
                 }
                 .header {
                     position: relative;
@@ -192,8 +210,11 @@ class MailApp extends HTMLElement {
                         <div data-name="Sent">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send mr-2 h-4 w-4"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
                         </div>
-                        <div data-name="Trash">
+                        <div data-name="Junk">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive-x mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="m9.5 17 5-5"></path><path d="m9.5 12 5 5"></path></svg>
+                        </div>
+                        <div data-name="Trash">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
                         </div>
                         <div data-name="Archive">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>
@@ -222,8 +243,14 @@ class MailApp extends HTMLElement {
                         <div class="filter_options">sup</div>
                     </div>
                     <div class="content">
-                        <message-card></message-card>
-                        <message-card></message-card>
+                        <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="where's my money" data-name="Timmy">Hey you stop looking at me, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
+                        <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="i love you" data-name="Jimmy">I love your cookies, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
+                        <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="check out this hotdog" data-name="Ron">Wanna make out about it, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
+                        <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="vote for me" data-name="Gerald">sup punkboy, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
+                        <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="where's my money" data-name="Timmy">Hey you stop looking at me, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
+                        <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="i love you" data-name="Jimmy">I love your cookies, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
+                        <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="check out this hotdog" data-name="Ron">Wanna make out about it, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
+                        
                     </div>
                     <div class="resize_handle">
                         <svg width="10" height="10" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5">
@@ -234,30 +261,55 @@ class MailApp extends HTMLElement {
             </div>
 
             <div class="mail_display">
-                <div class="header">message display</div>
-                <div class="mail"> 
-                    <div class="head">
-                        <profile-icon data-name="quan pham"></profile-icon>
-                        <div class="info_container">
-                            <div class="heading">
-                                <span class="name">jimothy</span>
-                                <span class="date">july 19, 1996</span>
-                            </div>
-                            <div class="subject">need a hand</div>
-                            <div class="reply_address">jade@softhands.com</div>
+                <div class="header">
+                    <div class="toolbar left">
+                        <div data-name="Junk" class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive-x mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="m9.5 17 5-5"></path><path d="m9.5 12 5 5"></path></svg>
+                        </div>
+                        <div data-name="Archive" class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>
+                        </div>
+                        <div data-name="Trash" class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+                        </div>
+                        <div data-name="Snooze" class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock h-4 w-4"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                         </div>
                     </div>
-                    <div class="body">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius,
-                    </div>
-                    <div class="reply_container">
-                        <textarea id="reply" placeholder="Type your message here..."></textarea>
-                        <div class="submit_container">
-                            <shad-toggle data-label="Mute this thread"></shad-toggle>
-                            <button id="send_message">Send</button>
+                    <div class="toolbar right">
+                        <div data-name="Reply" class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-reply h-4 w-4"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>
                         </div>
-                        
+                        <div data-name="Reply all" class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-reply-all h-4 w-4"><polyline points="7 17 2 12 7 7"></polyline><polyline points="12 17 7 12 12 7"></polyline><path d="M22 18v-2a4 4 0 0 0-4-4H7"></path></svg>
+                        </div>
+                        <div data-name="Forward" class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-forward h-4 w-4"><polyline points="15 17 20 12 15 7"></polyline><path d="M4 18v-2a4 4 0 0 1 4-4h12"></path></svg>
+                        </div>
+                        <div data-name="More" class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical h-4 w-4"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                        </div>
                     </div>
+                </div> 
+                <div class="head">
+                    <profile-icon data-name="quan pham"></profile-icon>
+                    <div class="info_container">
+                        <div class="heading">
+                            <span class="name"></span>
+                            <span class="date">july 19, 1996</span>
+                        </div>
+                        <div class="subject">need a hand</div>
+                        <div class="reply_address">jade@softhands.com</div>
+                    </div>
+                </div>
+                <div class="body"></div>
+                <div class="reply_container">
+                    <textarea id="reply" placeholder="Type your message here..."></textarea>
+                    <div class="submit_container">
+                        <shad-toggle data-label="Mute this thread"></shad-toggle>
+                        <button is="shad-button" id="send_message">Send</button>
+                    </div>
+                    
                 </div>
             </div>
         `;
@@ -269,19 +321,48 @@ class MailApp extends HTMLElement {
         this.preview = shadow.querySelector(".preview_window");
         this.display = shadow.querySelector(".mail_display");
         this.handle = shadow.querySelector(".resize_handle");
+        this.selectedMessage = null;
 
         this.nav.addEventListener("nav-items-loaded", this.activateNav);
         this.addEventListener("nav-entry-selected", this.handleNavSelection);
+        this.addEventListener("message-preview-selected", this.handleMessageSelection);
     }
     connectedCallback() {
         this.activateHandle();
         this.activateReply();
+        //this.setMailDisplay();
     }
     handleNavSelection = (event) => {
         const navEntry = event.detail;
         const title = this.preview.querySelector(".header .title");
         title.textContent = navEntry.querySelector(".name").textContent;
         console.log(title);
+    }
+    handleMessageSelection = (event) => {
+        const message_preview = event.detail;
+        //console.log(message_preview);
+        if (this.selectedMessage) {
+            this.selectedMessage.removeAttribute("active");
+        } 
+        this.selectedMessage = message_preview;
+        this.selectedMessage.setAttribute("active", "");
+        this.updateMessageDisplay(message_preview);
+    }
+    updateMessageDisplay(message) {
+        const display = this.display;
+        const profileIcon = display.querySelector("profile-icon");
+        const name = message.getAttribute("data-name");
+        display.querySelector(".name").textContent = name;
+        display.querySelector(".body").textContent = message.textContent;
+        display.querySelector(".subject").textContent = message.getAttribute("data-subject");
+        profileIcon.setAttribute("data-name", name);
+        profileIcon.setInitials();
+
+    }
+    setMailDisplay() {
+        const body = this.display.querySelector(".body");
+        body.style.maxHeight = `${body.clientHeight}px`;
+        this.display.style.maxHeight = `${this.display.clientHeight}px`;
     }
     activateHandle() {
         const handle = this.handle;
@@ -333,7 +414,92 @@ customElements.define("mail-app", MailApp);
 class MessagePreview extends HTMLElement {
     constructor() {
         super();
-        this.sender = this.getAttribute("sender");
+        const template = document.createElement("template");
+        template.innerHTML = `
+            <style>
+                :host {
+                    display: flex;
+                    flex-direction: column;
+                    padding: 0.5rem;
+                    gap: 0.5rem;
+                    border: 1px solid #303030;
+                    background-color: black;
+                    border-radius: 8px;
+                    color: #808080;
+
+                    
+                }
+                :host([active]) {
+                    background-color: #303030;
+                }
+                :host(:hover) {
+                    background-color: #303030;
+                    cursor: pointer;
+                }
+                * {
+                    font-size: 0.75rem;
+                }
+                
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+
+                    & .name {
+                        font-size: 1rem;
+                        color: white;
+                    }
+                }
+                .subject {
+                    color: white;
+                }
+                .body {
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 2;
+                    
+                    overflow: hidden;
+                    line-height: 1.2em; 
+                    height: calc(1.2em * 2);
+                    
+                    text-overflow: ellipsis;
+                }
+            </style>
+            <div class="header">
+                <span class="name"></span>
+                <span class="date"></span>
+            </div>
+            <div class="subject"></div>
+            <div class="body">
+                <slot></slot>
+            </div>
+            <div class="tags">
+                <span>work</span>
+                <span>important</span>
+            <div>
+        `;
+        const shadow = this.attachShadow({mode: "open"});
+        shadow.appendChild(template.content.cloneNode(true));
+        this.name = shadow.querySelector(".name");
+        this.subject = shadow.querySelector(".subject");
+        this.date = shadow.querySelector(".date");
+
+        this.addEventListener("click", this.handleClick);
+    }
+    connectedCallback() {
+        this.name.textContent = this.getAttribute("data-name");
+        this.subject.textContent = this.getAttribute("data-subject");
+        this.setTimeAgo();
+    }
+    setTimeAgo() {
+        this.date.textContent = "at some time";
+    }
+    handleClick = (event) => {
+        const clickEvent = new CustomEvent("message-preview-selected", {
+            detail: this,
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(clickEvent);
     }
 }
 customElements.define("message-preview", MessagePreview);
