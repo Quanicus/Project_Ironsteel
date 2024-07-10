@@ -9,7 +9,7 @@ class MailApp extends HTMLElement {
                     display: flex;
                     width: 100%;
                     height: 100%;
-                    overflow: auto;
+                    overflow: hidden;
                     font-size: 14px;
                     border: 1px solid #303030;
                 }
@@ -101,15 +101,13 @@ class MailApp extends HTMLElement {
 
                         & .toolbar {
                             display: flex;
+                            gap: .1rem;
 
-                            & .icon {
+                            & shad-button {
                                 padding: .5rem;
-                                border-radius: 8px;
-                                cursor: pointer;
-
-                                &:hover {
-                                    background-color: #303030;
-                                }
+                                background-color: black;
+                                color: white;
+                                border-color: transparent;
                             }
                         }
                     }
@@ -263,39 +261,40 @@ class MailApp extends HTMLElement {
             <div class="mail_display">
                 <div class="header">
                     <div class="toolbar left">
-                        <div data-name="Junk" class="icon">
-                            <shad-tooltip>Junk</shad-tooltip>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive-x mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="m9.5 17 5-5"></path><path d="m9.5 12 5 5"></path></svg>
-                        </div>
-                        <div data-name="Archive" class="icon">
+                        <shad-button data-highlight-color="#303030" data-secondary-color="black">
                             <shad-tooltip>Archive</shad-tooltip>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>
-                        </div>
-                        <div data-name="Trash" class="icon">
-                            <shad-tooltip>Trash</shad-tooltip>
+                        </shad-button>
+                        <shad-button data-highlight-color="#303030" data-secondary-color="black">
+                            <shad-tooltip>Move to junk</shad-tooltip>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive-x mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="m9.5 17 5-5"></path><path d="m9.5 12 5 5"></path></svg>
+                        </shad-button>
+                        
+                        <shad-button data-highlight-color="#303030" data-secondary-color="black">
+                            <shad-tooltip>Move to trash</shad-tooltip>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
-                        </div>
-                        <div data-name="Snooze" class="icon">
+                        </shad-button>
+                        <shad-button data-highlight-color="#303030" data-secondary-color="black">
                             <shad-tooltip>Snooze</shad-tooltip>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock h-4 w-4"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        </div>
+                        </shad-button>
                     </div>
                     <div class="toolbar right">
-                        <div data-name="Reply" class="icon">
+                        <shad-button data-highlight-color="#303030" data-secondary-color="black">
                             <shad-tooltip>Reply</shad-tooltip>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-reply h-4 w-4"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>
-                        </div>
-                        <div data-name="Reply all" class="icon">
+                        </shad-button>
+                        <shad-button data-highlight-color="#303030" data-secondary-color="black">
                             <shad-tooltip>Reply all</shad-tooltip>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-reply-all h-4 w-4"><polyline points="7 17 2 12 7 7"></polyline><polyline points="12 17 7 12 12 7"></polyline><path d="M22 18v-2a4 4 0 0 0-4-4H7"></path></svg>
-                        </div>
-                        <div data-name="Forward" class="icon">
+                        </shad-button>
+                        <shad-button data-highlight-color="#303030" data-secondary-color="black">
                             <shad-tooltip>Forward</shad-tooltip>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-forward h-4 w-4"><polyline points="15 17 20 12 15 7"></polyline><path d="M4 18v-2a4 4 0 0 1 4-4h12"></path></svg>
-                        </div>
-                        <div data-name="More" class="icon">
+                        </shad-button>
+                        <shad-button data-highlight-color="#303030" data-secondary-color="black">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical h-4 w-4"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                        </div>
+                        </shad-button>
                     </div>
                 </div> 
                 <div class="head">
@@ -314,7 +313,7 @@ class MailApp extends HTMLElement {
                     <textarea id="reply" placeholder="Type your message here..."></textarea>
                     <div class="submit_container">
                         <shad-toggle data-label="Mute this thread"></shad-toggle>
-                        <button is="shad-button" id="send_message">Send</button>
+                        <shad-button id="send_message">Send</shad-button>
                     </div>
                     
                 </div>

@@ -3,7 +3,7 @@ template.innerHTML = `
     <style>
         :host {
             position: fixed;
-            display: none;
+            display: block;
             background-color: white;
             color: #303030;
             font-size: 12px;
@@ -11,6 +11,8 @@ template.innerHTML = `
             border: 1px solid #303030;
             border-radius: 5px;
             transform: translateY(-100%);
+            transition: opacity 0.2s ease-in;
+            opacity: 0;
         }
     </style>
     <slot><slot>
@@ -19,7 +21,7 @@ class ShadTooltip extends HTMLElement {
     constructor() {
         super()
         this.attachShadow({mode: "open"});
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this.style.opacity = "0";
     }
     connectedCallback() {
         this.formatTriggerElement();
@@ -33,15 +35,20 @@ class ShadTooltip extends HTMLElement {
         }
         triggerElement.addEventListener("mouseover", this.activateTooltip);
         triggerElement.addEventListener("mouseout", this.deactivateTooltip);
+
     }
     activateTooltip = (event) => {
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this.style.opacity = "1";
         const triggerRect = this.parentElement.getBoundingClientRect();
+        const tooltipRect = this.getBoundingClientRect();
         this.style.top = `${triggerRect.top}px`;
-        this.style.left = `${triggerRect.left}px`;
-        this.style.display = "block";
+        this.style.left = `${triggerRect.left - tooltipRect.width/2 + triggerRect.width/2}px`;
+        
     }
     deactivateTooltip = (event) => {
-        this.style.display = "none";
+        this.shadowRoot.innerHTML = "";
+        this.style.opacity = "0";
     }
     positionTooltip() {
 

@@ -184,7 +184,7 @@ class HTMXModal extends HTMLElement {
                 </div>
                 <div class="close-button"></div>
             </div>
-            <button is="shad-button" class="activate-button">Login Modal</button>
+            <shad-button class="activate-button">Login Modal</shad-button>
         `;
         const shadow = this.attachShadow({mode: 'open'});
         shadow.appendChild(template.content.cloneNode(true));
