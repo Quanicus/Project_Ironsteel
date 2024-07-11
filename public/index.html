@@ -7,9 +7,9 @@
         <script src="https://unpkg.com/htmx.org@2.0.0-alpha1/dist/htmx.min.js"></script>
         <script src="components/eventBus.js"></script>        
         <script src="components/scroll-bar.js"></script>
-        <script src="components/htmx-modal.js"></script>
+        <!-- <script src="components/htmx-modal.js"></script> -->
         <script src="components/htmx-modal-button.js"></script>
-        <script src="components/side-nav.js"></script>
+        <!-- <script src="components/side-nav.js"></script> -->
         <script src="components/tab-display.js"></script>
         <!-- <script src="components/icon-nav.js"></script> -->
         <!-- <script src="components/mail-app.js"></script> -->
@@ -21,13 +21,15 @@
     <body>
         <div class="parallax-container">
             <particle-canvas></particle-canvas>
-            
+            <htmx-modal data-url="views/login.html"></htmx-modal>
             <div class="parallax-page page-content" id="page-1">
                 
-                <span class="page-title">WELCOME TO THE CLICKITY CLACK EXPERIENCE</span>  
+                <span class="page-title">
+                    WELCOME TO THE CLICKITY CLACK EXPERIENCE
+                </span>  
                 <!-- <div class="parallax-item"></div> -->
             </div>
-            <htmx-modal data-url="views/login.html"></htmx-modal>
+            
             <div class="parallax-page page-content" id="page-2">
                 <span class="page-title">CHOOSE YOUR BASE</span>  
                 <div class="parallax-item" id="para1">
@@ -48,7 +50,7 @@
             </div>
             <div class="parallax-page page-content" id="page-3">
                 <span class="page-title">PICK YOUR SWITCHES</span> 
-                <div class="parallax-item" id="para2">FLICK MY SWITCHES DADDY</div>
+                <div class="parallax-item" id="para2"><shad-tooltip>wtf mans</shad-tooltip>FLICK MY SWITCHES DADDY</div>
             </div>
             <div class="parallax-page page-content" id="page-4">
                 <span class="page-title">SELECT YOUR KEYCAPS</span>

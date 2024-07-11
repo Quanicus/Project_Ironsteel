@@ -1,3 +1,5 @@
+import "./components/htmx-modal.js";
+import "./components/side-nav.js";
 import "./components/mail-app.js";
 import "./components/icon-nav.js";
 import "./components/profile-icon.js";

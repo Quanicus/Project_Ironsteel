@@ -17,7 +17,9 @@ footer {
     height: 100%;
 }
 
-
+particle-canvas {
+   
+}
 .parallax-container::-webkit-scrollbar {
     display: none;
   }

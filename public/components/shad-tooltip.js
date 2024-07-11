@@ -21,39 +21,43 @@ class ShadTooltip extends HTMLElement {
     constructor() {
         super()
         this.attachShadow({mode: "open"});
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.style.opacity = "0";
         this.style.position = "fixed";
+        this.triggerElement = false;
     }
     connectedCallback() {
+        if (this.parentElement === document.body) return;
+
+        this.triggerElement = this.parentElement;
         this.formatTriggerElement();
+        this.parentElement.removeChild(this); 
     }
     formatTriggerElement() {
-        const triggerElement = this.parentElement;
-        const computedTriggerStyle = window.getComputedStyle(triggerElement);
-        if (computedTriggerStyle.position === "static") {
-            triggerElement.style.position = "relative";
-        }
+        const triggerElement = this.triggerElement;
         triggerElement.addEventListener("mouseover", this.activateTooltip);
         triggerElement.addEventListener("mouseout", this.deactivateTooltip);
         triggerElement.addEventListener("click", this.deactivateTooltip);
     }
     activateTooltip = (event) => {
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
-        const triggerRect = this.parentElement.getBoundingClientRect();
+        document.body.appendChild(this);
+        const triggerRect = this.triggerElement.getBoundingClientRect();
         const tooltipRect = this.getBoundingClientRect();
-        this.style.top = `${triggerRect.top}px`;
-        this.style.left = `${triggerRect.left - tooltipRect.width/2 + triggerRect.width/2}px`;
         
+        this.style.left = `${triggerRect.left - tooltipRect.width/2 + triggerRect.width/2}px`;
+
         if (triggerRect.top - tooltipRect.height < 0) {
-            this.style.transform = "translateY(100%)";
+            this.style.top = `${triggerRect.bottom}px`;
+            this.style.transform = "translateY(0)";
         } else {
+            this.style.top = `${triggerRect.top}px`;
             this.style.transform = "translateY(-100%)";
         }
         
         this.style.opacity = "1";
     }
     deactivateTooltip = (event) => {
-        this.shadowRoot.innerHTML = "";
+        document.body.removeChild(this);
         this.style.opacity = "0";
     }
 }
