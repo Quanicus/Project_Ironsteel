@@ -100,7 +100,8 @@ class SideNav extends HTMLElement {
 
             <div class="main display">
                 <div class="control-box">
-                    <htmx-modal></htmx-modal>
+                    <slot name="modal"></slot>
+                    
                     <div class="close-btn"></div>
                 </div>
                 
@@ -126,7 +127,14 @@ class SideNav extends HTMLElement {
         //TODO: LOGIN
     }
     connectedCallback() {
+        this.attachModal();
         this.activateDisplays();
+    }
+    attachModal() {
+        const htmxModal = document.createElement("htmx-modal");
+        htmxModal.setAttribute("data-url", "views/login.html");
+        htmxModal.setAttribute("slot", "modal");
+        this.appendChild(htmxModal);
     }
     activateDisplays() {
         this.topBtn.addEventListener("click", () => {

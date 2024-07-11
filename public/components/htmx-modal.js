@@ -176,15 +176,17 @@ class HTMXModal extends HTMLElement {
                             <line class="bottom" x1="0.15rem" y1="calc(100% - 0.15rem)" x2="calc(100% - 60px)" y2="calc(100% - 0.15rem)"></line>
                         </svg>
                         <div class="content-wrap">
-                            <div class="content-container" >
-                                <slot></slot>
-                            </div> 
+                            <div class="content-container" ></div> 
                         </div>
                     </div>
                 </div>
                 <div class="close-button"></div>
             </div>
-            <shad-button class="activate-button">Login Modal</shad-button>
+            <shad-button class="activate-button" hx-swap="innerHTML" hx-trigger="click">
+                <shad-tooltip>log me in daddy</shad-tooltip>
+                Login Modal
+            </shad-button>
+            <div></div>
         `;
         const shadow = this.attachShadow({mode: 'open'});
         shadow.appendChild(template.content.cloneNode(true));
@@ -194,20 +196,21 @@ class HTMXModal extends HTMLElement {
         this.contentContainer = shadow.querySelector('.content-container');
         this.activateButton = shadow.querySelector(".activate-button");
         this.activateButtons();
+        
     }
     connectedCallback() {
-        document.addEventListener("DOMContentLoaded", () => {
-            this.handleHTMXSwap();
-            //this.attachButtons();
-        });
-        //this.setupCloseButton();
-        eventBus.on("toggle-modal", () => {
-            this.setAttribute('active', null);
-            this.viewContainer.setAttribute('active', null);
-            this.contentContainer.setAttribute('active', null);
-        });
+        this.setTarget();
+        this.addHTMXListeners();
+        htmx.process(this.shadowRoot);
     }
-    handleHTMXSwap() {
+    setTarget() {
+        this.activateButton.setAttribute("hx-target", `.content-container`);
+
+        const url = this.getAttribute("data-url");
+        if (!url) throw new Error("must provide a data-url to htmx-modal");
+        this.activateButton.setAttribute("hx-get", url);
+    }
+    addHTMXListeners() {
         this.addEventListener('htmx:beforeRequest', () => {
             this.viewContainer.setAttribute('active', 'preswap');
 
@@ -228,25 +231,9 @@ class HTMXModal extends HTMLElement {
                     eventBus.emit("activate-app");
                 }, 2300);
             }
-            
         });
     }
-    attachButtons() {
-        const modalButtons = document.querySelectorAll('htmx-modal-button');
-        modalButtons.forEach((button) => {
-            console.log("modaling");
-            button.setAttribute('hx-target', 'htmx-modal');
-            button.setAttribute('hx-swap', 'innerHTML');
-            button.setAttribute('hx-trigger', 'click');
 
-            button.addEventListener('click', () => {
-                //activate all relavent modal elements
-                //this.setAttribute('active', null);
-                this.viewContainer.setAttribute('active', null);
-                this.contentContainer.setAttribute('active', null);
-            });
-        });
-    }
     setupCloseButton() {
         this.closeButton.addEventListener('click', () => {
             this.removeAttribute('active');
@@ -263,7 +250,6 @@ class HTMXModal extends HTMLElement {
             this.contentContainer.removeAttribute('active');
         });
         this.activateButton.addEventListener("click", () => {
-            console.log("clig");
             this.modalContainer.style.transform = "translateY(0)";
             this.modalContainer.style.transitionDelay = "0s";
             this.viewContainer.setAttribute('active', null);

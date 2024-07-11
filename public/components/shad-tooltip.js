@@ -2,7 +2,6 @@ const template = document.createElement("template");
 template.innerHTML = `
     <style>
         :host {
-            position: fixed;
             display: block;
             background-color: white;
             color: #303030;
@@ -10,9 +9,10 @@ template.innerHTML = `
             padding: .5rem;
             border: 1px solid #303030;
             border-radius: 5px;
-            transform: translateY(-100%);
             transition: opacity 0.2s ease-in;
-            opacity: 0;
+            transition-delay: 0.25s;
+            pointer-events: none;
+            z-index: 99999;
         }
     </style>
     <slot><slot>
@@ -22,10 +22,10 @@ class ShadTooltip extends HTMLElement {
         super()
         this.attachShadow({mode: "open"});
         this.style.opacity = "0";
+        this.style.position = "fixed";
     }
     connectedCallback() {
         this.formatTriggerElement();
-        this.positionTooltip();
     }
     formatTriggerElement() {
         const triggerElement = this.parentElement;
@@ -35,23 +35,26 @@ class ShadTooltip extends HTMLElement {
         }
         triggerElement.addEventListener("mouseover", this.activateTooltip);
         triggerElement.addEventListener("mouseout", this.deactivateTooltip);
-
+        triggerElement.addEventListener("click", this.deactivateTooltip);
     }
     activateTooltip = (event) => {
         this.shadowRoot.appendChild(template.content.cloneNode(true));
-        this.style.opacity = "1";
         const triggerRect = this.parentElement.getBoundingClientRect();
         const tooltipRect = this.getBoundingClientRect();
         this.style.top = `${triggerRect.top}px`;
         this.style.left = `${triggerRect.left - tooltipRect.width/2 + triggerRect.width/2}px`;
         
+        if (triggerRect.top - tooltipRect.height < 0) {
+            this.style.transform = "translateY(100%)";
+        } else {
+            this.style.transform = "translateY(-100%)";
+        }
+        
+        this.style.opacity = "1";
     }
     deactivateTooltip = (event) => {
         this.shadowRoot.innerHTML = "";
         this.style.opacity = "0";
-    }
-    positionTooltip() {
-
     }
 }
 customElements.define("shad-tooltip", ShadTooltip);

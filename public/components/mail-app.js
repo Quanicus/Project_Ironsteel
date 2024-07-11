@@ -15,13 +15,12 @@ class MailApp extends HTMLElement {
                 }
                 * {
                     box-sizing: border-box;
-                    order: 2px dotted green;
                 }
-                .resize_container {
+                .resize-container {
                     position: relative;
                     display: inline-flex;
                     height: 100%;
-
+                    z-index: 2;
                     width: 60%;
                     min-width: min-content;
                     
@@ -29,6 +28,7 @@ class MailApp extends HTMLElement {
                         display: flex;
                         flex-direction: column;          
                         height: 100%;
+                        z-index: 2;
                         
                         max-width: 250px;
                         max-height: 100%;
@@ -40,7 +40,7 @@ class MailApp extends HTMLElement {
                         }
                     }
 
-                    .preview_window {
+                    & .preview_window {
                         position: relative;
                         display: flex;
                         flex-direction: column;
@@ -59,20 +59,26 @@ class MailApp extends HTMLElement {
                         & .content {
                             overflow: scroll;
                         }
-                        & .resize_handle {
-                            display: grid;
-                            place-content: center;
-                            border-radius: 4px;
+                        & .resize-handle {
                             position: absolute;
                             right: -.35rem;
-                            top: 50%;
+                            height: 100%;
                             width: .7rem;
-                            height: 1rem;
-                            background-color: #303030;
-                            z-index: 10;
 
                             &:hover {
-                                cursor: grab;
+                                cursor: ew-resize;
+                            }
+                            & .handle-icon {
+                                display: grid;
+                                place-content: center;
+                                border-radius: 4px;
+                                position: absolute;
+                                
+                                top: 50%;
+                                width: 100%;
+                                height: 1rem;
+                                background-color: #303030;
+                                z-index: 10;
                             }
                         }
 
@@ -93,7 +99,7 @@ class MailApp extends HTMLElement {
                     flex-direction: column;
                     height: 100%;
                     flex-grow: 1;
-                    min-width: 300px;
+                    min-width: min-content;
                     max-height: 100%;
                     
                     & .header {
@@ -190,7 +196,7 @@ class MailApp extends HTMLElement {
                 
             </style>
            
-            <div class="resize_container">
+            <div class="resize-container">
                 <div class="nav_container">
                     <div class="header">
                         <div class="drop-down">c:</div>
@@ -250,10 +256,12 @@ class MailApp extends HTMLElement {
                         <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="check out this hotdog" data-name="Ron">Wanna make out about it, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
                         
                     </div>
-                    <div class="resize_handle">
-                        <svg width="10" height="10" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5">
-                            <path d="M5.5 4.625C6.12132 4.625 6.625 4.12132 6.625 3.5C6.625 2.87868 6.12132 2.375 5.5 2.375C4.87868 2.375 4.375 2.87868 4.375 3.5C4.375 4.12132 4.87868 4.625 5.5 4.625ZM9.5 4.625C10.1213 4.625 10.625 4.12132 10.625 3.5C10.625 2.87868 10.1213 2.375 9.5 2.375C8.87868 2.375 8.375 2.87868 8.375 3.5C8.375 4.12132 8.87868 4.625 9.5 4.625ZM10.625 7.5C10.625 8.12132 10.1213 8.625 9.5 8.625C8.87868 8.625 8.375 8.12132 8.375 7.5C8.375 6.87868 8.87868 6.375 9.5 6.375C10.1213 6.375 10.625 6.87868 10.625 7.5ZM5.5 8.625C6.12132 8.625 6.625 8.12132 6.625 7.5C6.625 6.87868 6.12132 6.375 5.5 6.375C4.87868 6.375 4.375 6.87868 4.375 7.5C4.375 8.12132 4.87868 8.625 5.5 8.625ZM10.625 11.5C10.625 12.1213 10.1213 12.625 9.5 12.625C8.87868 12.625 8.375 12.1213 8.375 11.5C8.375 10.8787 8.87868 10.375 9.5 10.375C10.1213 10.375 10.625 10.8787 10.625 11.5ZM5.5 12.625C6.12132 12.625 6.625 12.1213 6.625 11.5C6.625 10.8787 6.12132 10.375 5.5 10.375C4.87868 10.375 4.375 10.8787 4.375 11.5C4.375 12.1213 4.87868 12.625 5.5 12.625Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
-                        </svg>
+                    <div class="resize-handle">
+                        <div class="handle-icon">
+                            <svg width="10" height="10" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5">
+                                <path d="M5.5 4.625C6.12132 4.625 6.625 4.12132 6.625 3.5C6.625 2.87868 6.12132 2.375 5.5 2.375C4.87868 2.375 4.375 2.87868 4.375 3.5C4.375 4.12132 4.87868 4.625 5.5 4.625ZM9.5 4.625C10.1213 4.625 10.625 4.12132 10.625 3.5C10.625 2.87868 10.1213 2.375 9.5 2.375C8.87868 2.375 8.375 2.87868 8.375 3.5C8.375 4.12132 8.87868 4.625 9.5 4.625ZM10.625 7.5C10.625 8.12132 10.1213 8.625 9.5 8.625C8.87868 8.625 8.375 8.12132 8.375 7.5C8.375 6.87868 8.87868 6.375 9.5 6.375C10.1213 6.375 10.625 6.87868 10.625 7.5ZM5.5 8.625C6.12132 8.625 6.625 8.12132 6.625 7.5C6.625 6.87868 6.12132 6.375 5.5 6.375C4.87868 6.375 4.375 6.87868 4.375 7.5C4.375 8.12132 4.87868 8.625 5.5 8.625ZM10.625 11.5C10.625 12.1213 10.1213 12.625 9.5 12.625C8.87868 12.625 8.375 12.1213 8.375 11.5C8.375 10.8787 8.87868 10.375 9.5 10.375C10.1213 10.375 10.625 10.8787 10.625 11.5ZM5.5 12.625C6.12132 12.625 6.625 12.1213 6.625 11.5C6.625 10.8787 6.12132 10.375 5.5 10.375C4.87868 10.375 4.375 10.8787 4.375 11.5C4.375 12.1213 4.87868 12.625 5.5 12.625Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -321,12 +329,12 @@ class MailApp extends HTMLElement {
         `;
         const shadow = this.attachShadow({mode: "open"});
         shadow.appendChild(template.content.cloneNode(true));
-        this.resizeContainer = shadow.querySelector(".resize_container");
+        this.resizeContainer = shadow.querySelector(".resize-container");
         this.navContainer = shadow.querySelector(".nav_container");
         this.nav = shadow.querySelector("icon-nav");
         this.preview = shadow.querySelector(".preview_window");
         this.display = shadow.querySelector(".mail_display");
-        this.handle = shadow.querySelector(".resize_handle");
+        this.handle = shadow.querySelector(".resize-handle");
         this.selectedMessage = null;
 
         this.nav.addEventListener("nav-items-loaded", this.activateNav);

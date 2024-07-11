@@ -4,6 +4,37 @@ class ShadButton extends HTMLElement {
         this.eventName = "";
         this.mousedown = false;
         this.colorScheme = {};
+
+        this.internals_ = this.attachInternals();
+        this.addEventListener('click', this._onClick);
+    }
+    _onClick = () => {
+        if (this.form) { // Accessing `this.form` calls the `get form()` method
+            this.form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+    }
+    // Indicate that the element is form-associated
+    static get formAssociated() {
+        return true;
+    }
+    // Get the form associated with this element
+    get form() {
+        return this.internals_.form;
+    }
+    // Get the name of the element (for form submission)
+    get name() {
+        return this.getAttribute('name');
+    }
+    // Get the type of the element (default to "submit")
+    get type() {
+        return this.getAttribute('type') || 'submit';
+    }
+    // Get and set the value of the element (for form submission)
+    get value() {
+        return this.getAttribute('value') || '';
+    }
+    set value(value) {
+        this.setAttribute('value', value);
     }
     connectedCallback() {
         this.initialize();
@@ -28,6 +59,7 @@ class ShadButton extends HTMLElement {
                     cursor: pointer;
                     transition: background-color 0.05s ease-in;
                     user-select: none;
+                    width: fit-content;
 
                     background-color: white;
                     border-color: #303030;
@@ -75,9 +107,9 @@ class ShadButton extends HTMLElement {
         document.addEventListener("mouseup", this.handleMouseUp);
         this.addEventListener("click", this.handleClick);
     }
-    handleClick = (event) => {
+    handleClick = () => {
         const clickEvent = new CustomEvent(this.eventName, {
-            detail: {target: event.target},
+            detail: {target: this},
             bubbles: true,
             composed: true
         });
