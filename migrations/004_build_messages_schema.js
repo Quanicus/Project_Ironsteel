@@ -2,15 +2,15 @@ async function up(client) {
     await client.query(`
         CREATE TABLE IF NOT EXISTS messages (
             id SERIAL PRIMARY KEY,
-            reply_to_id INT,
-            from_user_id INT NOT NULL,
-            to_user_id INT NOT NULL,
+            original_msg_id INT,
+            sender_id INT NOT NULL,
+            recipient_id INT NOT NULL,
             subject VARCHAR(255) DEFAULT 'message',
             content TEXT,
             sent_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (reply_to_id) REFERENCES messages(id) ON DELETE CASCADE, 
-            FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
+            FOREIGN KEY (original_msg_id) REFERENCES messages(id) ON DELETE CASCADE, 
+            FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
         );
     `);
 

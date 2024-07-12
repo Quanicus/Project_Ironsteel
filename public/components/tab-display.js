@@ -27,6 +27,9 @@ class TabDisplay extends HTMLElement {
                     &[active] {
                         background-color: #303030;
                     }
+                    &:not([active]) {
+                        cursor: pointer;
+                    }
                 }
                 ::slotted(section) {
                     width: 100%;
@@ -77,8 +80,7 @@ class TabDisplay extends HTMLElement {
                 } else {
                     page.style.setProperty("display", "none");
                 }
-                this.tabContainer.appendChild(tab);
-
+        
                 tab.addEventListener("click", () => {
                     this.activeTab.removeAttribute("active");
                     tab.setAttribute("active", "true");
@@ -89,6 +91,8 @@ class TabDisplay extends HTMLElement {
                     this.activePage = page;
                     
                 });
+
+                this.tabContainer.appendChild(tab);
             });
         });
     }
