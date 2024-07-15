@@ -37,6 +37,7 @@ const deleteUser = `
     DELETE FROM 
         users
     WHERE id = $1
+    RETURNING *
 `;
 const getMessage = `
     SELECT 

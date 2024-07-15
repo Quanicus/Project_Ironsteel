@@ -1,4 +1,3 @@
-
 const bcrypt = require("bcrypt");
 const pool = require("../../../db");
 const queries = require("./queries");
@@ -54,52 +53,34 @@ function validateCredentials(req, res, next) {
 
 async function verifyCredentials(req, res, next) {
     const { email, password } = req.body;
-    req.body.user = undefined;
+    req.body.user = null;
     req.body.isVerified = false;
     req.body.err = "Failed to verify user";
-
+    //console.log(email);
     if (!email || !password) {
-        return res.status(400).json({ error: "Bad Request", message: "Missing input" })
+        return res.status(422).send("<div>bad request dog. terrible even.</div>");
     }
 
-    //query and get encrypted password using email
-    let hashedPassword = null;
-    let user = null;
-    try {
-        const userResults = await pool.query(queries.getUserByEmail, [email.value]);
-        user = userResults.rows[0];
-        if (user) { //user was found
-            hashedPassword = user.password;
-        } else {
-            req.body.err = "email not registered";
+    pool.query(queries.getUserByEmail, [email.value], async (error, results) => {
+        if (error) {
+            console.error("Error querying user by id.", error);
+            return res.status(422).send("<div>uhoh not found dog</div>");
         }
-    } catch (err) {
-        req.body.err = "Error querying user by email"
-    }
-    
-    try {
-        //use bcrypt to compare password and encryptedpassword
-        if (hashedPassword) {//check if a password was retrieved
-            req.body.isVerified = await bcrypt.compare(password.value, hashedPassword);
-            if (req.body.isVerified) {
-                req.body.user = user;
-                req.body.err = "";            
-            } else {
-                req.body.err = "Incorrect Password";
-            }
+        if (results.rowCount === 0) {
+            return res.status(422).send("<div>uhoh not found dog</div>");
         }
-        
-    } catch (err) {
-        req.body.err = "Error comparing";
-    }
-    next();
+        const user = results.rows[0];
+        const hashedPassword = user.password;
+
+        const verified = await bcrypt.compare(password.value, hashedPassword);
+        if (!verified) return res.status(422).send("<div>hmm r u really sure this is u?</div>");
+
+        req.body.user = user;
+        next();
+    });
 }
 
 async function issueTokens(req, res) {
-    if (req.body.err) {//Failed to verify user.
-        res.send(req.body.err);
-        return;
-    } 
     //construct data to be serialized
     const user = {
         id: req.body.user.id,
@@ -135,33 +116,28 @@ async function issueTokens(req, res) {
     return res.send("User successfully logged in.");
 }
 
-async function authenticateToken(req, res, next) {
-    console.log("authing dog");
+function authenticateToken(req, res, next) {
     const accessToken = req.cookies.accessToken;
-    if (!accessToken) {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {//user not logged in
         return res.sendStatus(401);
-    }
+    } 
     //verify access token
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {//access token denied
-            const refreshToken = req.cookies.refreshToken;
-            if (!refreshToken) {//user not logged in
-                return res.status(401);
-            }
             //verify refresh token
             jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
                 if (err) {//refresh token denied
                     return res.status(401);
                 }
-                //issue new access token, grant access
+                //issue new access token
                 const newAccessToken = jwt.sign({user: user}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"});
                 res.cookie('accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
-                return next();
+
             });
-        } else {//access token valid, grant acess
-            req.user = user;
-            return next();
-        }
+        }//grant acess
+        req.user = user;
+        return next();
     });
 }
 

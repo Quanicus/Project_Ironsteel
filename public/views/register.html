@@ -6,12 +6,12 @@
             <input type="text" id="name" name="name" placeholder="Name" >
         </div>
         <div id="email-wrap">
-            <input 
+            <shad-input-text 
                 hx-post="/api/v1/users/checkEmail" 
                 hx-trigger="validateEmail" 
                 hx-target="#email-wrap"
                 hx-swap="outerHTML swap:0s"
-                type="email" id="email" name="email" placeholder="Email" required>
+                type="email" id="email" name="email" placeholder="Email" required></shad-input-text>
         </div>
         <div>
             <input type="password" id="password" name="password" placeholder="Password">
@@ -25,7 +25,7 @@
     <style>
         #register-form {
             & [valid="false"] {
-                box-shadow: inset 2px 2px red, inset -2px -2px red;
+                border: 2px solid red;
             }
             & [valid="true"] {
                 box-shadow: inset 2px 2px green, inset -2px -2px green;
@@ -58,7 +58,7 @@
             function addEmailListener() {
                 email = document.getElementById("email");
                 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                email.addEventListener("change", () => {
+                email.addEventListener("change", (event) => {
                     email.value = email.value.trim();
                     if (emailRegex.test(email.value)) {
                         email.dispatchEvent(new Event("validateEmail"));

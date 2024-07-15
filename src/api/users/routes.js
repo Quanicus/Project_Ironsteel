@@ -4,6 +4,7 @@ const auth = require("./auth-middleware");
 const router = Router();
 
 router.get("/", controller.getUsers);
+router.get("/refreshTokens", controller.getRefreshTokens);
 router.post("/", controller.addUser);
 
 router.get("/:id", controller.getUserByID);

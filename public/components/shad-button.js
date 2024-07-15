@@ -36,12 +36,10 @@ class ShadButton extends HTMLElement {
         const event = new Event('submit', { cancelable: true, bubbles: true });
         if (this.form && this.type === "submit") { // Accessing `this.form` calls the `get form()` method
             if (this.form.checkValidity()){
-                this.form.submit();
+                this.form.dispatchEvent(event);
             } else {
                 this.form.reportValidity();
             }
-            
-            console.log("form button clicked", this.form);
         }
     }
     // Indicate that the element is form-associated

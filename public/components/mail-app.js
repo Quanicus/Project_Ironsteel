@@ -362,7 +362,6 @@ class MailApp extends HTMLElement {
         const navEntry = event.detail;
         const title = this.preview.querySelector(".header .title");
         title.textContent = navEntry.querySelector(".name").textContent;
-        console.log(title);
     }
     handleMessageSelection = (event) => {
         //this.display.querySelector(".cover").style.transform = "translateX(100%)";

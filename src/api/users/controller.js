@@ -22,8 +22,8 @@ const addUser = async (req, res) => {
     password.value = await bcrypt.hash(password.value, 10);
     pool.query(queries.addUser, [name.value, email.value, password.value], (error, results) => {
         if (error) {
-        console.log("Failed to add user: ", error);
-        return res.status(409).send("unable to add new user");
+            console.error("Failed to add user: ", error);
+            return res.status(409).send("unable to add new user");
         }
         
         const filePath = path.join(__dirname, "../../..", "public", "views", "login.html");
@@ -31,6 +31,7 @@ const addUser = async (req, res) => {
     }) 
 
 }
+
 const updateUser = (req, res) => {
     const id = parseInt(req.params.id);
 
@@ -45,24 +46,32 @@ const updateUser = (req, res) => {
         });
     })
 }
+
 const deleteUser = (req, res) => {
     const id = parseInt(req.params.id);
-    pool.query(queries.getUserByID, [id], (error, results) => {
-        if (results.rows.length <= 0) {
-            res.send("user does not exist");
+    pool.query(queries.deleteUser, [id], (error, results) => {
+        if (error) {
+            console.error("Error deleting user.", error);
+            return res.status(500).send("Error deleting user by id");
         }
-
-        pool.query(queries.deleteUser, [id], (error, results) => {
-            if (error) throw error;
-            res.status(200).send("user deleted into the shadow realm");
-        });
-    })
+        if (results.rowCount === 0) {
+            return res.status(404).json({ error: "Not found", message: "User id not found"});
+        } else {
+            return res.status(204).send();
+        }
+    });
+   
 }
+
 const getUserByID = (req, res) => {
     const id = parseInt(req.params.id);
     pool.query(queries.getUserByID, [id], (error, results) => {
-        if (error) throw error;
-        res.status(200).json(results.rows);
+        if (error) {
+            console.error("Error querying user by id.", error);
+        };
+        if (results.rowCount === 0) {
+            return res.status(404).json()
+        }
     });
 }
 const checkEmailForm = (req, res) => {
@@ -90,6 +99,12 @@ const checkEmailForm = (req, res) => {
         `);
     });
 }
+getRefreshTokens = (req, res) => {
+    pool.query("SELECT * FROM refresh_tokens", (error, results) => {
+        if (error) throw error;
+        res.status(200).json(results.rows);
+    });
+}
 const authenticate = (req, res) => {
     return res.status(200).json({message: "Token authenticated"});
 }
@@ -102,4 +117,5 @@ module.exports = {
     updateUser,
     checkEmailForm,
     authenticate,
+    getRefreshTokens
 };

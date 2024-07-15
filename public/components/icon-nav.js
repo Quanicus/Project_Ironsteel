@@ -185,7 +185,6 @@ class IconNav extends HTMLElement {
     disengageMouse = (event) => {
         document.body.style.userSelect = "";
         document.body.style.cursor = "";
-        this.resizeHandle.style.cursor = "";
         document.removeEventListener("mousemove", this.resize);
     };
 }

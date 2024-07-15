@@ -65,7 +65,6 @@ class TabDisplay extends HTMLElement {
     connectedCallback() {
         document.addEventListener("DOMContentLoaded", () => {
             const pages = this.querySelectorAll("section");
-            console.log("loaded");
             pages.forEach((page, index) => {
                 const tabName = page.getAttribute("data-tab-name") ?? `Tab ${index + 1}`;
                 const tab = document.createElement("button");
