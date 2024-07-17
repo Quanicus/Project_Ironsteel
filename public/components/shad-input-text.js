@@ -14,17 +14,10 @@ template.innerHTML = `
         :host([type]) {
             width: 150px;
         }
-        input {
-            all: unset;
-            position: relative;
-            width: 100%;
-            height: 100%;
-
-            &::selection {
-                background: transparent;
+        :host([type="password"]) {
+            & input {
+                letter-spacing: 5px;
             }
-            background: transparent;
-            color: transparent;
         }
         .text-display {
             position: absolute;
@@ -42,9 +35,10 @@ template.innerHTML = `
 
             & span {
                 position: relative;
+                animation: drop-in .2s forwards;
+                flex-shrink: 0;
 
                 .active &.caret::after {
-                    
                     content: '';
                     position: absolute;
                     left: 0;
@@ -57,6 +51,13 @@ template.innerHTML = `
                     background-color: yellow;
                 }
             }
+            
+        }
+        @keyframes drop-in {
+            from {
+                transform: translateY(-.5rem);
+                opacity: 0;
+            }
         }
         @keyframes blink {
             from, to {
@@ -66,6 +67,19 @@ template.innerHTML = `
                 visibility: visible;
             }
         }
+        input {
+            all: unset;
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            &::selection {
+                background: transparent;
+            }
+            background: transparent;
+            color: transparent;
+        }
+
     </style>
     <input spellcheck="false"/>
     <div class="text-display"></div>
@@ -216,7 +230,6 @@ class ShadInputText extends HTMLElement {
         switch (event.inputType){
             case "insertText":
                 const text = event.data;
-                //console.log(text);
                 //add inserted text into container starting at start
                 display.insertBefore(this.makeCharCard(text),this.caretElement);
                 
@@ -286,6 +299,9 @@ class ShadInputText extends HTMLElement {
 
     initCaret() {
         const caret = this.makeCharCard();
+        if (this.getAttribute("type") === "password") {
+            caret.innerHTML = "&nbsp;";
+        }
         caret.classList.add("caret");
         this.display.appendChild(caret);
         return caret;
@@ -294,6 +310,13 @@ class ShadInputText extends HTMLElement {
     makeCharCard(char) {
         if (!char || char == " ") {
             char = "&nbsp;";
+        }
+        if (this.getAttribute("type") === "password") {
+            char = `<svg fill="#ffffff" width="10" height="10" viewBox="0 0 36 36" version="1.1"  preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <title>shield-solid</title>
+            <path d="M31.25,7.4a43.79,43.79,0,0,1-6.62-2.35,45,45,0,0,1-6.08-3.21L18,1.5l-.54.35a45,45,0,0,1-6.08,3.21A43.79,43.79,0,0,1,4.75,7.4L4,7.59v8.34c0,13.39,13.53,18.4,13.66,18.45l.34.12.34-.12c.14,0,13.66-5.05,13.66-18.45V7.59Z" class="clr-i-solid clr-i-solid-path-1"></path>
+            <rect x="0" y="0" width="36" height="36" fill-opacity="0"/>
+            </svg>`
         }
         
         const card = document.createElement("span");
@@ -314,6 +337,7 @@ class ShadInputText extends HTMLElement {
             }
         }
     }
+
     // Form-related methods
     formAssociatedCallback(form) {
         // Called when the element is associated with a form
@@ -336,3 +360,8 @@ class ShadInputText extends HTMLElement {
     }
 }
 customElements.define("shad-input-text", ShadInputText);
+
+const shieldTemplate = document.createElement("template");
+shieldTemplate.innerHTML = `
+
+`;
