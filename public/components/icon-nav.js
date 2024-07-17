@@ -1,8 +1,12 @@
 const template = document.createElement("template");
 template.innerHTML = `
     <style>
-        :host  {
+        * {
             box-sizing: border-box;
+            scrollbar-width: none;
+        }
+        :host  {
+            
             position: relative;
             border: 1px solid #303030;
             height: 100%;

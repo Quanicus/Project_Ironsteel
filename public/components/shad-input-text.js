@@ -7,7 +7,7 @@ template.innerHTML = `
         :host {
             position: relative;
             display: block;
-            font-size: 12px;
+            font-size: 14px;
             padding: .5rem;
             cursor: text;
         }
@@ -19,7 +19,12 @@ template.innerHTML = `
             position: relative;
             width: 100%;
             height: 100%;
-            z-index: 2;
+
+            &::selection {
+                background: transparent;
+            }
+            background: transparent;
+            color: transparent;
         }
         .text-display {
             position: absolute;
@@ -33,13 +38,38 @@ template.innerHTML = `
             width: 100%;
             height: 100%;
             background-color: grey;
-            overflow: auto;
+            overflow-x: scroll;
+
+            & span {
+                position: relative;
+
+                .active &.caret::after {
+                    
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    width: 1px;
+                    height: 100%;
+                    background-color: gold;
+                    animation: blink 1s step-end infinite;
+                }
+                &.selected {
+                    background-color: yellow;
+                }
+            }
+        }
+        @keyframes blink {
+            from, to {
+                visibility: hidden;
+            }
+            50% {
+                visibility: visible;
+            }
         }
     </style>
-    <div class="text-display">
-        <span>j</span><span>f</span><span>&nbsp;</span><span>f</span><span>j</span><span>f</span>
-    </div>
-    <input/>
+    <input spellcheck="false"/>
+    <div class="text-display"></div>
+    
     
 `;
 class ShadInputText extends HTMLElement {
@@ -57,9 +87,16 @@ class ShadInputText extends HTMLElement {
 
         this.display = this.shadowRoot.querySelector(".text-display");
         this.input = this.shadowRoot.querySelector("input");
+        this.currentSelection = {
+            start: 0, 
+            end: 0,
+            isSelected: function(){return this.start !== this.end}
+        }
+        this.selectedCards = [];
+        this._caretElement = this.initCaret();
 
         this.addEventListener("click", () => this.input.focus());
-        this.bubbleEvents(['change', 'input', 'focus', 'blur']);
+        //this.bubbleEvents(['change', 'input', 'focus', 'blur']);
     }
 
     bubbleEvents(events) {
@@ -79,9 +116,20 @@ class ShadInputText extends HTMLElement {
             });
         });
     }
-    
+    get caretElement() { return this._caretElement; }
+    set caretElement(caret) {
+        if (this._caretElement === caret) return;
+        this._caretElement.classList.remove("caret");
+        console.log("attempting to add caret: ", caret);
+        if (caret) {
+            console.log("adding caret ", caret);
+            caret.classList.add("caret");
+        }
+        this._caretElement = caret;
+    }
+
     static get observedAttributes() {
-        return ['type', 'placeholder', 'disabled', 'required', 'maxlength', 'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus', 'name', 'size'];
+        return ['type', 'disabled', 'required', 'maxlength', 'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus', 'name', 'size'];
     }
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue !== newValue) {//mostly serves to initialize shadow input attributes
@@ -101,8 +149,12 @@ class ShadInputText extends HTMLElement {
         const input = this.input;
         this._internals.setValidity(input.validity, input.validationMessage);
         
-        this.tabIndex = this.getAttribute("tabindex") ?? "-1";
+        //this.tabIndex = this.getAttribute("tabindex") ?? "-1";
         this._proxyInput();
+        this.attachListeners();
+        this.display.splice = function(string) {
+
+        }
     }
 
     _proxyInput() {//getters and setters reroute to the shadow input
@@ -119,16 +171,76 @@ class ShadInputText extends HTMLElement {
                 configurable: true
             });
         });
-
-        input.addEventListener('input', this.updateInputValue);
-        input.addEventListener("paste", this.handlePaste);
-        // input.addEventListener('mouseup', this.captureSelection);
-        // input.addEventListener('mousemove', this.captureSelection);
-        // input.addEventListener('keyup', this.captureSelection);  
     }
-    updateInputValue = (event) => {
+    attachListeners() {
         const input = this.input;
-        if (input.value && !input.validity.valid) {
+        input.addEventListener("beforeinput", this.handleBeforeInput);
+        input.addEventListener('input', this.handleAfterInput);
+        input.addEventListener("scroll", this.syncScroll);
+        input.addEventListener("click", this.captureSelection);
+        input.addEventListener("mousedown", this.startSelecting);
+        input.addEventListener('mouseup', this.captureSelection);
+        input.addEventListener('keyup', this.captureSelection);
+        // input.addEventListener("paste", this.handlePaste);
+        
+        this.addEventListener("focus", () => {
+            console.log("custom focused");
+            this.display.classList.add("active");
+            this.input.style.zIndex = "2";
+        })
+        input.addEventListener("focus", () => {
+            console.log("shadow focused");
+        })
+        this.addEventListener("blur", () => {
+            console.log("custom blur");
+            this.display.classList.remove("active");
+            this.input.style.zIndex = "0";
+        })
+        input.addEventListener("blur", () => {
+            console.log("shadow blur");
+        })
+    }
+    handleBeforeInput = (event) => {
+        const display = this.display;
+        const input = this.input;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const selectedText = input.value.substring(start, end);
+
+        console.log("indicies before input: ", start, end);
+        //console.log(event.inputType);
+        if (selectedText) {
+            this.selectedCards.forEach(card => this.display.removeChild(card));
+            this.caretElement = this.display.children[start];
+        }
+        switch (event.inputType){
+            case "insertText":
+                const text = event.data;
+                //console.log(text);
+                //add inserted text into container starting at start
+                display.insertBefore(this.makeCharCard(text),this.caretElement);
+                
+                break;
+            case "deleteContentBackward":
+                if (!selectedText) {
+                    //remove charCards[start - 1]
+                    display.removeChild(display.children[start - 1]);    
+                }
+                break;
+            case "insertFromPaste":
+                //add pasted text to display container
+                const pasteText = event.data;
+                break;
+        }
+    }
+    handleAfterInput = (event) => {
+       
+        const input = this.input;
+        if (input.value.length !== this.display.childElementCount - 1) {
+            this.display.replaceChildren(...this.syncInput());
+        }
+        //console.log(input.value);
+        if (input.type === "email" && input.value && !input.validity.valid) {
             input.setCustomValidity("Please enter a valid Email address.");
         } else {
             input.setCustomValidity("");
@@ -136,26 +248,72 @@ class ShadInputText extends HTMLElement {
         this._internals.setFormValue(input.value);
         this._internals.setValidity(input.validity, input.validationMessage);
         
-        // const insertedString = event.data;
-        // if (insertedString) {
-        //     console.log(insertedString);
-        // } else {
-        //     //chars deleted -> trim
-        // }
+        //console.log("caret after input: ", this.input.selectionStart);
+        //establish new caret position 
+        console.log("after input ", this.input.selectionStart);
+        // const newCaret = this.display.children[this.input.selectionStart];
+        // this.caretElement = newCaret;
+        console.log(this.caretElement);
+        //this.captureSelection();
     }
-    handlePaste = (event) => {
-        event.preventDefault();
-        const clipboardData = event.clipboardData || window.clipboardData;
-        const pastedText = clipboardData.getData("text");
-        //...          
+    syncScroll = () => {
+        this.display.scrollLeft = this.input.scrollLeft;
+    }
+    syncInput() {
+        const input = this.input.value;
+    }
+    startSelecting = (event) => {
+        const input = this.input;
+        input.addEventListener("mousemove", this.captureSelection);
+        document.addEventListener("mouseup", () => {
+            input.removeEventListener("mousemove", this.captureSelection);
+        })
     }
     captureSelection = (event) => {
-        const selectedText = window.getSelection().toString();
-        if (selectedText) {
-            console.log('Text highlighted:', selectedText);
+        const input = this.input;
+              
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        if (start !== end) {//if text selected
+            //this.caretElement.classList.remove("caret");
+            this.selectText(start, end);
+        } else if (start){
+            this.selectText();
+            //update caret position
+            this.caretElement = this.display.children[start]
         }
     }
+
+    initCaret() {
+        const caret = this.makeCharCard();
+        caret.classList.add("caret");
+        this.display.appendChild(caret);
+        return caret;
+    }
+
+    makeCharCard(char) {
+        if (!char || char == " ") {
+            char = "&nbsp;";
+        }
+        
+        const card = document.createElement("span");
+        card.classList.add("char-card");
+        card.innerHTML = char;
+        return card;
+    }
     
+    selectText(start, end) {
+        this.selectedCards = [];
+        const charCards = this.display.children;
+        for (let position = 0; position < charCards.length; position++) {
+            if (position >= start && position < end) {
+                charCards[position].classList.add("selected");
+                this.selectedCards.push(charCards[position]);
+            } else {
+                charCards[position].classList.remove("selected");
+            }
+        }
+    }
     // Form-related methods
     formAssociatedCallback(form) {
         // Called when the element is associated with a form
