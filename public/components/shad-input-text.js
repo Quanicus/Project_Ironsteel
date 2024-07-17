@@ -33,6 +33,9 @@ template.innerHTML = `
             background-color: grey;
             overflow-x: scroll;
 
+            &.active {
+                border-color: white;
+            }
             & span {
                 position: relative;
                 animation: drop-in .2s forwards;
@@ -51,7 +54,6 @@ template.innerHTML = `
                     background-color: yellow;
                 }
             }
-            
         }
         @keyframes drop-in {
             from {
@@ -61,10 +63,10 @@ template.innerHTML = `
         }
         @keyframes blink {
             from, to {
-                visibility: hidden;
+                visibility: visible;
             }
             50% {
-                visibility: visible;
+                visibility: hidden;
             }
         }
         input {
@@ -163,7 +165,7 @@ class ShadInputText extends HTMLElement {
         const input = this.input;
         this._internals.setValidity(input.validity, input.validationMessage);
         
-        //this.tabIndex = this.getAttribute("tabindex") ?? "-1";
+        this.tabIndex = this.getAttribute("tabindex") ?? "-1";
         this._proxyInput();
         this.attachListeners();
         this.display.splice = function(string) {
@@ -253,7 +255,7 @@ class ShadInputText extends HTMLElement {
             this.display.replaceChildren(...this.syncInput());
         }
         //console.log(input.value);
-        if (input.type === "email" && input.value && !input.validity.valid) {
+        if (this.getAttribute("type") === "email" && input.value && !input.validity.valid) {
             input.setCustomValidity("Please enter a valid Email address.");
         } else {
             input.setCustomValidity("");
@@ -360,8 +362,3 @@ class ShadInputText extends HTMLElement {
     }
 }
 customElements.define("shad-input-text", ShadInputText);
-
-const shieldTemplate = document.createElement("template");
-shieldTemplate.innerHTML = `
-
-`;
