@@ -3,7 +3,7 @@
     <div id="error-messages" hx-swap-oob="afterbegin"></div>
     <form hx-post="/api/v1/users/register" hx-swap="outerHTML swap:1.2s" hx-target="#new-user-form" id="register-form">
         <div>
-            <input type="text" id="name" name="name" placeholder="Name" >
+            <shad-input-text type="text" id="name" name="name" placeholder="Name" ></shad-input-text>
         </div>
         <div id="email-wrap">
             <shad-input-text 
@@ -14,13 +14,13 @@
                 type="email" id="email" name="email" placeholder="Email" required></shad-input-text>
         </div>
         <div>
-            <input type="password" id="password" name="password" placeholder="Password">
+            <shad-input-text type="password" id="password" name="password" placeholder="Password"></shad-input-text>
         </div>
         <div>
-            <input type="password" id="password-confirm" name="passwordConfirm" placeholder="Retype password">
+            <shad-input-text type="password" id="password-confirm" name="passwordConfirm" placeholder="Retype password"></shad-input-text>
         </div>
-        <button type="submit" id="submit-new-user-form" disabled>Submit</button>
-        <button hx-get="/views/login.html" hx-swap="outerHTML swap:1.2s" hx-target="#new-user-form" type="button">log in</button>
+        <shad-button type="submit" id="submit-new-user-form" disabled>Submit</shad-button>
+        <shad-button hx-get="/views/login.html" hx-swap="outerHTML swap:1.2s" hx-target="#new-user-form" type="button">log in</shad-button>
     </form>
     <style>
         #register-form {

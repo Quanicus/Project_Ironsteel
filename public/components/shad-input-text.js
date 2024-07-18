@@ -3,20 +3,89 @@ template.innerHTML = `
     <style>
         * {
             box-sizing: border-box;
+            scrollbar-width: none;
         }
         :host {
             position: relative;
             display: block;
-            font-size: 14px;
-            padding: .5rem;
+            font-size: 1rem;
             cursor: text;
+        }
+        :host(:focus) {
+            & .placeholder::after {
+                font-size: 0.65rem;
+                top: -0.65em;
+                color: white;
+                padding-inline: 0.3em;
+                transition-duration: 0.15s;
+            }
+            & .text-display {
+                border-color: white;
+                
+            }
+            & span{
+                &.caret::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    width: 1px;
+                    height: 100%;
+                    background-color: gold;
+                    animation: blink 1s step-end infinite;
+                }
+                &.selected {
+                    background-color: gold;
+                    color: black;
+                }
+            }
+            & input {
+                z-index: 2;
+            }
+        }
+        :host(:hover) {
+            & .placeholder::after {
+                
+            }
+            & .text-display {
+                border-color: white;
+            }
         }
         :host([type]) {
             width: 150px;
         }
         :host([type="password"]) {
             & input {
-                letter-spacing: 5px;
+                letter-spacing: 0.3rem;
+            }
+        }
+        .placeholder {
+            --placeholder: "default";
+            position: relative;
+            padding: .5rem;
+            height: 100%;
+            width: fit-content;
+
+            &::after {
+                content: var(--placeholder);
+                position: absolute;
+                font-size: 0.65rem;
+                top: -0.65em;
+                left: 1em;
+                color: gold;
+                background-color: black;
+                padding-inline: 0.3em;
+                transition-property: top, font-size;
+                transition-duration: 0.15s;
+                transition-timing-function: ease-in;
+            }     
+        }
+        .placeholder.empty {
+            &::after {
+                top: 0.5rem;
+                border-radius: 50%;
+                transition-duration: 0.25s;
+                font-size: 1rem;
+                color: white;
             }
         }
         .text-display {
@@ -30,35 +99,26 @@ template.innerHTML = `
             border-radius: 5px;
             width: 100%;
             height: 100%;
-            background-color: grey;
+            background-color: black;
             overflow-x: scroll;
 
-            &.active {
-                border-color: white;
-            }
             & span {
                 position: relative;
-                animation: drop-in .2s forwards;
+                animation: drop-in .35s forwards;
                 flex-shrink: 0;
-
-                .active &.caret::after {
-                    content: '';
-                    position: absolute;
-                    left: 0;
-                    width: 1px;
-                    height: 100%;
-                    background-color: gold;
-                    animation: blink 1s step-end infinite;
-                }
-                &.selected {
-                    background-color: yellow;
-                }
             }
         }
         @keyframes drop-in {
-            from {
-                transform: translateY(-.5rem);
-                opacity: 0;
+            0%, 35% {
+                transform: translateY(0);
+                opacity: 1;
+                color: gold;
+                
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+                color: white;
             }
         }
         @keyframes blink {
@@ -83,8 +143,10 @@ template.innerHTML = `
         }
 
     </style>
-    <input spellcheck="false"/>
-    <div class="text-display"></div>
+    <div class="placeholder">
+        <input spellcheck="false"/>
+        <div class="text-display"></div>
+    </div>
     
     
 `;
@@ -101,6 +163,7 @@ class ShadInputText extends HTMLElement {
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this._internals = this.attachInternals();
 
+        this.placeholder = this.shadowRoot.querySelector(".placeholder");
         this.display = this.shadowRoot.querySelector(".text-display");
         this.input = this.shadowRoot.querySelector("input");
         this.currentSelection = {
@@ -164,13 +227,12 @@ class ShadInputText extends HTMLElement {
     connectedCallback() {
         const input = this.input;
         this._internals.setValidity(input.validity, input.validationMessage);
-        
+        this.placeholder.classList.add("empty");
+        this.placeholder.style.setProperty("--placeholder", `"${this.getAttribute("type")}"`);
+        console.log("placeholding: ", this.placeholder);
         this.tabIndex = this.getAttribute("tabindex") ?? "-1";
         this._proxyInput();
         this.attachListeners();
-        this.display.splice = function(string) {
-
-        }
     }
 
     _proxyInput() {//getters and setters reroute to the shadow input
@@ -199,22 +261,6 @@ class ShadInputText extends HTMLElement {
         input.addEventListener('keyup', this.captureSelection);
         // input.addEventListener("paste", this.handlePaste);
         
-        this.addEventListener("focus", () => {
-            console.log("custom focused");
-            this.display.classList.add("active");
-            this.input.style.zIndex = "2";
-        })
-        input.addEventListener("focus", () => {
-            console.log("shadow focused");
-        })
-        this.addEventListener("blur", () => {
-            console.log("custom blur");
-            this.display.classList.remove("active");
-            this.input.style.zIndex = "0";
-        })
-        input.addEventListener("blur", () => {
-            console.log("shadow blur");
-        })
     }
     handleBeforeInput = (event) => {
         const display = this.display;
@@ -225,15 +271,15 @@ class ShadInputText extends HTMLElement {
 
         console.log("indicies before input: ", start, end);
         //console.log(event.inputType);
-        if (selectedText) {
+        if (selectedText) {//remove highlighted text
             this.selectedCards.forEach(card => this.display.removeChild(card));
             this.caretElement = this.display.children[start];
         }
         switch (event.inputType){
             case "insertText":
-                const text = event.data;
+                const char = event.data;
                 //add inserted text into container starting at start
-                display.insertBefore(this.makeCharCard(text),this.caretElement);
+                display.insertBefore(this.makeCharCard(char),this.caretElement);
                 
                 break;
             case "deleteContentBackward":
@@ -245,23 +291,34 @@ class ShadInputText extends HTMLElement {
             case "insertFromPaste":
                 //add pasted text to display container
                 const pasteText = event.data;
+                [...event.data].forEach(char => {
+                    display.insertBefore(this.makeCharCard(char),this.caretElement);
+                });
                 break;
         }
     }
     handleAfterInput = (event) => {
-       
+        const placeholder = this.shadowRoot.querySelector(".placeholder");
         const input = this.input;
         if (input.value.length !== this.display.childElementCount - 1) {
             this.display.replaceChildren(...this.syncInput());
         }
         //console.log(input.value);
-        if (this.getAttribute("type") === "email" && input.value && !input.validity.valid) {
-            input.setCustomValidity("Please enter a valid Email address.");
-        } else {
-            input.setCustomValidity("");
-        }
+        // if (this.getAttribute("type") === "email" && input.value && !input.validity.valid) {
+        //     input.setCustomValidity("Please enter a valid Email address.");
+        // } else {
+        //     input.setCustomValidity("");
+        // }
         this._internals.setFormValue(input.value);
         this._internals.setValidity(input.validity, input.validationMessage);
+
+        if (input.value.length === 0) {
+            placeholder.classList.add("empty");
+        } else {
+            console.log("removing empty");
+            console.log(placeholder.classList);
+            placeholder.classList.remove("empty");
+        }
         
         //console.log("caret after input: ", this.input.selectionStart);
         //establish new caret position 
