@@ -60,7 +60,7 @@ async function verifyCredentials(req, res, next) {
     if (!email || !password) {
         return res.status(422).send("<div>bad request dog. terrible even.</div>");
     }
-
+    console.log(email, password);
     pool.query(queries.getUserByEmail, [email.value], async (error, results) => {
         if (error) {
             console.error("Error querying user by id.", error);
