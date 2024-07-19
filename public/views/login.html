@@ -2,13 +2,15 @@
     <h1>log in here daddy</h1>
     <form id="login-form" hx-post="api/v1/users/login" hx-target="#form-container" hx-swap="outerHTML">
         <div id="email-wrap">
-            <shad-input-text type="email" id="email" name="email" placeholder="Email" required="true"></shad-input-text>
+            <shad-input-text type="email" id="email" name="email" placeholder="Email" required="true" tabindex="1"></shad-input-text>
         </div>
         <div>
-            <shad-input-text type="password" id="password" name="password" placeholder="Password" required="true"></shad-input-text>
+            <shad-input-text type="password" id="password" name="password" placeholder="Password" required="true" tabindex="2"></shad-input-text>
         </div>
-        <shad-button type="submit" id="submit-new-user-form">Submit</shad-button>
-        <shad-button hx-get="/views/register.html" hx-swap="outerHTML swap:1.2s" hx-target="#form-container" type="button">register</shad-button>
+        <div class="button-container">
+            <shad-button type="submit" id="submit-new-user-form" tabindex="3">Submit</shad-button>
+            <shad-button hx-get="/views/register.html" hx-swap="outerHTML swap:1.2s" hx-target="#form-container" type="button" tabindex="4">register</shad-button>
+        </div>
     </form>
     
     <script>
@@ -20,10 +22,18 @@
         }
     </script>
     <style>
+        #form-container {
+            max-width: 200px;
+        }
         #login-form {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
+        .button-container {
+            display: flex;
+            gap: 1rem;
+        }
+
     </style>
 </section>

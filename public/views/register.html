@@ -3,7 +3,7 @@
     <div id="error-messages" hx-swap-oob="afterbegin"></div>
     <form hx-post="/api/v1/users/register" hx-swap="outerHTML swap:1.2s" hx-target="#new-user-form" id="register-form">
         <div>
-            <shad-input-text type="text" id="name" name="name" placeholder="Name" ></shad-input-text>
+            <shad-input-text type="text" id="name" name="name" placeholder="Name" tabindex="1"></shad-input-text>
         </div>
         <div id="email-wrap">
             <shad-input-text 
@@ -11,16 +11,16 @@
                 hx-trigger="validateEmail" 
                 hx-target="#email-wrap"
                 hx-swap="outerHTML swap:0s"
-                type="email" id="email" name="email" placeholder="Email" required></shad-input-text>
+                type="email" id="email" name="email" placeholder="Email" required tabindex="2"></shad-input-text>
         </div>
         <div>
-            <shad-input-text type="password" id="password" name="password" placeholder="Password"></shad-input-text>
+            <shad-input-text type="password" id="password" name="password" placeholder="Password" tabindex="3"></shad-input-text>
         </div>
         <div>
-            <shad-input-text type="password" id="password-confirm" name="passwordConfirm" placeholder="Retype password"></shad-input-text>
+            <shad-input-text type="password" id="password-confirm" name="passwordConfirm" placeholder="Retype password" tabindex="4"></shad-input-text>
         </div>
-        <shad-button type="submit" id="submit-new-user-form" disabled>Submit</shad-button>
-        <shad-button hx-get="/views/login.html" hx-swap="outerHTML swap:1.2s" hx-target="#new-user-form" type="button">log in</shad-button>
+        <shad-button type="submit" id="submit-new-user-form" disabled tabindex="5">Submit</shad-button>
+        <shad-button hx-get="/views/login.html" hx-swap="outerHTML swap:1.2s" hx-target="#new-user-form" type="button" tabindex="6">log in</shad-button>
     </form>
     <style>
         #register-form {
@@ -48,7 +48,7 @@
                     //trigger submit button
                 } else {
                     name.setAttribute("valid", "false");
-                    name.rem
+                    //name.rem
                     submitButton.setAttribute("disabled", true);
                     //display error msg
                 }

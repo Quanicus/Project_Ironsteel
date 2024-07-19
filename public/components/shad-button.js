@@ -16,6 +16,11 @@ template.innerHTML = `
             border-color: #303030;
             color: #303030;
         }
+        :host([disabled]) {
+            background-color: grey;
+            cursor: auto;
+            pointer-events: none;
+        }
     </style>
     <slot></slot>
 `;
@@ -45,6 +50,9 @@ class ShadButton extends HTMLElement {
     // Indicate that the element is form-associated
     static get formAssociated() {
         return true;
+    }
+    get disabled() {
+        return this.hasAttribute("disabled");
     }
     // Get the form associated with this element
     get form() {
@@ -118,6 +126,7 @@ class ShadButton extends HTMLElement {
         this.dispatchEvent(clickEvent);
     }
     handleMouseIn = () => {
+        if (this.disabled) return;
         if (this.mousedown) {
             this.setColors(this.colorScheme.press);
         } else {

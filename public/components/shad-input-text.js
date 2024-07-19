@@ -10,6 +10,8 @@ template.innerHTML = `
             display: block;
             font-size: 1rem;
             cursor: text;
+            width: 100%;
+            max-width: 100%;
         }
         :host(:focus) {
             & .placeholder::after {
@@ -50,20 +52,18 @@ template.innerHTML = `
                 border-color: white;
             }
         }
-        :host([type]) {
-            width: 150px;
-        }
         :host([type="password"]) {
             & input {
-                letter-spacing: 0.3rem;
+                letter-spacin: 0.2em;
             }
         }
         .placeholder {
             --placeholder: "default";
             position: relative;
-            padding: .5rem;
+            padding: 0.5em;
             height: 100%;
-            width: fit-content;
+            width: 100%;
+            background-color: black;
 
             &::after {
                 content: var(--placeholder);
@@ -72,7 +72,7 @@ template.innerHTML = `
                 top: -0.65em;
                 left: 1em;
                 color: gold;
-                background-color: black;
+                background-color: inherit;
                 padding-inline: 0.3em;
                 transition-property: top, font-size;
                 transition-duration: 0.15s;
@@ -173,9 +173,10 @@ class ShadInputText extends HTMLElement {
         }
         this.selectedCards = [];
         this._caretElement = this.initCaret();
+        this.patternErrorMsg = "";
 
-        this.addEventListener("click", () => this.input.focus());
-        //this.bubbleEvents(['change', 'input', 'focus', 'blur']);
+        this.bubbleEvents(['change']);
+        //, 'input', 'focus', 'blur'
     }
 
     bubbleEvents(events) {
@@ -199,9 +200,7 @@ class ShadInputText extends HTMLElement {
     set caretElement(caret) {
         if (this._caretElement === caret) return;
         this._caretElement.classList.remove("caret");
-        console.log("attempting to add caret: ", caret);
         if (caret) {
-            console.log("adding caret ", caret);
             caret.classList.add("caret");
         }
         this._caretElement = caret;
@@ -228,9 +227,9 @@ class ShadInputText extends HTMLElement {
         const input = this.input;
         this._internals.setValidity(input.validity, input.validationMessage);
         this.placeholder.classList.add("empty");
-        this.placeholder.style.setProperty("--placeholder", `"${this.getAttribute("type")}"`);
-        console.log("placeholding: ", this.placeholder);
+        this.placeholder.style.setProperty("--placeholder", `"${this.getAttribute("placeholder")}"`);
         this.tabIndex = this.getAttribute("tabindex") ?? "-1";
+        this.patternErrorMsg = this.getAttribute("pattern-error") ?? "";
         this._proxyInput();
         this.attachListeners();
     }
@@ -259,6 +258,8 @@ class ShadInputText extends HTMLElement {
         input.addEventListener("mousedown", this.startSelecting);
         input.addEventListener('mouseup', this.captureSelection);
         input.addEventListener('keyup', this.captureSelection);
+        this.addEventListener("focus", () => this.input.focus());
+        this.addEventListener("input", () => console.log("custom element inputted"));
         // input.addEventListener("paste", this.handlePaste);
         
     }
@@ -269,8 +270,6 @@ class ShadInputText extends HTMLElement {
         const end = input.selectionEnd;
         const selectedText = input.value.substring(start, end);
 
-        console.log("indicies before input: ", start, end);
-        //console.log(event.inputType);
         if (selectedText) {//remove highlighted text
             this.selectedCards.forEach(card => this.display.removeChild(card));
             this.caretElement = this.display.children[start];
@@ -309,30 +308,22 @@ class ShadInputText extends HTMLElement {
         // } else {
         //     input.setCustomValidity("");
         // }
+        if (this.input.validity.patternMismatch && this.getAttribute("type") === "email") {
+            input.setCustomValidity("Please use a valid email format.");
+        } else {
+            input.setCustomValidity("");
+        }
         this._internals.setFormValue(input.value);
         this._internals.setValidity(input.validity, input.validationMessage);
 
         if (input.value.length === 0) {
             placeholder.classList.add("empty");
         } else {
-            console.log("removing empty");
-            console.log(placeholder.classList);
             placeholder.classList.remove("empty");
         }
-        
-        //console.log("caret after input: ", this.input.selectionStart);
-        //establish new caret position 
-        console.log("after input ", this.input.selectionStart);
-        // const newCaret = this.display.children[this.input.selectionStart];
-        // this.caretElement = newCaret;
-        console.log(this.caretElement);
-        //this.captureSelection();
     }
     syncScroll = () => {
         this.display.scrollLeft = this.input.scrollLeft;
-    }
-    syncInput() {
-        const input = this.input.value;
     }
     startSelecting = (event) => {
         const input = this.input;
@@ -371,7 +362,7 @@ class ShadInputText extends HTMLElement {
             char = "&nbsp;";
         }
         if (this.getAttribute("type") === "password") {
-            char = `<svg fill="#ffffff" width="10" height="10" viewBox="0 0 36 36" version="1.1"  preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            char = `<svg fill="currentcolor" width="8" height="8" viewBox="0 0 36 36" version="1.1"  preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <title>shield-solid</title>
             <path d="M31.25,7.4a43.79,43.79,0,0,1-6.62-2.35,45,45,0,0,1-6.08-3.21L18,1.5l-.54.35a45,45,0,0,1-6.08,3.21A43.79,43.79,0,0,1,4.75,7.4L4,7.59v8.34c0,13.39,13.53,18.4,13.66,18.45l.34.12.34-.12c.14,0,13.66-5.05,13.66-18.45V7.59Z" class="clr-i-solid clr-i-solid-path-1"></path>
             <rect x="0" y="0" width="36" height="36" fill-opacity="0"/>
