@@ -202,7 +202,6 @@ class HTMXModal extends HTMLElement {
         this.setLabel();
         this.setTarget();
         this.addHTMXListeners();
-        //htmx.process(this);
         htmx.process(this.shadowRoot);
     }
     setLabel() {
@@ -212,18 +211,28 @@ class HTMXModal extends HTMLElement {
     }
     setTarget() {
         //this.activateButton.setAttribute("hx-target", `.content-container`);
-        const id = this.getAttribute("id") ?? `htmx-modal-${HTMXModal.count++}`;
-        this.setAttribute("id", id);
+        let id = this.id || `htmx-modal-${HTMXModal.count++}`;
+        this.id = id;
         this.activateButton.setAttribute("hx-target", `global #${id}`);
 
         const url = this.getAttribute("data-url");
         if (!url) throw new Error("must provide a data-url to htmx-modal");
         this.activateButton.setAttribute("hx-get", url);
+    }    
+    activateButtons() {
+        this.closeButton.addEventListener('click', this.close);
+        this.activateButton.addEventListener("click", this.open);
     }
     addHTMXListeners() {
         this.addEventListener('htmx:beforeRequest', () => {
             this.viewContainer.setAttribute('active', 'preswap');
 
+        });        
+        this.addEventListener("htmx:afterRequest", (event) => {
+            const response = event.detail.xhr.response;
+            if (response === "User successfully logged in.") {         
+                this.closeButton.dispatchEvent(new Event("click"));
+            }
         });
         this.addEventListener('htmx:afterSwap', (event) => {
             const response = event.detail.xhr.response;
@@ -231,40 +240,20 @@ class HTMXModal extends HTMLElement {
                 this.viewContainer.setAttribute('active', 'postswap');
             }
         })
-        this.addEventListener("htmx:afterRequest", (event) => {
-            const response = event.detail.xhr.response;
-            if (response === "User successfully logged in.") {
-                
-                this.closeButton.dispatchEvent(new Event("click"));
-                setTimeout(() => {
-                    console.log("you made it in dog pop da boddles");
-                    eventBus.emit("activate-app");
-                }, 2300);
-            }
-        });
+    }
+    open = () => {
+        this.modalContainer.style.transform = "translateY(0)";
+        this.modalContainer.style.transitionDelay = "0s";
+        this.viewContainer.setAttribute('active', null);
+        this.contentContainer.setAttribute('active', null); 
+    }
+    close = () => {
+        this.removeAttribute('active');
+        this.viewContainer.removeAttribute('active');
+        this.contentContainer.removeAttribute('active');
+        this.modalContainer.style.transform = "translateY(-100%)";
+        this.modalContainer.style.transitionDelay = "1.8s";
     }
 
-    setupCloseButton() {
-        this.closeButton.addEventListener('click', () => {
-            this.removeAttribute('active');
-            this.viewContainer.removeAttribute('active');
-            this.contentContainer.removeAttribute('active');
-        });
-    }
-    activateButtons() {
-        this.closeButton.addEventListener('click', () => {
-            this.removeAttribute('active');
-            this.modalContainer.style.transform = "translateY(-100%)";
-            this.modalContainer.style.transitionDelay = "1.8s";
-            this.viewContainer.removeAttribute('active');
-            this.contentContainer.removeAttribute('active');
-        });
-        this.activateButton.addEventListener("click", () => {
-            this.modalContainer.style.transform = "translateY(0)";
-            this.modalContainer.style.transitionDelay = "0s";
-            this.viewContainer.setAttribute('active', null);
-            this.contentContainer.setAttribute('active', null); 
-        });
-    }
 }
 customElements.define('htmx-modal', HTMXModal);

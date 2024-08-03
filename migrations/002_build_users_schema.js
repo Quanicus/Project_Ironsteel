@@ -8,6 +8,10 @@ async function up(client) {
             password VARCHAR(255) NOT NULL
         );
     `);
+    await client.query(`
+        INSERT INTO users (name, email, password)
+        VALUES ('guest', 'guest', 'tacosasusage')
+    `);
     
     await client.query(`
         CREATE TABLE IF NOT EXISTS refresh_tokens(

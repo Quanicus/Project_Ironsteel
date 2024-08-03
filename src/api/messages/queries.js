@@ -1,7 +1,19 @@
 const getMessagesById = `
     SELECT *
-    FROM messages
-    WHERE from_user_id = $1 OR to_user_id = $1
+    FROM messages 
+    WHERE sender_id = $1 OR recipient_id = $1
+`;
+const getRecievedMessagesById = `
+    SELECT *
+    FROM messages JOIN users
+    ON messages.sender_id = users.id
+    WHERE recipient_id = $1
+`;
+const getSentMessagesById = `
+    SELECT *
+    FROM messages JOIN users
+    ON messages.recipient_id = users.id
+    WHERE sender_id = $1
 `;
 const sendMessage = `
     INSERT INTO messages (sender_id, recipient_id, subject, content)
@@ -10,5 +22,7 @@ const sendMessage = `
 
 module.exports = {
     getMessagesById,
+    getRecievedMessagesById,
+    getSentMessagesById,
     sendMessage
 }

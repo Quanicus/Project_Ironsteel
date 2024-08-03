@@ -39,7 +39,7 @@ template.innerHTML = `
                 }
             }
 
-            & .preview_window {
+            & .preview-window {
                 position: relative;
                 display: flex;
                 flex-direction: column;
@@ -146,9 +146,23 @@ template.innerHTML = `
 
                 overflow: scroll;
             }
-            .reply_container {
+            .message-form {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
                 padding: 1rem;
                 border-top: 1px solid #303030;
+                
+                & shad-input-text {
+                    display: none;
+                    .new-message & {
+                        display: block;
+                    }
+                }
+
+                &.new-mail {
+                    
+                }
 
                 & textarea {
                     width: 100%;
@@ -210,59 +224,70 @@ template.innerHTML = `
                 <div class="drop-down">c:</div>
             </div>
             <icon-nav>
-                <div data-name="Inbox">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-inbox mr-2 h-4 w-4">
-                        <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
-                        <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
-                    </svg>
-                </div>
-                <div data-name="Drafts">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file mr-2 h-4 w-4"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path></svg>
-                </div>
-                <div data-name="Sent">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send mr-2 h-4 w-4"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
-                </div>
-                <div data-name="Junk">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive-x mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="m9.5 17 5-5"></path><path d="m9.5 12 5 5"></path></svg>
-                </div>
-                <div data-name="Trash">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
-                </div>
-                <div data-name="Archive">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>
-                </div>
-                <div data-name="Social">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round mr-2 h-4 w-4"><path d="M18 21a8 8 0 0 0-16 0"></path><circle cx="10" cy="8" r="5"></circle><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"></path></svg>
-                </div>
-                <div data-name="Updates">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert mr-2 h-4 w-4"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
-                </div>
-                <div data-name="Forums">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square mr-2 h-4 w-4"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z"></path><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"></path></svg>
-                </div>
-                <div data-name="Shopping">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart mr-2 h-4 w-4"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
-                </div>
-                <div data-name="Promotions">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive mr-2 h-4 w-4"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>
-                </div>
+                <svg data-name="Inbox" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-inbox mr-2 h-4 w-4">
+                    <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+                    <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                </svg>
+                <svg data-name="Drafts" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file mr-2 h-4 w-4">
+                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                    <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                </svg>
+                <svg data-name="Sent" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send mr-2 h-4 w-4">
+                    <path d="m22 2-7 20-4-9-9-4Z"></path>
+                    <path d="M22 2 11 13"></path>
+                </svg>
+                <svg data-name="Junk" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive-x mr-2 h-4 w-4">
+                    <rect width="20" height="5" x="2" y="3" rx="1"></rect>
+                    <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path>
+                    <path d="m9.5 17 5-5"></path><path d="m9.5 12 5 5"></path>
+                </svg>  
+                <svg data-name="Trash" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                <line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line>
+                </svg>
+                <svg data-name="Archive" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive mr-2 h-4 w-4">
+                    <rect width="20" height="5" x="2" y="3" rx="1"></rect>
+                    <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path>
+                    <path d="M10 12h4"></path>
+                </svg>
+                <svg data-name="Social" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round mr-2 h-4 w-4">
+                    <path d="M18 21a8 8 0 0 0-16 0"></path>
+                    <circle cx="10" cy="8" r="5"></circle>
+                    <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"></path>
+                </svg>
+                <svg data-name="Updates" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert mr-2 h-4 w-4">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" x2="12" y1="8" y2="12"></line>
+                    <line x1="12" x2="12.01" y1="16" y2="16"></line>
+                </svg>      
+                <svg data-name="Forums" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square mr-2 h-4 w-4">
+                    <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z"></path>
+                    <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"></path>
+                </svg>        
+                <svg data-name="Shopping" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart mr-2 h-4 w-4">
+                    <circle cx="8" cy="21" r="1">
+                    </circle><circle cx="19" cy="21" r="1"></circle>
+                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+                </svg>
+                <svg data-name="Promotions" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive mr-2 h-4 w-4">
+                    <rect width="20" height="5" x="2" y="3" rx="1"></rect>
+                    <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path>
+                    <path d="M10 12h4"></path>
+                </svg>
+    
             </icon-nav>
         </div>
 
-        <div class="preview_window">
+        <div class="preview-window">
             <div class="header">
                 <span class="title"></span>
                 <div class="filter_options">sup</div>
             </div>
             <div class="content">
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="where's my money" data-name="Timmy">Hey you stop looking at me, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="i love you" data-name="Jimmy">I love your cookies, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="check out this hotdog" data-name="Ron">Wanna make out about it, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="vote for me" data-name="Gerald">sup punkboy, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="where's my money" data-name="Timmy">Hey you stop looking at me, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="i love you" data-name="Jimmy">I love your cookies, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-subject="check out this hotdog" data-name="Ron">Wanna make out about it, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-                
+                <message-preview data-timestamp="2023-01-01 14:45:30" data-reply-addr="guest" data-subject="where's my money" data-name="Timmy">Hey you stop looking at me, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
+                <message-preview data-timestamp="2023-01-01 14:45:30" data-reply-addr="jim@cob.bum" data-subject="i love you" data-name="Jimmy">I love your cookies, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
             </div>
             <div class="resize-handle">
                 <div class="handle-icon">
@@ -321,18 +346,26 @@ template.innerHTML = `
                     <span class="date">july 19, 1996</span>
                 </div>
                 <div class="subject">need a hand</div>
-                <div class="reply_address">jade@softhands.com</div>
+                <div class="reply-addr">jade@softhands.com</div>
             </div>
         </div>
         <div class="body"></div>
-        <div class="reply_container">
-            <textarea id="reply" placeholder="Type your message here..."></textarea>
+        <form class="message-form new-message" id="send-message-form" action="api/v1/messages/send" method="POST">
+            <shad-input-text id="reply-addr-field" name="replyAddr" placeholder="Recipient" value="guest"></shad-input-text>
+            <shad-input-text name="subject" placeholder="Subject" value="default"></shad-input-text>
+            <input type="hidden" name="msgId" id="msg-id" />
+            <input is="shad-input" type="text" id="shad-test" />
+            <shad-input-toggle type="checkbox" name="czechboz" value="chiggity">chig</shad-input-toggle>
+            <shad-input-toggle type="switch" name="czechboz" value="jiggity">jig</shad-input-toggle>
+            <shad-input-toggle type="radio" name="czechboz" value="rigatoni">toni</shad-input-toggle>
+            <shad-input-toggle type="radio" name="czechboz" value="bologna">boni</shad-input-toggle>
+            <shad-input-toggle type="radio" name="czechboz" value="bigaboni">foni</shad-input-toggle>
+            <textarea id="reply" name="content" placeholder="Type your message here..."></textarea>
             <div class="submit_container">
                 <shad-toggle data-label="Mute this thread"></shad-toggle>
-                <shad-button id="send_message">Send</shad-button>
+                <shad-button id="send_message" type="submit">Send</shad-button>
             </div>
-            
-        </div>
+        </form>
         <div class="cover"></div>
     </div>
 `;
@@ -341,39 +374,61 @@ class MailApp extends HTMLElement {
         super();
         const shadow = this.attachShadow({mode: "open"});
         shadow.appendChild(template.content.cloneNode(true));
-        this.resizeContainer = shadow.querySelector(".resize-container");
+
         this.navContainer = shadow.querySelector(".nav_container");
         this.nav = shadow.querySelector("icon-nav");
-        this.preview = shadow.querySelector(".preview_window");
         this.display = shadow.querySelector(".mail_display");
         this.handle = shadow.querySelector(".resize-handle");
         this.selectedMessage = null;
 
-        this.nav.addEventListener("nav-items-loaded", this.activateNav);
         this.addEventListener("nav-entry-selected", this.handleNavSelection);
-        this.addEventListener("message-preview-selected", this.handleMessageSelection);
     }
     connectedCallback() {
         this.activateHandle();
         this.activateReply();
-        //this.setMailDisplay();
+        this.activateReplyForm();
+        //this.getMessages();
+        this.activateMessagePreviews();
     }
     handleNavSelection = (event) => {
         const navEntry = event.detail;
-        const title = this.preview.querySelector(".header .title");
+        const title = this.shadowRoot.querySelector(".preview-window .header .title");
         title.textContent = navEntry.querySelector(".name").textContent;
+
+        if (title.textContent.toLowerCase() === "sent") {
+            this.getSentMessages();
+        }
     }
-    handleMessageSelection = (event) => {
-        //this.display.querySelector(".cover").style.transform = "translateX(100%)";
+    activateMessagePreviews() {
+        const container = this.shadowRoot.querySelector(".preview-window .content");
+        // for (const preview of container.children) {
+        //     preview.addEventListener("click", this.handlePreviewSelection);
+        // }
+        container.addEventListener("click", (event) => {
+            const message_preview = event.target
+            if (message_preview.tagName.toLowerCase() !== "message-preview") return;
+            this.display.querySelector(".cover").style.opacity = "0";
+
+            if (this.selectedMessage) {
+                this.selectedMessage.removeAttribute("active");
+            } 
+            this.selectedMessage = message_preview;
+            this.selectedMessage.setAttribute("active", true);
+            this.updateMessageDisplay(message_preview);
+            this.updateReplyForm(message_preview);
+        });
+    }
+    handlePreviewSelection = (event) => {
         this.display.querySelector(".cover").style.opacity = "0";
-        const message_preview = event.detail;
+        const message_preview = event.target;
         //console.log(message_preview);
         if (this.selectedMessage) {
             this.selectedMessage.removeAttribute("active");
         } 
         this.selectedMessage = message_preview;
-        this.selectedMessage.setAttribute("active", "");
+        this.selectedMessage.setAttribute("active", true);
         this.updateMessageDisplay(message_preview);
+        this.updateReplyForm(message_preview);
     }
     updateMessageDisplay(message) {
         const display = this.display;
@@ -382,18 +437,61 @@ class MailApp extends HTMLElement {
         display.querySelector(".name").textContent = name;
         display.querySelector(".body").textContent = message.textContent;
         display.querySelector(".subject").textContent = message.getAttribute("data-subject");
+        display.querySelector(".reply-addr").textContent = message.replyAddr;
         profileIcon.setAttribute("data-name", name);
         profileIcon.setInitials();
 
     }
-    setMailDisplay() {
-        const body = this.display.querySelector(".body");
-        body.style.maxHeight = `${body.clientHeight}px`;
-        this.display.style.maxHeight = `${this.display.clientHeight}px`;
+    updateReplyForm(message) {
+        const form = this.display.querySelector("#send-message-form");
+        form.querySelector("#reply-addr-field").value = message.replyAddr;
+        form.querySelector("#msg-id").value = message.msgId;
+    }
+    activateReplyForm() {
+        const form = this.display.querySelector("#send-message-form");
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            //const form = event.target;
+            //console.log(form.action, form.method);
+            const formData = new FormData(form);
+            const urlEncodedData = new URLSearchParams(formData).toString();
+            //console.log(form.body);
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`); // Logs all form values
+            }
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: urlEncodedData,
+                });
+
+                if (response.ok) {
+                    // Show feedback message
+                    //document.getElementById('feedback').style.display = 'block';
+
+                    // Clear the form fields after successful submission
+                    form.reset();
+
+                    // Optional: Hide feedback message after a few seconds
+                    // setTimeout(() => {
+                    //     document.getElementById('feedback').style.display = 'none';
+                    // }, 3000);
+                } else {
+                    // Handle errors
+                    alert('Failed to submit form');
+                }
+            } catch (error) {
+                // Handle network errors
+                alert('An error occurred while submitting the form');
+            }
+        });
     }
     activateHandle() {
-        const handle = this.handle;
-        handle.addEventListener("mousedown", (event) => {
+        this.handle.addEventListener("mousedown", (event) => {
             document.body.style.userSelect = "none";
             document.body.style.cursor = "ew-resize";
             this.handle.style.cursor = "ew-resize";
@@ -422,9 +520,9 @@ class MailApp extends HTMLElement {
         const containerDistanceFromLeft = event.clientX - containerRect.left;
         const containerDistanceFromRight = containerRect.right - event.clientX; 
 
-        //TODO: calculate min-content size of display header
+        const resizeContainer = this.shadowRoot.querySelector(".resize-container");
         if (containerDistanceFromRight > 312 && containerDistanceFromLeft > 350) {
-            this.resizeContainer.style.width = `${containerDistanceFromLeft}px`;
+            resizeContainer.style.width = `${containerDistanceFromLeft}px`;
             this.display.style.width = `${containerDistanceFromRight}px`;
         }  
     }
@@ -436,8 +534,41 @@ class MailApp extends HTMLElement {
         document.body.style.userSelect = "";
         document.removeEventListener("mousemove", this.resize);
     }
-    getMessages() {
-        fetch("")
+    fetchMessages(url) {
+        fetch(url)
+        .then(async (response) => {
+            console.log("back from sentMessages");
+            const container = this.shadowRoot.querySelector(".preview-window .content");
+            container.innerHTML = "";
+            const msgArray = await response.json();
+            console.log(msgArray[0]);
+            msgArray.forEach(msg => {
+                const msgPreview = document.createElement("message-preview");
+                msgPreview.setAttribute("data-name", msg.name);
+                msgPreview.setAttribute("data-subject", msg.subject);
+                msgPreview.setAttribute("data-reply-addr", msg.email);
+                msgPreview.textContent = msg.content;
+                container.appendChild(msgPreview);
+            });
+        }).catch(error => console.log(error));
+    }
+    getSentMessages() {
+        fetch("/api/v1/messages/sent")
+        .then(async (response) => {
+            console.log("back from sentMessages");
+            const container = this.shadowRoot.querySelector(".preview-window .content");
+            container.innerHTML = "";
+            const msgArray = await response.json();
+            console.log(msgArray[0]);
+            msgArray.forEach(msg => {
+                const msgPreview = document.createElement("message-preview");
+                msgPreview.setAttribute("data-name", msg.name);
+                msgPreview.setAttribute("data-subject", msg.subject);
+                msgPreview.setAttribute("data-reply-addr", msg.email);
+                msgPreview.textContent = msg.content;
+                container.appendChild(msgPreview);
+            });
+        }).catch(error => console.log(error));
     }
 }
 customElements.define("mail-app", MailApp);
@@ -513,24 +644,16 @@ class MessagePreview extends HTMLElement {
         this.name = shadow.querySelector(".name");
         this.subject = shadow.querySelector(".subject");
         this.date = shadow.querySelector(".date");
-
-        this.addEventListener("click", this.handleClick);
     }
     connectedCallback() {
         this.name.textContent = this.getAttribute("data-name");
         this.subject.textContent = this.getAttribute("data-subject");
+        this.replyAddr = this.getAttribute("data-reply-addr");
+        this.msgId = this.getAttribute("data-msg-id");
         this.setTimeAgo();
     }
     setTimeAgo() {
         this.date.textContent = "at some time";
-    }
-    handleClick = (event) => {
-        const clickEvent = new CustomEvent("message-preview-selected", {
-            detail: this,
-            bubbles: true,
-            composed: true
-        });
-        this.dispatchEvent(clickEvent);
     }
 }
 customElements.define("message-preview", MessagePreview);

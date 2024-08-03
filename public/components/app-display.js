@@ -45,36 +45,36 @@ class AppDisplay extends HTMLElement {
         
     }
     addListeners() {
-        eventBus.on("activate-app", async () => {
-            if (this.getAttribute("active") === "true") {
-                this.setAttribute("active", "false");
-                console.log("wtf");
-                //close connection
-                if (this.appIsLoaded) {
-                    this.app.closeWebSocket();
-                }
+        // eventBus.on("activate-app", async () => {
+        //     if (this.getAttribute("active") === "true") {
+        //         this.setAttribute("active", "false");
+        //         console.log("wtf");
+        //         //close connection
+        //         if (this.appIsLoaded) {
+        //             this.app.closeWebSocket();
+        //         }
                 
-            } else {
-                //authorize
-                fetch("/api/v1/users/authenticate", {method: "POST"})
-                .then(response => {
-                    if(!response.ok) {
-                        throw new Error("Authentication failed");
-                    }
-                    this.setAttribute("active", "true");
-                    return response.json();
-                })
-                .catch(error => {
-                    eventBus.emit("toggle-modal");
-                    return;
-                }); 
-                //open connection
-                if (this.appIsLoaded) {
-                    this.app.openWebSocket();
-                }
+        //     } else {
+        //         //authorize
+        //         fetch("/api/v1/users/authenticate", {method: "POST"})
+        //         .then(response => {
+        //             if(!response.ok) {
+        //                 throw new Error("Authentication failed");
+        //             }
+        //             this.setAttribute("active", "true");
+        //             return response.json();
+        //         })
+        //         .catch(error => {
+        //             eventBus.emit("toggle-modal");
+        //             return;
+        //         }); 
+        //         //open connection
+        //         if (this.appIsLoaded) {
+        //             this.app.openWebSocket();
+        //         }
                 
-            }
-        });
+        //     }
+        // });
     }
 
 }customElements.define("app-display", AppDisplay);

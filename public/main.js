@@ -3,9 +3,14 @@ import "./components/side-nav.js";
 import "./components/mail-app.js";
 import "./components/icon-nav.js";
 import "./components/profile-icon.js";
+import "./components/tab-display.js";
+
+
+import "./components/scroll-bar.js";
 import "./components/shad-toggle.js";
 import "./components/shad-button.js";
 import "./components/shad-input-text.js";
+import "./components/shad-input-toggle.js";
 import "./components/shad-tooltip.js";
 
 document.body.addEventListener('htmx:beforeSwap', function(evt) {

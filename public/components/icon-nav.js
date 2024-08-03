@@ -100,13 +100,11 @@ class IconNav extends HTMLElement {
         document.addEventListener("DOMContentLoaded", () => {
             this.setEntries();
             this.setListenersOnEntries();
-            this.dispatchEvent(new Event("nav-items-loaded"));
         });
         
     }
     setEntries() {
-        for (let entry of this.children) {
-            const svg = entry.querySelector("svg");
+        Array.from(this.children).forEach(entry => {  
             const navEntry = document.createElement("div");
             const data = document.createElement("span");
             const label = document.createElement("div");
@@ -123,7 +121,7 @@ class IconNav extends HTMLElement {
 
 
             label.append(name, data);
-            navEntry.append(svg, label);
+            navEntry.append(entry, label);
 
             this.entries.push(navEntry);
             this.container.appendChild(navEntry);
@@ -132,7 +130,7 @@ class IconNav extends HTMLElement {
             if (labelWidth > this.widthThreshold) {
                 this.widthThreshold = labelWidth;
             }
-        }
+        });
         if (this.entries.length > 0) {
             this.selectedEntry = this.entries[0];
             this.entries[0].setAttribute("selected", true);

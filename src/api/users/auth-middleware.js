@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const pool = require("../../../db");
 const queries = require("./queries");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 
 function validateCredentials(req, res, next) {
     const { name, email, password, passwordConfirm } = req.body;
@@ -45,7 +46,9 @@ function validateCredentials(req, res, next) {
     }
 
     if (Object.keys(errors).length > 0) {
-        return res.status(400).json(errors);
+        console.log(errors);
+        const filePath = path.join(__dirname, "../../..", "public", "views", "login.html");
+        return res.status(422).sendFile(filePath);
     }
 
     next();
@@ -111,33 +114,39 @@ async function issueTokens(req, res) {
         } else {
             throw error;
         }
+        const filePath = path.join(__dirname, "../../..", "public", "views", "login.html");
+        return res.status(422).sendFile(filePath);
     }
-
-    return res.send("User successfully logged in.");
+    return res.status(200).send("User successfully logged in.");
 }
 
 function authenticateToken(req, res, next) {
     const accessToken = req.cookies.accessToken;
     const refreshToken = req.cookies.refreshToken;
+    req.user = null;
     if (!refreshToken) {//user not logged in
-        return res.sendStatus(401);
+        req.isGuest = true;
+        return next();
     } 
-    //verify access token
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {//access token denied
-            //verify refresh token
             jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
                 if (err) {//refresh token denied
-                    return res.status(401);
+                    req.isGuest = true;
+                    return next();
+                } else { //issue new access token
+                    delete user.iat;
+                    delete user.exp;
+                    const newAccessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"});
+                    res.cookie('accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+                    req.user = user;
+                    return next();
                 }
-                //issue new access token
-                const newAccessToken = jwt.sign({user: user}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"});
-                res.cookie('accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
-
             });
-        }//grant acess
-        req.user = user;
-        return next();
+        } else {//grant access
+            req.user = user;
+            return next();
+        }
     });
 }
 

@@ -17,7 +17,7 @@ template.innerHTML = `
             & .placeholder::after {
                 font-size: 0.65rem;
                 top: -0.65em;
-                color: white;
+                color: gold;
                 padding-inline: 0.3em;
                 transition-duration: 0.15s;
             }
@@ -135,13 +135,8 @@ template.innerHTML = `
             width: 100%;
             height: 100%;
 
-            &::selection {
-                background: transparent;
-            }
-            background: transparent;
-            color: transparent;
+            opacity: 0;
         }
-
     </style>
     <div class="placeholder">
         <input spellcheck="false"/>
@@ -150,8 +145,8 @@ template.innerHTML = `
     
     
 `;
+//pattern-error
 class ShadInputText extends HTMLElement {
-
     static formAssociated = true;
     //static emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
     static emailRegex = "^[^@]+@[^@]+\.[^@]+$";
@@ -159,26 +154,59 @@ class ShadInputText extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
-        this._internals = this.attachInternals();
+        this.attachShadow({ mode: "open", delegatesFocus: true }).
+        appendChild(template.content.cloneNode(true));
 
-        this.placeholder = this.shadowRoot.querySelector(".placeholder");
+        this._internals = this.attachInternals();
+        
+
         this.display = this.shadowRoot.querySelector(".text-display");
         this.input = this.shadowRoot.querySelector("input");
-        this.currentSelection = {
-            start: 0, 
-            end: 0,
-            isSelected: function(){return this.start !== this.end}
-        }
-        this.selectedCards = [];
-        this._caretElement = this.initCaret();
-        this.patternErrorMsg = "";
 
+        this.selectedCards = [];
+        
         this.bubbleEvents(['change']);
         //, 'input', 'focus', 'blur'
+        this.attachListeners();
+    }    
+    static get observedAttributes() {
+        return ["value", 'type', 'disabled', 'required', 'maxlength', 'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus', 'name', 'size'];
     }
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue === newValue) return;//mostly serves to initialize shadow input attributes
+        switch(name) {
+            case "type":
+                if (!ShadInputText.inputTypes.includes(newValue)) {
+                    throw new Error("shad-input-text can only be of types:", ShadInputText.inputTypes);
+                } else if (newValue === "email") {
+                    this.input.pattern = ShadInputText.emailRegex
+                    newValue = "text";    
+                }
+                this.input.type = newValue;
+                break;
+            case "value":
+                this.input.value = newValue;
+                this.input.dispatchEvent(new Event("input"));
+                break;
+            default:
+                this.input[name] = newValue;
+        }
+    }
+    connectedCallback() {        
+        this._proxyInput();
+        this._internals.setFormValue(this.value);
+        this._internals.setValidity(this.input.validity, this.input.validationMessage, this.input);
+        
+        this.tabIndex = this.getAttribute("tabindex") ?? "0";
+        this.input.tabIndex = this.tabIndex;
+        this.initialValue = this.value;
+        console.log("initial value: ", this.value);
+        
+        this.setPlaceholder();
+        this.initCaret();
 
+        // this.attachListeners();
+    }
     bubbleEvents(events) {
         events.forEach(eventName => {
             this.input.addEventListener(eventName, (originalEvent) => {
@@ -196,6 +224,42 @@ class ShadInputText extends HTMLElement {
             });
         });
     }
+    attachListeners() {
+        const input = this.input;
+        input.addEventListener("beforeinput", this.handleBeforeInput);
+        input.addEventListener('input', this.handleAfterInput);
+        input.addEventListener("scroll", this.syncScroll);
+        input.addEventListener("mousedown", this.startSelecting);
+        input.addEventListener('mouseup', this.captureSelection);
+        input.addEventListener("click", this.captureSelection);
+        input.addEventListener('keyup', this.captureSelection);
+        //this.addEventListener("focus", () => this.input.focus());
+        //this.addEventListener("input", () => console.log("custom element inputted"));
+        // input.addEventListener("paste", this.handlePaste);
+        
+    }
+    _proxyInput() {//getters and setters reroute to the shadow input
+        const input = this.shadowRoot.querySelector("input");
+        const propsToBind = ["value", 'placeholder', 'disabled', 'required', 'maxlength',
+            'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus',
+            'name', 'size',];
+
+        propsToBind.forEach(prop => {
+            Object.defineProperty(this, prop, {
+                get: () => input[prop],
+                set: (newValue) => {
+                    input[prop] = newValue;
+                    
+                    if (prop === "value") {
+                        this.input.dispatchEvent(new Event("input"));
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
+        });
+    }
+    get value() { return this.input.value };
     get caretElement() { return this._caretElement; }
     set caretElement(caret) {
         if (this._caretElement === caret) return;
@@ -205,64 +269,7 @@ class ShadInputText extends HTMLElement {
         }
         this._caretElement = caret;
     }
-
-    static get observedAttributes() {
-        return ['type', 'disabled', 'required', 'maxlength', 'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus', 'name', 'size'];
-    }
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue) {//mostly serves to initialize shadow input attributes
-            if (name === "type") {
-                if (!ShadInputText.inputTypes.includes(newValue)) {
-                    throw new Error("shad-input-text can only be of types:", ShadInputText.inputTypes);
-                } else if (newValue === "email") {
-                    this.input.pattern = ShadInputText.emailRegex
-                    newValue = "text";
-                }
-            } 
-            this.input[name] = newValue;
-        }
-    }
-
-    connectedCallback() {
-        const input = this.input;
-        this._internals.setValidity(input.validity, input.validationMessage);
-        this.placeholder.classList.add("empty");
-        this.placeholder.style.setProperty("--placeholder", `"${this.getAttribute("placeholder")}"`);
-        this.tabIndex = this.getAttribute("tabindex") ?? "-1";
-        this.patternErrorMsg = this.getAttribute("pattern-error") ?? "";
-        this._proxyInput();
-        this.attachListeners();
-    }
-
-    _proxyInput() {//getters and setters reroute to the shadow input
-        const input = this.input;
-        const propsToBind = ['value', 'placeholder', 'disabled', 'required', 'maxlength',
-            'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus',
-            'name', 'size',];
-
-        propsToBind.forEach(prop => {
-            Object.defineProperty(this, prop, {
-                get: () => input[prop],
-                set: (newValue) => input[prop] = newValue,
-                enumerable: true,
-                configurable: true
-            });
-        });
-    }
-    attachListeners() {
-        const input = this.input;
-        input.addEventListener("beforeinput", this.handleBeforeInput);
-        input.addEventListener('input', this.handleAfterInput);
-        input.addEventListener("scroll", this.syncScroll);
-        input.addEventListener("click", this.captureSelection);
-        input.addEventListener("mousedown", this.startSelecting);
-        input.addEventListener('mouseup', this.captureSelection);
-        input.addEventListener('keyup', this.captureSelection);
-        this.addEventListener("focus", () => this.input.focus());
-        this.addEventListener("input", () => console.log("custom element inputted"));
-        // input.addEventListener("paste", this.handlePaste);
-        
-    }
+    //HANDANDLERS
     handleBeforeInput = (event) => {
         const display = this.display;
         const input = this.input;
@@ -299,28 +306,34 @@ class ShadInputText extends HTMLElement {
     handleAfterInput = (event) => {
         const placeholder = this.shadowRoot.querySelector(".placeholder");
         const input = this.input;
-        if (input.value.length !== this.display.childElementCount - 1) {
-            this.display.replaceChildren(...this.syncInput());
+        if (this.value.length !== this.display.childElementCount - 1) {
+            //console.log("syncing...");
+            this.syncInput();
         }
-        //console.log(input.value);
-        // if (this.getAttribute("type") === "email" && input.value && !input.validity.valid) {
-        //     input.setCustomValidity("Please enter a valid Email address.");
-        // } else {
-        //     input.setCustomValidity("");
-        // }
-        if (this.input.validity.patternMismatch && this.getAttribute("type") === "email") {
-            input.setCustomValidity("Please use a valid email format.");
+        const patternErrorMsg = this.getAttribute("pattern-error") ?? "";
+        if (this.input.validity.patternMismatch) {
+            const msg = (this.getAttribute("type") === "email") 
+                        ? "Please use a valid email format." 
+                        : patternErrorMsg;
+            input.setCustomValidity(msg);   
         } else {
             input.setCustomValidity("");
         }
-        this._internals.setFormValue(input.value);
-        this._internals.setValidity(input.validity, input.validationMessage);
+        this._internals.setFormValue(this.value);
+        this._internals.setValidity(input.validity, input.validationMessage, this.input);
 
         if (input.value.length === 0) {
             placeholder.classList.add("empty");
         } else {
             placeholder.classList.remove("empty");
         }
+    }
+    syncInput() {
+        this.display.innerHTML = "";
+        this.initCaret();
+        [...this.value].forEach(char => {
+            this.display.insertBefore(this.makeCharCard(char),this.caretElement);
+        });
     }
     syncScroll = () => {
         this.display.scrollLeft = this.input.scrollLeft;
@@ -340,21 +353,28 @@ class ShadInputText extends HTMLElement {
         if (start !== end) {//if text selected
             //this.caretElement.classList.remove("caret");
             this.selectText(start, end);
-        } else if (start){
+        } else {
             this.selectText();
             //update caret position
             this.caretElement = this.display.children[start]
         }
     }
 
+    setPlaceholder() {
+        const placeholder = this.shadowRoot.querySelector(".placeholder");
+        const text = this.getAttribute("placeholder") ?? "";
+        placeholder.style.setProperty("--placeholder", `"${text}"`);//the goofy extra "" is bc we're setting the content of ::after
+        if (!this.value) {
+            placeholder.classList.add("empty");
+        }
+    }
+
     initCaret() {
         const caret = this.makeCharCard();
-        if (this.getAttribute("type") === "password") {
-            caret.innerHTML = "&nbsp;";
-        }
+        caret.innerHTML = "&nbsp;";
         caret.classList.add("caret");
         this.display.appendChild(caret);
-        return caret;
+        this._caretElement = caret;
     }
 
     makeCharCard(char) {
@@ -401,7 +421,13 @@ class ShadInputText extends HTMLElement {
 
     formResetCallback() {
         // Called when the form is reset
-        this.value = '';
+        this.display.innerHTML = "";
+        if (this.initialValue) {
+            this.value = this.initialValue;
+        } else {
+            this.initCaret();
+            this.shadowRoot.querySelector(".placeholder").classList.add("empty");
+        }
     }
 
     formStateRestoreCallback(state, mode) {

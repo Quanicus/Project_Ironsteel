@@ -34,19 +34,19 @@ class ShadButton extends HTMLElement {
         this.mousedown = false;
         this.colorScheme = {};
 
-        this.internals_ = this.attachInternals();
-        this.addEventListener('click', this._onClick);
+        // this.internals_ = this.attachInternals();
+        // this.addEventListener('click', this._onClick);
     }
-    _onClick = () => {
-        const event = new Event('submit', { cancelable: true, bubbles: true });
-        if (this.form && this.type === "submit") { // Accessing `this.form` calls the `get form()` method
-            if (this.form.checkValidity()){
-                this.form.dispatchEvent(event);
-            } else {
-                this.form.reportValidity();
-            }
-        }
-    }
+    // _onClick = () => {
+    //     const event = new Event('submit', { cancelable: true, bubbles: true });
+    //     if (this.form && this.type === "submit") { // Accessing `this.form` calls the `get form()` method
+    //         if (this.form.checkValidity()){
+    //             this.form.dispatchEvent(event);
+    //         } else {
+    //             this.form.reportValidity();
+    //         }
+    //     }
+    // }
     // Indicate that the element is form-associated
     static get formAssociated() {
         return true;
@@ -54,7 +54,6 @@ class ShadButton extends HTMLElement {
     get disabled() {
         return this.hasAttribute("disabled");
     }
-    // Get the form associated with this element
     get form() {
         return this.internals_.form;
     }
@@ -64,7 +63,7 @@ class ShadButton extends HTMLElement {
     }
     // Get the type of the element (default to "submit")
     get type() {
-        return this.getAttribute('type');
+        return this.getAttribute('type') || "submit";
     }
     // Get and set the value of the element (for form submission)
     get value() {
@@ -80,6 +79,9 @@ class ShadButton extends HTMLElement {
         
         
         this.addListeners();
+        if (this.type === "submit") {
+            this.addEventListener("click", this.submitForm);
+        }
     }
     initColorScheme() {
         const primary = this.getAttribute("data-primary-color") ?? "white";
@@ -147,6 +149,11 @@ class ShadButton extends HTMLElement {
         //this.setColors(this.colorScheme.neutral);
         this.resetColors();
     }
-
+    submitForm = () => {
+        const form = this.closest('form');
+        if (form) {
+            form.requestSubmit();
+        }
+    }
 }
 customElements.define("shad-button", ShadButton);

@@ -35,16 +35,51 @@ template.innerHTML = `
                 fill: gold;
             }
         }
+        .transition-cover {
+            position: absolute;
+            width: 100vw;
+            height: 100vw;
+            transform: translateX(-100%);
+            transition: transform 0.8s ease-in-out;
+            background-color: gold;
+            transition-delay: 0.25s;
+
+            &[active] {
+                transform: translateX(0);
+                transition: transform 0.6s ease-in-out;
+            }
+        }
         .display {
             position: absolute;
             width: 100vw;
             height: 100vh;
             background-color: grey;
             transform: translateX(-100%);
-            transition: transform 0.5s ease-in-out;
+            transition: transform 0.6s ease-in-out;
+            transition-delay: 0.25s;
 
             &[active] {
                 transform: translateX(0);
+                transition: transform 0.8s ease-in-out;
+
+                &::after {
+                    opacity: 0;
+                    transition-delay: 0.8s;
+                    pointer-events: none;
+                }
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: black;
+                opacity: 1;
+                z-index: 2;
+                transition: opacity 0.25s ease-in-out;
             }
             
             &.main {
@@ -61,7 +96,10 @@ template.innerHTML = `
                 }
             }
         }
-
+        .display.bottom {
+            display: grid;
+            place-content: center;
+        }
         .close-btn {
             position: absolute;
             width: 2em;
@@ -75,6 +113,13 @@ template.innerHTML = `
             display: grid;
             place-content: center;
             height: 100%;
+        }
+        #testput {
+            appearance: none;
+            padding: 1rem;
+            outline: transparent;
+            background: black;
+            color: gold;
         }
     </style>
 
@@ -90,6 +135,8 @@ template.innerHTML = `
         <div class="bottom-btn"></div>
     </div>
 
+    <div class="transition-cover"></div>
+
     <div class="top display">
         <div class="close-btn"></div>
         <slot name="top"></slot>
@@ -98,15 +145,15 @@ template.innerHTML = `
     <div class="main display">
         <div class="control-box">
             <slot name="login"></slot>
-        <div class="close-btn"></div>
+            <div class="close-btn"></div>
         </div>
-        
         <slot name="main"></slot>
     </div>
 
     <div class="bottom display">
         <div class="close-btn"></div>
         <slot name="bottom"></slot>
+        <input id="testput" type="email" />
     </div>  
 `;
 class SideNav extends HTMLElement {
@@ -122,6 +169,7 @@ class SideNav extends HTMLElement {
         this.topDisplay = shadow.querySelector(".top");
         this.mainDisplay = shadow.querySelector(".main");
         this.bottomDisplay = shadow.querySelector(".bottom");
+        this.transitionCover = shadow.querySelector(".transition-cover");
     }
     connectedCallback() {
         this.createModal();
@@ -138,19 +186,22 @@ class SideNav extends HTMLElement {
     activateDisplays() {
         this.topBtn.addEventListener("click", () => {
             this.topDisplay.toggleAttribute("active");
+            this.transitionCover.setAttribute("active", true);
         });
         this.mainBtn.addEventListener("click", () => {
             this.mainDisplay.toggleAttribute("active");
+            this.transitionCover.setAttribute("active", true);
         });
         this.bottomBtn.addEventListener("click", () => {
-            console.log("huh");
             this.bottomDisplay.toggleAttribute("active");
+            this.transitionCover.setAttribute("active", true);
         });
         const displays = this.shadowRoot.querySelectorAll(".display");
         displays.forEach(display => {
             const closeBtn = display.querySelector(".close-btn");
             closeBtn.addEventListener("click", () => {
                 display.toggleAttribute("active");
+                this.transitionCover.removeAttribute("active");
             });
         });
     }
