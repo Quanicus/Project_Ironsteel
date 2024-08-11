@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport=" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/sandbox.css">
+        <link rel="stylesheet" href="css/style.css">
         <script src="https://unpkg.com/htmx.org@2.0.0-alpha1/dist/htmx.min.js"></script>
 
         <script src="components/radio-wrap.js"></script>
@@ -11,22 +12,26 @@
         <script src="components/game-console.js"></script>
         
         <script src="main.js" type="module"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/gh/quanicus/shad-clone@0.1.1-alpha/component_bundle.js"></script> -->
+        <!-- <script src="https://cdn.jsdelivr.net/gh/quanicus/shad-clone@v0.1.3-alpha/component_bundle.js"></script> -->
         
     </head>
     <body>
-        <div class="parallax-container">
-            <particle-canvas></particle-canvas>
+        <scroll-container>
+        <!-- <div class="parallax-container"> -->
             
-            <div class="parallax-page page-content" id="page-1">
+            <particle-canvas backdrop-url="../images/night-sky.webp" background-url="../images/white-tree.jpg"></particle-canvas>
+            <div class="background-wrap">
+                <div class="background"></div>
+            </div>
+            <div class="parallax-page scroll-page" id="page-1">
                 
-                <span class="page-title">
+                <span class="page-title particle-intersector">
                     WELCOME TO THE CLICKITY CLACK EXPERIENCE
                 </span>  
                 <!-- <div class="parallax-item"></div> -->
             </div>
             
-            <div class="parallax-page page-content" id="page-2">
+            <div class="parallax-page scroll-page" id="page-2">
                 <span class="page-title">CHOOSE YOUR BASE</span>  
                 <div class="parallax-item" id="para1">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" width="50" height="80" viewBox="0 0 50 80" version="1.1" id="svg1">
@@ -44,22 +49,22 @@
                     </svg>
                 </div>
             </div>
-            <div class="parallax-page page-content" id="page-3">
+            <div class="parallax-page scroll-page" id="page-3">
                 <span class="page-title">PICK YOUR SWITCHES</span> 
                 <div class="parallax-item" id="para2"><shad-tooltip>wtf mans</shad-tooltip>FLICK MY SWITCHES DADDY</div>
             </div>
-            <div class="parallax-page page-content" id="page-4">
+            <div class="parallax-page scroll-page" id="page-4">
                 <span class="page-title">SELECT YOUR KEYCAPS</span>
                 <div class="parallax-item" id="para3">NO CAP A HUNDRED STACKS MAKE THAT BOOTY GO WAP</div>
             </div>
-            <div class="parallax-page page-content" id="page-5">
+            <div class="parallax-page scroll-page" id="page-5">
                 <span class="page-title">SPECIAL SERVICES</span>
                 <div class="parallax-item">SLIPPERY LUBE MAKE THAT SHAFT SO SMOOTH</div>
             </div>
             <footer></footer>
-            
-        </div>
-        <scroll-bar></scroll-bar>
+        <!-- </div> -->
+        </scroll-container>
+        <!-- <scroll-bar></scroll-bar> -->
         <side-nav>
             <!-- <htmx-modal-button slot="top" hx-get="views/login.html"></htmx-modal-button> -->
             <game-console slot="top"></game-console>

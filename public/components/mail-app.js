@@ -92,7 +92,7 @@ template.innerHTML = `
             }  
         }  
 
-        .mail_display {
+        .mail-display {
             position: relative;
             display: inline-flex;
             flex-direction: column;
@@ -101,6 +101,22 @@ template.innerHTML = `
             min-width: min-content;
             max-height: 100%;
             overflow: hidden;
+
+            &::before{
+                content: "";
+                position: absolute;
+                display: block;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 0;
+                background-color: black;
+                transition: height 250ms ease-in-out;
+            }
+
+            &.new-message::before{
+                height: 100%;
+            }
             
             & .header {
                 padding-inline: .5rem;
@@ -147,6 +163,7 @@ template.innerHTML = `
                 overflow: scroll;
             }
             .message-form {
+                position: relative;
                 display: flex;
                 flex-direction: column;
                 gap: 0.5rem;
@@ -158,10 +175,6 @@ template.innerHTML = `
                     .new-message & {
                         display: block;
                     }
-                }
-
-                &.new-mail {
-                    
                 }
 
                 & textarea {
@@ -185,10 +198,14 @@ template.innerHTML = `
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding-top: 1rem;
                     
-                    & shad-toggle {
-                        
+                    & shad-input-toggle {
+                        font-size: 0.85rem;
+                        color: #696969;
+
+                        &[checked] {
+                            color: white;
+                        }
                     }
                     & #send_message {
                     
@@ -206,7 +223,7 @@ template.innerHTML = `
             }
         }
         .header {
-            position: relative;
+            position: relativ;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -299,7 +316,7 @@ template.innerHTML = `
         </div>
     </div>
 
-    <div class="mail_display">
+    <div class="mail-display">
         <div class="header">
             <div class="toolbar left">
                 <shad-button data-highlight-color="#303030" data-secondary-color="black">
@@ -350,19 +367,13 @@ template.innerHTML = `
             </div>
         </div>
         <div class="body"></div>
-        <form class="message-form new-message" id="send-message-form" action="api/v1/messages/send" method="POST">
+        <form class="message-form" id="send-message-form" action="api/v1/messages/send" method="POST">
             <shad-input-text id="reply-addr-field" name="replyAddr" placeholder="Recipient" value="guest"></shad-input-text>
-            <shad-input-text name="subject" placeholder="Subject" value="default"></shad-input-text>
+            <shad-input-text id="subject" name="subject" placeholder="Subject" value="default"></shad-input-text>
             <input type="hidden" name="msgId" id="msg-id" />
-            <input is="shad-input" type="text" id="shad-test" />
-            <shad-input-toggle type="checkbox" name="czechboz" value="chiggity">chig</shad-input-toggle>
-            <shad-input-toggle type="switch" name="czechboz" value="jiggity">jig</shad-input-toggle>
-            <shad-input-toggle type="radio" name="czechboz" value="rigatoni">toni</shad-input-toggle>
-            <shad-input-toggle type="radio" name="czechboz" value="bologna">boni</shad-input-toggle>
-            <shad-input-toggle type="radio" name="czechboz" value="bigaboni">foni</shad-input-toggle>
             <textarea id="reply" name="content" placeholder="Type your message here..."></textarea>
             <div class="submit_container">
-                <shad-toggle data-label="Mute this thread"></shad-toggle>
+                <shad-input-toggle type="switch" id="new-message-toggle">New message</shad-input-toggle>
                 <shad-button id="send_message" type="submit">Send</shad-button>
             </div>
         </form>
@@ -377,26 +388,33 @@ class MailApp extends HTMLElement {
 
         this.navContainer = shadow.querySelector(".nav_container");
         this.nav = shadow.querySelector("icon-nav");
-        this.display = shadow.querySelector(".mail_display");
+        this.display = shadow.querySelector(".mail-display");
         this.handle = shadow.querySelector(".resize-handle");
         this.selectedMessage = null;
+        this.recievedMessagePreviews = [];
+        this.sentMessagePreviews = [];
 
         this.addEventListener("nav-entry-selected", this.handleNavSelection);
     }
     connectedCallback() {
         this.activateHandle();
-        this.activateReply();
         this.activateReplyForm();
-        //this.getMessages();
+        this.getRecievedMessages("/api/v1/messages/recieved");
+        this.getSentMessages();
         this.activateMessagePreviews();
+        
     }
     handleNavSelection = (event) => {
         const navEntry = event.detail;
         const title = this.shadowRoot.querySelector(".preview-window .header .title");
         title.textContent = navEntry.querySelector(".name").textContent;
-
-        if (title.textContent.toLowerCase() === "sent") {
-            this.getSentMessages();
+        switch(title.textContent.toLowerCase()) {
+            case "inbox":
+                this.displayMessagePreviews(this.recievedMessagePreviews);
+                break;
+            case "sent":
+                this.displayMessagePreviews(this.sentMessagePreviews);
+                break;
         }
     }
     activateMessagePreviews() {
@@ -414,23 +432,18 @@ class MailApp extends HTMLElement {
             } 
             this.selectedMessage = message_preview;
             this.selectedMessage.setAttribute("active", true);
-            this.updateMessageDisplay(message_preview);
-            this.updateReplyForm(message_preview);
+            this.updateMessageDisplay();
+            this.updateReplyForm();
+            
+            const newMsgToggle = this.shadowRoot.getElementById("new-message-toggle");
+            //console.log(newMsgToggle);
+            if (newMsgToggle.checked) {
+                //console.log("chiggy");
+                newMsgToggle.dispatchEvent(new Event("click"));
+            }
         });
     }
-    handlePreviewSelection = (event) => {
-        this.display.querySelector(".cover").style.opacity = "0";
-        const message_preview = event.target;
-        //console.log(message_preview);
-        if (this.selectedMessage) {
-            this.selectedMessage.removeAttribute("active");
-        } 
-        this.selectedMessage = message_preview;
-        this.selectedMessage.setAttribute("active", true);
-        this.updateMessageDisplay(message_preview);
-        this.updateReplyForm(message_preview);
-    }
-    updateMessageDisplay(message) {
+    updateMessageDisplay(message = this.selectedMessage) {
         const display = this.display;
         const profileIcon = display.querySelector("profile-icon");
         const name = message.getAttribute("data-name");
@@ -442,10 +455,17 @@ class MailApp extends HTMLElement {
         profileIcon.setInitials();
 
     }
-    updateReplyForm(message) {
+    updateReplyForm(message = this.selectedMessage) {
         const form = this.display.querySelector("#send-message-form");
         form.querySelector("#reply-addr-field").value = message.replyAddr;
         form.querySelector("#msg-id").value = message.msgId;
+        //form.querySelector("#subject").value = "Re: " + message.subject;
+    }
+    clearReplyForm() {
+        const form = this.display.querySelector("#send-message-form");
+        form.querySelector("#reply-addr-field").value = "";
+        form.querySelector("#msg-id").value = "";
+        form.querySelector("#subject").value = "";
     }
     activateReplyForm() {
         const form = this.display.querySelector("#send-message-form");
@@ -470,16 +490,7 @@ class MailApp extends HTMLElement {
                 });
 
                 if (response.ok) {
-                    // Show feedback message
-                    //document.getElementById('feedback').style.display = 'block';
-
-                    // Clear the form fields after successful submission
                     form.reset();
-
-                    // Optional: Hide feedback message after a few seconds
-                    // setTimeout(() => {
-                    //     document.getElementById('feedback').style.display = 'none';
-                    // }, 3000);
                 } else {
                     // Handle errors
                     alert('Failed to submit form');
@@ -487,6 +498,24 @@ class MailApp extends HTMLElement {
             } catch (error) {
                 // Handle network errors
                 alert('An error occurred while submitting the form');
+            }
+        });
+
+        const textarea = this.shadowRoot.getElementById("reply");
+        textarea.addEventListener("input", function() {
+            this.style.height = "auto";
+            this.style.height = `${this.scrollHeight}px`;
+        });
+
+        this.shadowRoot.getElementById("new-message-toggle")
+        .addEventListener("change", (event) => {
+            const display = this.shadowRoot.querySelector(".mail-display");
+            if (event.target.checked) {
+                display.classList.add("new-message");
+                this.clearReplyForm();
+            } else {
+                display.classList.remove("new-message");
+                this.updateReplyForm();
             }
         });
     }
@@ -501,11 +530,7 @@ class MailApp extends HTMLElement {
         document.addEventListener("mouseout", this.disengageMouse);
     }
     activateReply() {
-        const textarea = this.shadowRoot.getElementById("reply");
-        textarea.addEventListener("input", function() {
-            this.style.height = "auto";
-            this.style.height = `${this.scrollHeight}px`;
-        });
+        
     }
     resize = (event) => {
         if (this.nav.hasAttribute("collapsed")) {
@@ -534,41 +559,35 @@ class MailApp extends HTMLElement {
         document.body.style.userSelect = "";
         document.removeEventListener("mousemove", this.resize);
     }
-    fetchMessages(url) {
+    getRecievedMessages(url) {
         fetch(url)
         .then(async (response) => {
-            console.log("back from sentMessages");
-            const container = this.shadowRoot.querySelector(".preview-window .content");
-            container.innerHTML = "";
-            const msgArray = await response.json();
-            console.log(msgArray[0]);
-            msgArray.forEach(msg => {
-                const msgPreview = document.createElement("message-preview");
-                msgPreview.setAttribute("data-name", msg.name);
-                msgPreview.setAttribute("data-subject", msg.subject);
-                msgPreview.setAttribute("data-reply-addr", msg.email);
-                msgPreview.textContent = msg.content;
-                container.appendChild(msgPreview);
-            });
+            const messages = await response.json();
+            this.recievedMessagePreviews = messages.map(msg => this.makePreview(msg));
+            this.displayMessagePreviews(this.recievedMessagePreviews);
         }).catch(error => console.log(error));
     }
     getSentMessages() {
         fetch("/api/v1/messages/sent")
         .then(async (response) => {
-            console.log("back from sentMessages");
-            const container = this.shadowRoot.querySelector(".preview-window .content");
-            container.innerHTML = "";
-            const msgArray = await response.json();
-            console.log(msgArray[0]);
-            msgArray.forEach(msg => {
-                const msgPreview = document.createElement("message-preview");
-                msgPreview.setAttribute("data-name", msg.name);
-                msgPreview.setAttribute("data-subject", msg.subject);
-                msgPreview.setAttribute("data-reply-addr", msg.email);
-                msgPreview.textContent = msg.content;
-                container.appendChild(msgPreview);
-            });
+            const messages = await response.json();
+            this.sentMessagePreviews = messages.map(msg => this.makePreview(msg));
         }).catch(error => console.log(error));
+    }
+    displayMessagePreviews(messagePreviews) {
+        const container = this.shadowRoot.querySelector(".preview-window .content");
+        container.innerHTML = "";
+        messagePreviews.forEach(preview => {
+            container.appendChild(preview);
+        });
+    }
+    makePreview(message) {
+        const msgPreview = document.createElement("message-preview");
+        msgPreview.setAttribute("data-name", message.name);
+        msgPreview.setAttribute("data-subject", message.subject);
+        msgPreview.setAttribute("data-reply-addr", message.email);
+        msgPreview.textContent = message.content;
+        return msgPreview;
     }
 }
 customElements.define("mail-app", MailApp);

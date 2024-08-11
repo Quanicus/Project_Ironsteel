@@ -33,29 +33,9 @@ particle-canvas {
     perspective: 10px;
 }
 
-.parallax-page {
-    height: 200vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transform-style: preserve-3d;
-}
-.parallax-item {
-    width: fit-content;
-    position: absolute;
-    transform: translateZ(-1px);
-}
-#page-1 {
-    /* background-color: darkblue; */
-}
-.parallax-page {
-    pointer-events: none;
-}
-.parallax-item {
-    pointer-events: auto;
-}
+
+
+
 #page-5 {
     background-color: teal;
 }

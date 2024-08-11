@@ -200,7 +200,7 @@ class ShadInputText extends HTMLElement {
         this.tabIndex = this.getAttribute("tabindex") ?? "0";
         this.input.tabIndex = this.tabIndex;
         this.initialValue = this.value;
-        console.log("initial value: ", this.value);
+        //console.log("initial value: ", this.value);
         
         this.setPlaceholder();
         this.initCaret();

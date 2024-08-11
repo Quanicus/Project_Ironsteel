@@ -57,6 +57,7 @@ template.innerHTML = `
             transform: translateX(-100%);
             transition: transform 0.6s ease-in-out;
             transition-delay: 0.25s;
+            overflow: hidden;
 
             &[active] {
                 transform: translateX(0);
@@ -100,19 +101,26 @@ template.innerHTML = `
             display: grid;
             place-content: center;
         }
+        .display.top {
+            display: grid;
+            place-content: center;
+        }
         .close-btn {
             position: absolute;
+            display: grid;
+            place-content: center;
             width: 2em;
             height: 2em;
             top: 1rem;
             right: 1rem;
+            border-radius: 4px;
             background-color: white;
             cursor: pointer;
-        }
-        ::slotted([slot="top"]) {
-            display: grid;
-            place-content: center;
-            height: 100%;
+
+            & svg {
+                width: 1em;
+                height: 1em;
+            }
         }
         #testput {
             appearance: none;
@@ -138,14 +146,24 @@ template.innerHTML = `
     <div class="transition-cover"></div>
 
     <div class="top display">
-        <div class="close-btn"></div>
+        <div class="close-btn">
+            <?xml version="1.0" encoding="utf-8"?>
+            <!-- License: CC Attribution. Made by Mobirise: https://mobiriseicons.com/ -->
+            <svg fill="#000000" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+                <path d="M29.484 0c-.13.004-.252.057-.343.15L17.164 12.13c-.49.47.235 1.197.706.707L29.846.857c.325-.318.1-.857-.363-.857zM12.488 17c-.13.004-.25.058-.34.15L.162 29.14c-.486.467.233 1.186.7.7L12.848 17.85c.325-.313.093-.85-.36-.85zM.5 0a.5.5 0 0 0-.348.86L29.14 29.845a.5.5 0 1 0 .706-.706L.86.152A.5.5 0 0 0 .5 0z"/>
+            </svg>
+        </div>
         <slot name="top"></slot>
     </div>
 
     <div class="main display">
         <div class="control-box">
             <slot name="login"></slot>
-            <div class="close-btn"></div>
+            <div class="close-btn">
+                <svg fill="#000000" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+                <path d="M29.484 0c-.13.004-.252.057-.343.15L17.164 12.13c-.49.47.235 1.197.706.707L29.846.857c.325-.318.1-.857-.363-.857zM12.488 17c-.13.004-.25.058-.34.15L.162 29.14c-.486.467.233 1.186.7.7L12.848 17.85c.325-.313.093-.85-.36-.85zM.5 0a.5.5 0 0 0-.348.86L29.14 29.845a.5.5 0 1 0 .706-.706L.86.152A.5.5 0 0 0 .5 0z"/>
+            </svg>
+            </div>
         </div>
         <slot name="main"></slot>
     </div>

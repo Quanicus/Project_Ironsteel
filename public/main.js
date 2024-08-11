@@ -5,9 +5,9 @@ import "./components/icon-nav.js";
 import "./components/profile-icon.js";
 import "./components/tab-display.js";
 
+import "./components/scroll-container.js"
 
 import "./components/scroll-bar.js";
-import "./components/shad-toggle.js";
 import "./components/shad-button.js";
 import "./components/shad-input-text.js";
 import "./components/shad-input-toggle.js";
@@ -32,3 +32,48 @@ document.body.addEventListener('htmx:beforeSwap', function(evt) {
         evt.detail.target = htmx.find("#teapot");
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const intersectSet = document.querySelector("particle-canvas").intersectingElements;
+    const observerCallback = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                intersectSet.add(entry.target);
+            } else {
+                intersectSet.delete(entry.target);
+            }
+        });
+    };
+
+    // Define options (optional)
+    const observerOptions = {
+        root: null, // Use the viewport as the root
+        rootMargin: '0px',
+        threshold: 0.01 // Trigger callback when 50% of the target is visible
+    };
+
+    // Create an IntersectionObserver instance
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    document.querySelectorAll(".particle-intersector")
+    .forEach(element => {
+        observer.observe(element);
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const scrollContainer = document.querySelector("scroll-container")
+        .shadowRoot.querySelector(".scroll-container");
+    scrollContainer.scrollTop = innerHeight;
+    scrollContainer.addEventListener("scroll", () => {
+        if (scrollContainer.scrollTop < innerHeight) {
+            scrollContainer.scrollTop = innerHeight;
+        }
+    })
+})
+
+
+
+
+
