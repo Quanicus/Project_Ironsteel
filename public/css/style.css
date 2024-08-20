@@ -1,19 +1,57 @@
 scroll-container {
+    position: relative;
     height: 100vh;
+    & * {
+        transform-style: preserve-3d;
+        pointer-events: none;
+    }
 }
+scroll-container * {
 
+}
 particle-canvas {
     position: sticky;
     top: 0;
-    transform-style: preserve-3d;
     z-index: 1;
 }
 
+.layer-1 {
+    z-index: 10;
+}
+.home-page {
+    position: absolute;
+    display: grid;
+    place-content: center;
+    top: 100%;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.0);
+
+    & * {
+        pointer-events: all;
+    }
+
+    & span {
+        font-size: 1.2rem;
+    }
+
+    & #hire-me {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75em;
+    }
+}
+.scroll-page-container {
+    position: relative;
+}
 .scroll-page {
-    transform-style: preserve-3d;
+    & * {
+        pointer-events: all;    
+    }
 }
 .parallax-page {
-    height: 150vh;
+    height: 100vh;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -24,23 +62,52 @@ particle-canvas {
 .parallax-item {
     width: fit-content;
     position: absolute;
-    transform: translateZ(-69px);
+    transform: translateZ(-49px);
 }
 .background-wrap {
     position: sticky;
     top: 0;
     height: 100vh;
     width: 100vw;
-    transform-style: preserve-3d;
     z-index: -100;
     pointer-events: none;
-}
-.background {
-    width: 100%;
-    height: 100%;
+
+    /* background-image: url("../images/white-tree.jpg"); */
     background-image: url("../images/white-tree.jpg");
-    background-size: cover; /* Cover the entire background */
-    background-repeat: no-repeat; /* Do not repeat the background */
-    background-position: center; /* Center the background image */
-    transform: translateZ(-100px) scale(2);
+    /* background-color: gray; */
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center; 
+
+    
+    & > * {
+        position: absolute;
+    }
+
+    & .gold-moon {
+        top: 158px;
+        left: 418px;
+        width: 162px;
+        height: 162px;
+    }
+}
+.sun-wrap {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: -50;
+    
+    & > * {
+        position: absolute;
+    }
+}
+.blood-skull {
+    top: 160.5px;
+    left: 420.5px;
+    width: 158px;
+    height: 158px;
+}
+.gold-moon {
+    
 }

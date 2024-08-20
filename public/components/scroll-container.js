@@ -13,8 +13,6 @@ class ScrollContainer extends HTMLElement {
                 overflow-x: hidden;
                 overflow-y: scroll;
                 scrollbar-width: none;
-
-                perspective: 100px;
             }
             .scroll-bar, .scroll-button {
                 display: flex;
@@ -78,9 +76,8 @@ class ScrollContainer extends HTMLElement {
         this.activePage = null;
     }
     connectedCallback() {
-        
-        //this.hideScroll();
         this.attachContent();
+        this.setParallax();
     }
     attachContent() {
         document.addEventListener('DOMContentLoaded', () => {
@@ -105,7 +102,13 @@ class ScrollContainer extends HTMLElement {
 
         });
     }
-
+    setParallax() {
+        const perspective = this.getAttribute("parallax-perspective");
+        if (perspective) {
+            this.shadowRoot.querySelector(".scroll-container")
+            .style.perspective = `${parseInt(perspective)}px`;
+        }
+    }
     makeScrollLabel(pageNum) {
         const buttonLabel = document.createElement('label');
         buttonLabel.setAttribute('class', 'scroll-button');

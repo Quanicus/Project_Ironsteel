@@ -5,7 +5,9 @@ import "./components/icon-nav.js";
 import "./components/profile-icon.js";
 import "./components/tab-display.js";
 
-import "./components/scroll-container.js"
+import "./components/scroll-container.js";
+import "./components/shad-modal.js";
+import "./components/shad-textarea.js";
 
 import "./components/scroll-bar.js";
 import "./components/shad-button.js";
@@ -65,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const scrollContainer = document.querySelector("scroll-container")
         .shadowRoot.querySelector(".scroll-container");
+
     scrollContainer.scrollTop = innerHeight;
     scrollContainer.addEventListener("scroll", () => {
         if (scrollContainer.scrollTop < innerHeight) {

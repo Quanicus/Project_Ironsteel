@@ -12,6 +12,7 @@ template.innerHTML = `
             cursor: text;
             width: 100%;
             max-width: 100%;
+            color: white;
         }
         :host(:focus) {
             & .placeholder::after {
@@ -20,6 +21,7 @@ template.innerHTML = `
                 color: gold;
                 padding-inline: 0.3em;
                 transition-duration: 0.15s;
+                width: fit-content;
             }
             & .text-display {
                 border-color: white;
@@ -40,7 +42,7 @@ template.innerHTML = `
                     color: black;
                 }
             }
-            & input {
+            & .input {
                 z-index: 2;
             }
         }
@@ -53,16 +55,17 @@ template.innerHTML = `
             }
         }
         :host([type="password"]) {
-            & input {
-                letter-spacin: 0.2em;
+            & .input {
+                
             }
         }
         .placeholder {
-            --placeholder: "default";
+            --placeholder: "";
             position: relative;
             padding: 0.5em;
             height: 100%;
-            width: 100%;
+            width: fit-content;
+            border-radius: 5px;
             background-color: black;
 
             &::after {
@@ -77,76 +80,76 @@ template.innerHTML = `
                 transition-property: top, font-size;
                 transition-duration: 0.15s;
                 transition-timing-function: ease-in;
+                border-radius: 3px;
             }     
         }
         .placeholder.empty {
             &::after {
                 top: 0.5rem;
-                border-radius: 50%;
+                border-radiu: 50%;
                 transition-duration: 0.25s;
                 font-size: 1rem;
-                color: white;
+                color: white;        
             }
         }
         .text-display {
             position: absolute;
             display: flex;
-            align-items: center;
-            padding-inline: .5rem;
+            align-items: start;
+            padding: .5rem;
             top: 0;
             left: 0;
             border: 1px solid #303030;
             border-radius: 5px;
             width: 100%;
             height: 100%;
-            background-color: black;
-            overflow-x: scroll;
+            
+            overflow: auto;
 
             & span {
                 position: relative;
-                animation: drop-in .35s forwards;
                 flex-shrink: 0;
-            }
-        }
-        @keyframes drop-in {
-            0%, 35% {
-                transform: translateY(0);
-                opacity: 1;
-                color: gold;
-                
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-                color: white;
+                transition: all 50ms linear;
+                overflow: visible;
+
+                &.float {
+                    transform: translateY(-0.2em) scale(1.2);
+                    text-shadow: 
+                        0px 0px 1px white,
+                        0px 0px 2px white,
+                        0px 0px 3px white,
+                        0px 0px 4px white,
+                        0px 0px 0px white;
+                }
             }
         }
         @keyframes blink {
             from, to {
-                visibility: visible;
+                background-color: white;
             }
             50% {
-                visibility: hidden;
+                background-color: white;
+                box-shadow: .5px 0 2px 1.5px rgba(255,255,255,1);
             }
         }
-        input {
+        .input {
             all: unset;
             position: relative;
             width: 100%;
             height: 100%;
-
+            overflow: auto;
             opacity: 0;
         }
     </style>
     <div class="placeholder">
-        <input spellcheck="false"/>
+        <input class="input" spellcheck="false"/>
         <div class="text-display"></div>
     </div>
-    
-    
+    <audio id="click" src="./audio/click.mp3"></audio>
+    <audio id="clack" src="./audio/clack.mp3"></audio>
 `;
 //pattern-error
-class ShadInputText extends HTMLElement {
+export class ShadInputText extends HTMLElement {
     static formAssociated = true;
     //static emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
     static emailRegex = "^[^@]+@[^@]+\.[^@]+$";
@@ -161,12 +164,18 @@ class ShadInputText extends HTMLElement {
         
 
         this.display = this.shadowRoot.querySelector(".text-display");
-        this.input = this.shadowRoot.querySelector("input");
+        this.input = this.shadowRoot.querySelector(".input");
+        this.clickSoundClip = this.shadowRoot.getElementById("click");
+        this.clackSoundClip = this.shadowRoot.getElementById("clack");
+        this.recentCharInput = document.createElement("div");
 
         this.selectedCards = [];
         
         this.bubbleEvents(['change']);
         //, 'input', 'focus', 'blur'
+        this.propsToBind = ["value", 'disabled', 'required', 'maxlength',
+            'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus',
+            'name', 'size',];
         this.attachListeners();
     }    
     static get observedAttributes() {
@@ -202,8 +211,11 @@ class ShadInputText extends HTMLElement {
         this.initialValue = this.value;
         //console.log("initial value: ", this.value);
         
+        this.activateSoundEffects();
         this.setPlaceholder();
-        this.initCaret();
+
+        if (!this._caretElement) this.initCaret();
+        
 
         // this.attachListeners();
     }
@@ -233,6 +245,15 @@ class ShadInputText extends HTMLElement {
         input.addEventListener('mouseup', this.captureSelection);
         input.addEventListener("click", this.captureSelection);
         input.addEventListener('keyup', this.captureSelection);
+        input.addEventListener("keyup", () => {
+            this.recentCharInput.classList.remove("float");
+            if (this.needClack) {
+                this.clackSoundClip.currentTime = 0;
+                this.clackSoundClip.play();
+                this.needClack = false;
+            }
+        });
+        //input.addEventListener("keydown", () => console.log("keydown"));
         //this.addEventListener("focus", () => this.input.focus());
         //this.addEventListener("input", () => console.log("custom element inputted"));
         // input.addEventListener("paste", this.handlePaste);
@@ -240,11 +261,10 @@ class ShadInputText extends HTMLElement {
     }
     _proxyInput() {//getters and setters reroute to the shadow input
         const input = this.shadowRoot.querySelector("input");
-        const propsToBind = ["value", 'placeholder', 'disabled', 'required', 'maxlength',
-            'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus',
-            'name', 'size',];
+        //const propsToBind = ["value", 'disabled', 'required', 'maxlength', 'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus', 'name', 'size',];
 
-        propsToBind.forEach(prop => {
+
+        ShadInputText.observedAttributes.forEach(prop => {
             Object.defineProperty(this, prop, {
                 get: () => input[prop],
                 set: (newValue) => {
@@ -271,6 +291,7 @@ class ShadInputText extends HTMLElement {
     }
     //HANDANDLERS
     handleBeforeInput = (event) => {
+        //console.log("before input");
         const display = this.display;
         const input = this.input;
         const start = input.selectionStart;
@@ -282,15 +303,19 @@ class ShadInputText extends HTMLElement {
             this.caretElement = this.display.children[start];
         }
         switch (event.inputType){
-            case "insertText":
-                const char = event.data;
-                //add inserted text into container starting at start
-                display.insertBefore(this.makeCharCard(char),this.caretElement);
+            case "insertText"://a single char is inputted
+                const newCharCard = this.makeCharCard(event.data);
+                newCharCard.classList.add("float");
+                display.insertBefore(newCharCard, this.caretElement);
+                this.recentCharInput.classList.remove("float");
                 
+                this.recentCharInput = newCharCard;
+                this.clickSoundClip.currentTime = 0;
+                this.clickSoundClip.play();
+                this.needClack = true;
                 break;
             case "deleteContentBackward":
-                if (!selectedText) {
-                    //remove charCards[start - 1]
+                if (!selectedText && display.children.length > 1) {
                     display.removeChild(display.children[start - 1]);    
                 }
                 break;
@@ -304,6 +329,7 @@ class ShadInputText extends HTMLElement {
         }
     }
     handleAfterInput = (event) => {
+        //console.log("after input");
         const placeholder = this.shadowRoot.querySelector(".placeholder");
         const input = this.input;
         if (this.value.length !== this.display.childElementCount - 1) {
@@ -329,6 +355,7 @@ class ShadInputText extends HTMLElement {
         }
     }
     syncInput() {
+        console.log("syncing input", this.value);
         this.display.innerHTML = "";
         this.initCaret();
         [...this.value].forEach(char => {
@@ -406,6 +433,10 @@ class ShadInputText extends HTMLElement {
                 charCards[position].classList.remove("selected");
             }
         }
+    }
+
+    activateSoundEffects() {
+        this.clickSoundElement = document.createElement("audio");
     }
 
     // Form-related methods
