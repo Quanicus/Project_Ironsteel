@@ -85,10 +85,7 @@ particle-canvas {
     }
 
     & .gold-moon {
-        top: 119px;
-        left: 312px;
-        width: 122px;
-        height: 122px;
+        
     }
 }
 .sun-wrap {
@@ -103,11 +100,8 @@ particle-canvas {
     }
 }
 .blood-skull {
-    top: 120px;
-    left: 314px;
-    width: 120px;
-    height: 120px;
-}
-.gold-mon {
-    
+    top: max(13.3vh, 8.4vw);
+    left: max(35vh, 21.8vw);
+    width: max(6px,max(13.5vh, 8.4vw));
+    height: max(6px,max(13.5vh, 8.4vw));
 }

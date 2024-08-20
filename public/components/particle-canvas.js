@@ -29,7 +29,7 @@ class ParticleCanvas extends HTMLElement {
                     width: 4px;
                     height: 100%;
                     top: 0;
-                    left: 395px;
+                    left: max(26%, 300px);
                     cursor: ew-resize;
                     pointer-events: auto;
                     background: linear-gradient(to left, white, black);
