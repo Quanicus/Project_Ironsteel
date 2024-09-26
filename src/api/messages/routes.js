@@ -7,5 +7,6 @@ router.get("/recieved", auth.authenticateToken, controller.getRecievedMessages);
 router.get("/sent", auth.authenticateToken, controller.getSentMessages);
 
 router.post("/send", auth.authenticateToken, controller.sendMessage);
+router.post("/contact-message", controller.sendContactMessage)
 
 module.exports = router;

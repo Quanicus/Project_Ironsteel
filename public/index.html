@@ -16,80 +16,62 @@
         
     </head>
     <body>
-        <scroll-container parallax-perspective="100">
-        <!-- <div class="parallax-container"> -->
-            <particle-canvas backdrop-url="../images/night-sky.webp" intermediate-url="../images/white-hill-1.png"></particle-canvas>
-            <div class="background-wrap">
-                <!-- <img src="../images/gold-moon.png" class="gold-moon"> -->
-            </div>
-            <div class="sun-wrap">
-                <img src="../images/blood-skull.png" class="blood-skull">
-                
-                
-            </div>
-            
-            <article class="home-page layer-1">
-                <h1 class="particle-intersector">I am Quan Pham</h1>
-                <h2 class="particle-intersector">Software Engineer/<span>Full-Stack Developer</span></h2>
-                <shad-modal>modalling
-                    <div slot="modal">
-                        <form action="" id="hire-me"> 
-                            <h1>Send me a message</h1>
-                            <shad-input-text type="email" placeholder="Email"></shad-input-text>
-                            <shad-input-text type="text" placeholder="Subject" value="You're hired!"></shad-input-text>
-                            <!-- <shad-textarea name="message" id="" placeholder="woahdude"></shad-textarea> -->
-                            <textarea name="message" id=""></textarea>
-                        </form>
-                    </div>
-                </shad-modal>
+        <section class="main-content">
+            <article class="sticky-page background-wrap page no-mouse">
+                <img src="../images/gold-mewn.png" class="gold-moon">
+                <div class="grid-center page">
+                    
+                </div>
             </article>
 
-            <article class="scroll-page-container layer-1">
-                <div class="parallax-page scroll-page" id="page-1">
+    
+            <particle-canvas backdrop-url="../images/night-sky.webp" intermediate-url="../images/white-hill-1.png"></particle-canvas>
                 
+            <section class="scroll-container" >
+
+                <article id="home-page" class="sticky-page page layer-1">
+                    <div class="greeting">
+                        <h2 class="particle-intersector">I AM QUANICUS</h2>
+                        <h2 class="particle-intersector">SOFTWARE ENGINEER/<span>FULL-STACK DEVELOPER</span></h2>
+                    
+                        <shad-modal>Contact Me
+                            <div slot="modal">
+                                <form hx-post="api/v1/messages/contact-message" hx-swap="none" id="hire-me" method="POST"> 
+                                    <h1>Send me a message</h1>
+                                    <shad-input-text type="email" name="email" placeholder="Email" required="true"></shad-input-text>
+                                    <shad-input-text type="text" name="subject" placeholder="Subject" default="You're hired!" required="true"></shad-input-text>
+                                    <!-- <shad-textarea name="message" id="" placeholder="woahdude"></shad-textarea> -->
+                                    <textarea name="message" id="" required></textarea>
+                                    <shad-button type="submit">Send</shad-button>
+                                </form>
+                            </div>
+                        </shad-modal>
+                    </div>
+                </article>
+
+                <article class="sticky-page page">
+                    <scroll-element>
+                        <img src="../images/blood-skull.png" class="blood-skull">
+                    </scroll-element>
+                </article>
+                
+                <article id="page-1" class="scroll-page page grid-center">
+                    
+                </article>
+
+                <article id="page-2" class="scroll-page page layer-1">
+                    <scroll-element>
                     <span class="page-title particle-intersector">
                         WELCOME TO THE CLICKITY CLACK EXPERIENCE
-                    </span>  
-                    <!-- <div class="parallax-item"></div> -->
-                </div>
-                <div class="parallax-page scroll-page" id="page-2">
-                    <span class="page-title">CHOOSE YOUR BASE</span>  
-                    <div class="parallax-item" id="para1">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" width="50" height="80" viewBox="0 0 50 80" version="1.1" id="svg1">
-                            <defs id="defs1"/>
-                            <g id="layer1" transform="translate(-79.242708,-15.742708)">
-                            <path style="fill:none;stroke:#000000;stroke-width:1" d="M 87.312499,15.874999 H 119.0625 L 127,23.812498 v 63.499996 l -7.9375,7.9375 H 87.312499 l -7.9375,-7.9375 V 23.812498 Z" id="path17"/>
-                            <path style="fill:none;stroke:#000000;stroke-width:1" d="M 95.249999,31.749997 H 111.125 V 79.374994 H 95.249999 Z" id="path18"/>
-                            </g>
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" width="50" height="80" viewBox="0 0 50 80" version="1.1" id="svg1">
-                        <defs id="defs1"/>
-                            <g id="layer1" transform="translate(-79.242708,-31.617706)">
-                                <path style="fill:none;stroke:#000000;stroke-width:1" d="M 95.000002,31.749997 H 111.125 v 63.25 H 127 V 111.12499 H 79.374999 V 95.249994 l 15.875,-0.249997 v -39.4375 c -3.571166,4.473835 -8.928134,7.050287 -15.875,7.9375 v -15.875 c 7.497559,-1.986956 13.987442,-5.428586 15.625003,-15.875 z" id="path8"/>
-                            </g>
-                        </svg>
-                    </div>
-                </div>
-                <div class="parallax-page scroll-page" id="page-3">
-                    <span class="page-title">PICK YOUR SWITCHES</span> 
-                    <div class="parallax-item" id="para2"><shad-input-toggle></shad-input-toggle> MY SWITCHES DADDY</div>
-                </div>
-                <div class="parallax-page scroll-page" id="page-4">
-                    <span class="page-title">SELECT YOUR KEYCAPS</span>
-                    <div class="parallax-item" id="para3">NO CAP A HUNDRED STACKS MAKE THAT BOOTY GO WAP</div>
-                </div>
-                <div class="parallax-page scroll-page" id="page-5">
-                    <span class="page-title">SPECIAL SERVICES</span>
-                    <div class="parallax-item">SLIPPERY LUBE MAKE THAT SHAFT SO SMOOTH</div>
-                </div>
-            </article>
-            <article class="scroll-page-container layer-2">
-                
-            </article>
-            <footer></footer>
-        <!-- </div> -->
-        </scroll-container>
-        <!-- <scroll-bar></scroll-bar> -->
+                    </span></scroll-element>  
+                </article>
+
+
+                <footer></footer>
+            </section>
+            <scroll-bar></scroll-bar>
+        </section>
+        
         <side-nav>
             <!-- <htmx-modal-button slot="top" hx-get="views/login.html"></htmx-modal-button> -->
             <game-console slot="top"></game-console>
@@ -100,8 +82,7 @@
                 <section>sup foo</section>
             </tab-display>
         </side-nav>
-        <!-- <htmx-modal ></htmx-modal> -->
-        <app-display></app-display>
+
     </body>
     <script src="components/app-display.js" ></script>
     <!-- <script src="/game/v1/resource/terrainMatrix"></script> -->

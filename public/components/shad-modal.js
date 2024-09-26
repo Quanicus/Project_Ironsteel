@@ -50,9 +50,20 @@ class ShadModal extends ShadButton {
         this.dialog = this.shadowRoot.querySelector("dialog");
         this.dialog.addEventListener("click", (event) => event.stopPropagation());
         this.dialog.addEventListener("mousedown", (event) => event.stopPropagation());
-        this.shadowRoot.querySelector(".close-button").
-            addEventListener("click", this.close);
+        this.shadowRoot.querySelector(".close-button").addEventListener("click", this.close);
         this.addEventListener("click", this.showModal);
+        this.addEventListener("htmx:afterRequest", (event) => {
+            const xhr = event.detail.xhr;
+            const status = xhr.status;
+            this.querySelector("form").reset();
+
+            if (status >= 200 && status < 300) {
+                this.close();
+            } else {
+                // The request failed (status code outside 2xx range)
+                console.log('Request failed with status:', status);
+            }
+        });
     }
     connectedCallback() {
         super.connectedCallback();

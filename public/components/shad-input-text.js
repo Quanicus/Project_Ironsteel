@@ -207,8 +207,10 @@ export class ShadInputText extends HTMLElement {
         this._internals.setValidity(this.input.validity, this.input.validationMessage, this.input);
         
         this.tabIndex = this.getAttribute("tabindex") ?? "0";
+        this.default = this.getAttribute("default");
+        this.value = this.default;
         this.input.tabIndex = this.tabIndex;
-        this.initialValue = this.value;
+        
         //console.log("initial value: ", this.value);
         
         this.activateSoundEffects();
@@ -355,7 +357,7 @@ export class ShadInputText extends HTMLElement {
         }
     }
     syncInput() {
-        console.log("syncing input", this.value);
+        //console.log("syncing input", this.value);
         this.display.innerHTML = "";
         this.initCaret();
         [...this.value].forEach(char => {
@@ -453,12 +455,13 @@ export class ShadInputText extends HTMLElement {
     formResetCallback() {
         // Called when the form is reset
         this.display.innerHTML = "";
-        if (this.initialValue) {
-            this.value = this.initialValue;
-        } else {
-            this.initCaret();
-            this.shadowRoot.querySelector(".placeholder").classList.add("empty");
-        }
+        this.value = this.default;
+        // if (this.default) {
+        //     this.value = this.initialValue;
+        // } else {
+        //     this.initCaret();
+        //     this.shadowRoot.querySelector(".placeholder").classList.add("empty");
+        // }
     }
 
     formStateRestoreCallback(state, mode) {

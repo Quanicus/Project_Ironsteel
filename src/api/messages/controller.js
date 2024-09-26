@@ -1,6 +1,7 @@
 const pool = require("../../../db");
 const messageQueries = require("./queries");
 const userQueries = require("../users/queries");
+const nodemailer = require("nodemailer");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -55,8 +56,36 @@ const sendMessage = async (req, res) => {
     })
 }
 
+const sendContactMessage = async (req, res) => {
+    console.log(req.body);
+    const form = req.body;
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'qpham09@gmail.com',
+            pass: 'knhm uzly btfn ptif'
+        }
+    });
+
+    const mailOptions = {
+        // from: 'joff@gmail.com',
+        to: 'qpham09@gmail.com',
+        subject: form.email + ": " + form.subject,
+        text: form.message
+    };
+
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+    } catch (error) {
+        console.error('Error sending email: ', error);
+    }
+    res.send("aight");
+}
+
 module.exports = {
     getRecievedMessages,
     getSentMessages,
     sendMessage,
+    sendContactMessage,
 }

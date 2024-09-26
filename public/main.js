@@ -5,7 +5,8 @@ import "./components/icon-nav.js";
 import "./components/profile-icon.js";
 import "./components/tab-display.js";
 
-import "./components/scroll-container.js";
+
+import "./components/scroll-element.js";
 import "./components/shad-modal.js";
 import "./components/shad-textarea.js";
 
@@ -51,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const observerOptions = {
         root: null, // Use the viewport as the root
         rootMargin: '0px',
-        threshold: 0.01 // Trigger callback when 50% of the target is visible
+        threshold: 0.01 
     };
 
     // Create an IntersectionObserver instance
@@ -65,15 +66,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const scrollContainer = document.querySelector("scroll-container")
-        .shadowRoot.querySelector(".scroll-container");
+    const scrollContainer = document.querySelector(".scroll-container");
+    const intersectingElements = document.querySelector("particle-canvas").intersectingElements;
+    const lightSrc = document.querySelector(".blood-skull");
 
-    scrollContainer.scrollTop = innerHeight;
-    scrollContainer.addEventListener("scroll", () => {
-        if (scrollContainer.scrollTop < innerHeight) {
-            scrollContainer.scrollTop = innerHeight;
-        }
-    })
+    
+    const updateShadow = () => {
+        intersectingElements.forEach(intersector => {
+            const lightRect = lightSrc.getBoundingClientRect();
+            const intersectRect = intersector.getBoundingClientRect();
+
+            const lightSrcX = lightRect.left + lightRect.width/2;
+            const lightSrcY = lightRect.top + lightRect.height/2;
+            const intersectorX = intersectRect.left + intersectRect.width/2;
+            const intersectorY = intersectRect.top + intersectRect.height/2;
+
+            const deltaX = (intersectorX - lightSrcX) / scrollContainer.clientHeight;
+            const deltaY = (intersectorY - lightSrcY) / scrollContainer. clientWidth;
+            //console.log(deltaX, deltaY);
+            const shadowX = 
+            intersector.style.textShadow = `
+                calc(1rem * ${deltaX}) calc(1rem * ${deltaY}) 0.4rem rgba(0,0,0,0.8),
+                calc(3px * ${-deltaX}) calc(3px * ${-deltaY}) red
+            `;
+        });
+    }
+    const observerOptions = {
+        root: null, // Use the viewport as the root
+        rootMargin: '0px',
+        threshold: 0.01 
+    };
+    const handleLightIntersection = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                scrollContainer.addEventListener("scroll", updateShadow);
+            } else {
+                scrollContainer.removeEventListener("scroll", updateShadow);
+            }
+        })
+    }
+    const lightObserver = new IntersectionObserver(handleLightIntersection, observerOptions);
+    lightObserver.observe(lightSrc);
+    //scrollContainer.addEventListener("scroll", updateShadow);
 })
 
 

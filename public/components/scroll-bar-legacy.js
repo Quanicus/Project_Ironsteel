@@ -1,28 +1,17 @@
-class ScrollContainer extends HTMLElement {
+class ScrollBar extends HTMLElement {
     constructor() {
         super()
         const template = document.createElement('template');
         template.innerHTML = `
         <style>
-            :host {
-                display: block;
-            }
-            .scroll-container {
-                position: relative;
-                height: 100%;
-                overflow-x: hidden;
-                overflow-y: scroll;
-                scrollbar-width: none;
-            }
-            .scroll-bar, .scroll-button {
+            :host, .scroll-bar, .scroll-button {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center; 
             }
-            .scroll-bar-container {
+            :host {
                 position: absolute;
-                display: flex;
                 font-size: 16px;
                 top: 0;
                 right: 0;
@@ -39,11 +28,11 @@ class ScrollContainer extends HTMLElement {
             }
             .scroll-button {
                 width: 100%;           
-                color: #d4d4d4;
+                color: lightgrey;
                 transition: color 0.3s ease-in-out;
             }
             .scroll-button:hover span{
-                color: white;
+                color: aqua;
             }
             .progress-bar {
                 position: relative;
@@ -57,33 +46,30 @@ class ScrollContainer extends HTMLElement {
             }
             .progress {
                 height: 100%;
-                background-color: white;
-                border: 1px solid white;
+                background-color: aqua;
+                border: 1px solid aqua;
                 border-radius: 2px;
                 transform: translateY(-100%);
                 transition: transform 0.4s linear;
             }
         </style>
-        <div class="scroll-container">
-            <slot></slot>
-        </div>
-        <div class="scroll-bar-container">
-            <div class="scroll-bar"></div>
-        </div>
+        <div class="scroll-bar"></div>
         `;
         this.attachShadow({mode: 'open'});
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.activePage = null;
     }
     connectedCallback() {
+        this.parentElement.style.setProperty('position', 'relative');
+        
+        //this.hideScroll();
         this.attachContent();
-        this.setParallax();
     }
     attachContent() {
         document.addEventListener('DOMContentLoaded', () => {
           
-            const scrollBar = this.shadowRoot.querySelector('.scroll-bar');
-            const pageContainer = this;
+            const scrollBar = this.shadowRoot.querySelector('div');
+            const pageContainer = this.previousElementSibling;
             
             //iterate through content pages
             const content = pageContainer.querySelectorAll('.scroll-page');
@@ -102,13 +88,7 @@ class ScrollContainer extends HTMLElement {
 
         });
     }
-    setParallax() {
-        const perspective = this.getAttribute("parallax-perspective");
-        if (perspective) {
-            this.shadowRoot.querySelector(".scroll-container")
-            .style.perspective = `${parseInt(perspective)}px`;
-        }
-    }
+
     makeScrollLabel(pageNum) {
         const buttonLabel = document.createElement('label');
         buttonLabel.setAttribute('class', 'scroll-button');
@@ -135,7 +115,7 @@ class ScrollContainer extends HTMLElement {
     }
     setListeners(page, label) {
         const config = {
-            root: this,
+            root: this.previousElementSibling,
             rootMargin: '-1px 0px -100% 0px',
             threshold: 0
         }
@@ -148,11 +128,11 @@ class ScrollContainer extends HTMLElement {
                 if (entry.isIntersecting) {
                     progressBar.style.setProperty('height', '4em');
                     page.setAttribute('intersecting', 'true');
-                    label.style.setProperty('color', 'white');
+                    label.style.setProperty('color', 'aqua');
                 } else {
                     progressBar.style.setProperty('height', '0.66em');
                     page.removeAttribute('intersecting');
-                    label.style.setProperty('color', '#d4d4d4');
+                    label.style.setProperty('color', 'lightgrey');
                 }
             }
         }, config);
@@ -163,9 +143,9 @@ class ScrollContainer extends HTMLElement {
         });
     }
     setupScrollContainer() {
-        const scrollContainer = this.shadowRoot.querySelector(".scroll-container");
+        const scrollContainer = this.previousElementSibling;
         const progresses = this.shadowRoot.querySelectorAll('.progress');
-        const pages = this.querySelectorAll('.scroll-page');
+        const pages = scrollContainer.querySelectorAll('.scroll-content');
 
         
         if(progresses.length < pages.length){
@@ -173,7 +153,7 @@ class ScrollContainer extends HTMLElement {
         }
         //scroll event listener that actively monitors the position of the scroll position and updates the scrollbar.
         scrollContainer.addEventListener('scroll', () => {  
-            //iterate through the pages to find which is intersecting.         
+            //iterate through the pages to find which is intersecting.           
             for (let i = 0; i < pages.length; i++) {
                 const page = pages[i];
                 const progress = progresses[i];
@@ -189,7 +169,7 @@ class ScrollContainer extends HTMLElement {
         });   
     }   
 }
-customElements.define('scroll-container', ScrollContainer);
+customElements.define('scroll-bar', ScrollBar);
 
 
 

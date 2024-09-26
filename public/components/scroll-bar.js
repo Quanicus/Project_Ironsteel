@@ -1,81 +1,80 @@
+const template = document.createElement('template');
+template.innerHTML = `
+    <style>
+        .scroll-bar, .scroll-button {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; 
+        }
+        :host {
+            position: absolute;
+            display: flex;
+            font-size: 16px;
+            top: 0;
+            right: 0;
+            height: 100%;
+            min-width: 30px;
+            width: 4vw;
+            background-color: rgba(0,0,0, 0.5) ;
+            z-index: 1;
+        }
+        .scroll-bar {
+            width: 100%;
+            min-height: 25%;
+            gap: 0.6em;
+        }
+        .scroll-button {
+            width: 100%;           
+            color: #d4d4d4;
+            transition: color 0.3s ease-in-out;
+        }
+        .scroll-button:hover span{
+            color: white;
+        }
+        .progress-bar {
+            position: relative;
+            width: 2px;
+            height: 0.6em;
+            border: 1px solid darkgray;
+            border-radius: 2px;
+            background-color: gray;
+            overflow: hidden;
+            transition: height 0.3s ease-in-out;
+        }
+        .progress {
+            height: 100%;
+            background-color: white;
+            border: 1px solid white;
+            border-radius: 2px;
+            transform: translateY(-100%);
+            transition: transform 0.4s linear;
+        }
+    </style>
+
+    <div class="scroll-bar"></div>
+
+`;
 class ScrollBar extends HTMLElement {
     constructor() {
         super()
-        const template = document.createElement('template');
-        template.innerHTML = `
-        <style>
-            :host, .scroll-bar, .scroll-button {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center; 
-            }
-            :host {
-                position: absolute;
-                font-size: 16px;
-                top: 0;
-                right: 0;
-                height: 100%;
-                min-width: 30px;
-                width: 4vw;
-                background-color: rgba(0,0,0, 0.5) ;
-                z-index: 1;
-            }
-            .scroll-bar {
-                width: 100%;
-                min-height: 25%;
-                gap: 0.6em;
-            }
-            .scroll-button {
-                width: 100%;           
-                color: lightgrey;
-                transition: color 0.3s ease-in-out;
-            }
-            .scroll-button:hover span{
-                color: aqua;
-            }
-            .progress-bar {
-                position: relative;
-                width: 2px;
-                height: 0.6em;
-                border: 1px solid darkgray;
-                border-radius: 2px;
-                background-color: gray;
-                overflow: hidden;
-                transition: height 0.3s ease-in-out;
-            }
-            .progress {
-                height: 100%;
-                background-color: aqua;
-                border: 1px solid aqua;
-                border-radius: 2px;
-                transform: translateY(-100%);
-                transition: transform 0.4s linear;
-            }
-        </style>
-        <div class="scroll-bar"></div>
-        `;
-        this.attachShadow({mode: 'open'});
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this.attachShadow({mode: 'open'})
+        .appendChild(template.content.cloneNode(true));
         this.activePage = null;
     }
     connectedCallback() {
-        this.parentElement.style.setProperty('position', 'relative');
-        
-        //this.hideScroll();
         this.attachContent();
     }
     attachContent() {
         document.addEventListener('DOMContentLoaded', () => {
           
-            const scrollBar = this.shadowRoot.querySelector('div');
+            const scrollBar = this.shadowRoot.querySelector('.scroll-bar');
             const pageContainer = this.previousElementSibling;
             
             //iterate through content pages
-            const content = pageContainer.querySelectorAll('.page-content');
-            content.forEach((page, pageNum) => {
-                
-       
+            const pages = pageContainer.querySelectorAll('.scroll-page');
+            pages.forEach((page, pageNum) => {
+
                 const label = this.makeScrollLabel(pageNum);
                 const progressBar = this.makeProgressBar();
                 label.appendChild(progressBar);
@@ -88,7 +87,6 @@ class ScrollBar extends HTMLElement {
 
         });
     }
-
     makeScrollLabel(pageNum) {
         const buttonLabel = document.createElement('label');
         buttonLabel.setAttribute('class', 'scroll-button');
@@ -121,18 +119,18 @@ class ScrollBar extends HTMLElement {
         }
         const observer = new IntersectionObserver((entries, observer) => {
             const progressBar = label.lastElementChild;
-            const progress = progressBar.firstElementChild;
+            //const progress = progressBar.firstElementChild;
             for (const entry of entries) {
                 const page = entry.target;
-                
+    
                 if (entry.isIntersecting) {
                     progressBar.style.setProperty('height', '4em');
                     page.setAttribute('intersecting', 'true');
-                    label.style.setProperty('color', 'aqua');
+                    label.style.setProperty('color', 'white');
                 } else {
                     progressBar.style.setProperty('height', '0.66em');
                     page.removeAttribute('intersecting');
-                    label.style.setProperty('color', 'lightgrey');
+                    label.style.setProperty('color', '#d4d4d4');
                 }
             }
         }, config);
@@ -144,8 +142,9 @@ class ScrollBar extends HTMLElement {
     }
     setupScrollContainer() {
         const scrollContainer = this.previousElementSibling;
+        const pages = scrollContainer.querySelectorAll('.scroll-page');
         const progresses = this.shadowRoot.querySelectorAll('.progress');
-        const pages = scrollContainer.querySelectorAll('.page-content');
+        
 
         
         if(progresses.length < pages.length){
@@ -153,8 +152,10 @@ class ScrollBar extends HTMLElement {
         }
         //scroll event listener that actively monitors the position of the scroll position and updates the scrollbar.
         scrollContainer.addEventListener('scroll', () => {  
-            //iterate through the pages to find which is intersecting.           
+            //console.log("scrollin")
+            //iterate through the pages to find which is intersecting.         
             for (let i = 0; i < pages.length; i++) {
+
                 const page = pages[i];
                 const progress = progresses[i];
                 const pageTop = page.getBoundingClientRect().top
