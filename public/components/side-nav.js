@@ -207,7 +207,7 @@ class SideNav extends HTMLElement {
             htmxModal.setAttribute("data-url", "views/login.html");
         }
 
-        htmxModal.addEventListener("htmx:afterRequest", async (event) => {
+        htmxModal.addEventListener("htmx:response", async (event) => {
             if (await this.checkLoginStatus()) {
                 htmxModal.setAttribute("data-label", "Log Out");
                 console.log("i need the logout button");
