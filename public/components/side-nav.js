@@ -201,6 +201,7 @@ class SideNav extends HTMLElement {
         
         if (await this.checkLoginStatus()) {
             htmxModal.setAttribute("data-label", "Log Out");
+            htmxModal.setAttribute("data-url", "views/logout.html");
         } else {
             htmxModal.setAttribute("data-label", "Login");
             htmxModal.setAttribute("data-url", "views/login.html");
