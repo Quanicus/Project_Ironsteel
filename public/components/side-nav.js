@@ -206,6 +206,7 @@ class SideNav extends HTMLElement {
                 console.log("i need the logout button");
             } else {
                 htmxModal.setAttribute("data-label", "Login");
+                console.log("i need the login button");
             }
         });
         this.appendChild(htmxModal);
