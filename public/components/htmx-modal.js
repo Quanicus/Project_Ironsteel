@@ -206,7 +206,7 @@ class HTMXModal extends HTMLElement {
             this.activateButton.textContent = newValue;
         }
         if (name == "data-url") {
-            this.activateButton.setAttribute("hx-get", url);
+            this.activateButton.setAttribute("hx-get", newValue);
         }
     }
     connectedCallback() {
