@@ -196,7 +196,6 @@ class SideNav extends HTMLElement {
     async createLoginModal() {
         //TODO: fetch login and turn the modal to a logout button if needed.
         const htmxModal = document.createElement("htmx-modal");
-        htmxModal.setAttribute("data-url", "views/login.html");
         htmxModal.setAttribute("slot", "login");
         
         if (await this.checkLoginStatus()) {
@@ -207,12 +206,14 @@ class SideNav extends HTMLElement {
             htmxModal.setAttribute("data-url", "views/login.html");
         }
 
-        htmxModal.addEventListener("htmx:afterSwap", async (event) => {
+        htmxModal.addEventListener("htmx:response", async (event) => {
             if (await this.checkLoginStatus()) {
                 htmxModal.setAttribute("data-label", "Log Out");
+                htmxModal.setAttribute("data-url", "views/logout.html");
                 console.log("i need the logout button");
             } else {
                 htmxModal.setAttribute("data-label", "Login");
+                htmxModal.setAttribute("data-url", "views/login.html");
                 console.log("i need the login button");
             }
         });
