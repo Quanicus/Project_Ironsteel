@@ -207,6 +207,7 @@ class HTMXModal extends HTMLElement {
         }
         if (name == "data-url") {
             this.activateButton.setAttribute("hx-get", newValue);
+            htmx.process(this);
         }
     }
     connectedCallback() {
