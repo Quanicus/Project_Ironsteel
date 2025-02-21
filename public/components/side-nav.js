@@ -200,8 +200,8 @@ class SideNav extends HTMLElement {
         htmxModal.setAttribute("slot", "login");
         htmxModal.setAttribute("data-label", "Login");
 
-        htmxModal.addEventListener("htmx:afterRequest", (event) => {
-            if (this.checkLoginStatus()) {
+        htmxModal.addEventListener("htmx:afterRequest", async (event) => {
+            if (await this.checkLoginStatus()) {
                 htmxModal.setAttribute("data-label", "Log Out");
                 console.log("i need the logout button");
             } else {
@@ -211,14 +211,13 @@ class SideNav extends HTMLElement {
         });
         this.appendChild(htmxModal);
     }
-    checkLoginStatus() {
-        fetch("/api/v1/users/status")
-            .then(response => {
-                return response.ok;
-            })
-            .catch(error => {
-                console.error("Error checking login status");
-            });
+    async checkLoginStatus() {
+        try {
+            const response = await fetch("/api/v1/users/status");
+            return response.ok;
+        } catch (error) {
+            console.error("Error checking login status");
+        }
     }
     activateDisplays() {
         this.topBtn.addEventListener("click", () => {
