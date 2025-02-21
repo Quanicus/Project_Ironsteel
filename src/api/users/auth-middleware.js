@@ -125,15 +125,17 @@ function authenticateToken(req, res, next) {
     const refreshToken = req.cookies.refreshToken;
     req.user = null;
     if (!refreshToken) {//user not logged in
-        req.isGuest = true;
-        return next();
+        //req.isGuest = true;
+        //return next();
+        return res.status(401).send("Authorization failed, please log in");
     } 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {//access token denied
             jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
                 if (err) {//refresh token denied
-                    req.isGuest = true;
-                    return next();
+                    //req.isGuest = true;
+                    //return next();
+                    return res.status(422).send("Authorization failed. Invalid refresh token");
                 } else { //issue new access token
                     delete user.iat;
                     delete user.exp;

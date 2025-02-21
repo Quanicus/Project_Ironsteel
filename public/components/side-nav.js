@@ -201,9 +201,22 @@ class SideNav extends HTMLElement {
         htmxModal.setAttribute("data-label", "Login");
 
         htmxModal.addEventListener("htmx:afterRequest", (event) => {
-            console.log("htmx requested", event);
+            if (this.checkLoginStatus()) {
+                htmxModal.setAttribute("data-label", "Log Out");
+            } else {
+                htmxModal.setAttribute("data-label", "Login");
+            }
         });
         this.appendChild(htmxModal);
+    }
+    checkLoginStatus() {
+        fetch("/api/v1/users/status")
+            .then(response => {
+                return response.ok;
+            })
+            .catch(error => {
+                console.error("Error checking login status");
+            });
     }
     activateDisplays() {
         this.topBtn.addEventListener("click", () => {

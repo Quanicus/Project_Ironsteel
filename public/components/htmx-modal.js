@@ -198,6 +198,14 @@ class HTMXModal extends HTMLElement {
         this.activateButtons();
         
     }
+    static get observedAttributes() {
+        return ["data-label"];
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name == "data-label") {
+            this.activateButton.textContent = newValue;
+        }
+    }
     connectedCallback() {
         this.setLabel();
         this.setTarget();
@@ -206,8 +214,9 @@ class HTMXModal extends HTMLElement {
     }
     setLabel() {
         const label = this.getAttribute("data-label") ?? "Lob me in daddy";
-        const textNode = document.createTextNode(label);
-        this.activateButton.appendChild(textNode);
+        //const textNode = document.createTextNode(label);
+        //this.activateButton.appendChild(textNode);
+        this.activateButton.textContent = label;
     }
     setTarget() {
         //this.activateButton.setAttribute("hx-target", `.content-container`);
