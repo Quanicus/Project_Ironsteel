@@ -190,15 +190,19 @@ class SideNav extends HTMLElement {
         this.transitionCover = shadow.querySelector(".transition-cover");
     }
     connectedCallback() {
-        this.createModal();
+        this.createLoginModal();
         this.activateDisplays();
     }
-    createModal() {
+    createLoginModal() {
         //TODO: fetch login and turn the modal to a logout button if needed.
         const htmxModal = document.createElement("htmx-modal");
         htmxModal.setAttribute("data-url", "views/login.html");
         htmxModal.setAttribute("slot", "login");
         htmxModal.setAttribute("data-label", "Login");
+
+        htmxModal.addEventListener("htmx:afterRequest", (event) => {
+            console.log("htmx requested", event);
+        });
         this.appendChild(htmxModal);
     }
     activateDisplays() {

@@ -114,8 +114,8 @@ async function issueTokens(req, res) {
         } else {
             throw error;
         }
-        const filePath = path.join(__dirname, "../../..", "public", "views", "login.html");
-        return res.status(422).sendFile(filePath);
+        //const filePath = path.join(__dirname, "../../..", "public", "views", "login.html");
+        //return res.status(422).sendFile(filePath);
     }
     return res.status(200).send("User successfully logged in.");
 }
