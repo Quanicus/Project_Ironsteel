@@ -193,12 +193,18 @@ class SideNav extends HTMLElement {
         this.createLoginModal();
         this.activateDisplays();
     }
-    createLoginModal() {
+    async createLoginModal() {
         //TODO: fetch login and turn the modal to a logout button if needed.
         const htmxModal = document.createElement("htmx-modal");
         htmxModal.setAttribute("data-url", "views/login.html");
         htmxModal.setAttribute("slot", "login");
-        htmxModal.setAttribute("data-label", "Login");
+        
+        if (await this.checkLoginStatus()) {
+            htmxModal.setAttribute("data-label", "Log Out");
+        } else {
+            htmxModal.setAttribute("data-label", "Login");
+            htmxModal.setAttribute("data-url", "views/login.html");
+        }
 
         htmxModal.addEventListener("htmx:afterRequest", async (event) => {
             if (await this.checkLoginStatus()) {
