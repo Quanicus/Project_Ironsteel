@@ -16,4 +16,5 @@ router.post("/register", auth.validateCredentials, controller.addUser);
 
 router.get("/status", auth.authenticateToken, controller.authenticate);
 router.post("/login", auth.validateCredentials, auth.verifyCredentials, auth.issueTokens);
+router.post("/logout", auth.authenticateToken, auth.logout);
 module.exports = router;

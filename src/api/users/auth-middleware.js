@@ -151,11 +151,15 @@ function authenticateToken(req, res, next) {
         }
     });
 }
-
+function logout(req, res){
+    const filePath = path.join(__dirname, "../../..", "public", "views", "login.html");
+    res.sendFile(filePath);
+}
 module.exports = {
     authenticateToken,
     validateCredentials,
     verifyCredentials,
     issueTokens,
     authenticateToken,
+    logout,
 };
