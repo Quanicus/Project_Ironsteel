@@ -199,11 +199,14 @@ class HTMXModal extends HTMLElement {
         
     }
     static get observedAttributes() {
-        return ["data-label"];
+        return ["data-label", "data-url"];
     }
     attributeChangedCallback(name, oldValue, newValue) {
         if (name == "data-label") {
             this.activateButton.textContent = newValue;
+        }
+        if (name == "data-url") {
+            this.activateButton.setAttribute("hx-get", url);
         }
     }
     connectedCallback() {
