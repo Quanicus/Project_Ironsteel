@@ -240,21 +240,19 @@ class HTMXModal extends HTMLElement {
     addHTMXListeners() {
         this.addEventListener('htmx:beforeRequest', () => {
             this.viewContainer.setAttribute('active', 'preswap');
-            console.log("beforeRequest - preswap");
         });        
         this.addEventListener("htmx:afterRequest", (event) => {
             const response = event.detail.xhr.response;
             if (response === "User successfully logged in.") {         
                 this.closeButton.dispatchEvent(new Event("click"));
+                this.viewContainer.setAttribute('active', 'postswap');
             }
-            console.log("afterRequest");
         });
         this.addEventListener('htmx:afterSwap', (event) => {
             const response = event.detail.xhr.response;
             if (response) {
                 this.viewContainer.setAttribute('active', 'postswap');
             }
-            console.log("afterSwap - postswap");
         })
     }
     open = () => {
