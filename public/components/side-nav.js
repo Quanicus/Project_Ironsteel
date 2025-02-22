@@ -194,7 +194,6 @@ class SideNav extends HTMLElement {
         this.activateDisplays();
     }
     async createLoginModal() {
-        //TODO: fetch login and turn the modal to a logout button if needed.
         const htmxModal = document.createElement("htmx-modal");
         htmxModal.setAttribute("slot", "login");
         
@@ -212,11 +211,9 @@ class SideNav extends HTMLElement {
             if (await this.checkLoginStatus()) {
                 htmxModal.setAttribute("data-label", "Log Out");
                 htmxModal.setAttribute("data-url", "views/logout.html");
-                console.log("i need the logout button");
             } else {
                 htmxModal.setAttribute("data-label", "Login");
                 htmxModal.setAttribute("data-url", "views/login.html");
-                console.log("i need the login button");
             }
             this.removeChild(htmxModal);
             this.appendChild(htmxModal);
