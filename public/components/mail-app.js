@@ -417,14 +417,15 @@ class MailApp extends HTMLElement {
     }
 
     async handleLoggedIn() {
-        this.getRecievedMessages("/api/v1/messages/recieved");
+        await this.getRecievedMessages("/api/v1/messages/recieved");
         this.getSentMessages();
         this.activateMessagePreviews();
         
-        this.nav.entries[0].dispatchEvent(new Event("click"));
-        this.displayMessagePreviews(this.recievedMessagePreviews);
-
-        
+        if (this.nav.entries[0]) {
+            this.nav.entries[0].dispatchEvent(new Event("click"));
+        } else {
+            this.displayMessagePreviews(this.recievedMessagePreviews);
+        }  
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
@@ -440,13 +441,15 @@ class MailApp extends HTMLElement {
 
     }
 
-    getRecievedMessages(url) {
-        fetch(url)
-        .then(async (response) => {
-            const messages = await response.json();
+    async getRecievedMessages(url) {
+        try {
+            const response = await fetch(url);
+            const messages = response.json();
+            
             this.recievedMessagePreviews = messages.map(msg => this.makePreview(msg));
-            //this.displayMessagePreviews(this.recievedMessagePreviews);
-        }).catch(error => console.log(error));
+        } catch (error) {
+            console.log(error);
+        }
     }
     getSentMessages() {
         fetch("/api/v1/messages/sent")
