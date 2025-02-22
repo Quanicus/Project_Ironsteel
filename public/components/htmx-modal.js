@@ -272,7 +272,7 @@ class HTMXModal extends HTMLElement {
 
         setTimeout(() => {
             this.dispatchEvent(new Event("closed"));
-        }, 600);
+        }, 1200);
     }
 
 }
