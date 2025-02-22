@@ -205,6 +205,8 @@ class SideNav extends HTMLElement {
             htmxModal.setAttribute("data-label", "Login");
             htmxModal.setAttribute("data-url", "views/login.html");
         }
+        
+        this.appendChild(htmxModal);
 
         htmxModal.addEventListener("htmx:afterRequest", async (event) => {
             if (await this.checkLoginStatus()) {
@@ -216,9 +218,11 @@ class SideNav extends HTMLElement {
                 htmxModal.setAttribute("data-url", "views/login.html");
                 console.log("i need the login button");
             }
-            htmx.process(htmxModal);
+            //htmx.process(htmxModal);
+            this.removeChild(htmxModal);
+            this.appendChild(htmxModal);
         });
-        this.appendChild(htmxModal);
+        
     }
     async checkLoginStatus() {
         try {
