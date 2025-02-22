@@ -41,6 +41,7 @@ template.innerHTML = `
                 width: 0;
                 height: 0;
                 transition-delay: 0s;
+                transition: all 0.6s ease-in-out;
             }
             &[active=postswap] {
                 transition-delay: 0s;
