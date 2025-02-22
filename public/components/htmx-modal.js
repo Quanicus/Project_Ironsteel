@@ -270,8 +270,9 @@ class HTMXModal extends HTMLElement {
         this.modalContainer.style.transform = "translateY(-100%)";
         this.modalContainer.style.transitionDelay = "1.8s";
 
-        const myEvent = new Event("closed");
-        this.dispatchEvent(myEvent);
+        setTimeout(() => {
+            this.dispatchEvent(new Event("closed"));
+        }, 600);
     }
 
 }
