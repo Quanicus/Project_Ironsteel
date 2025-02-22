@@ -269,6 +269,9 @@ class HTMXModal extends HTMLElement {
         this.contentContainer.removeAttribute('active');
         this.modalContainer.style.transform = "translateY(-100%)";
         this.modalContainer.style.transitionDelay = "1.8s";
+
+        const myEvent = new Event("closed");
+        this.dispatchEvent(myEvent);
     }
 
 }
