@@ -245,7 +245,6 @@ class HTMXModal extends HTMLElement {
             const response = event.detail.xhr.response;
             if (response === "User successfully logged in.") {         
                 this.closeButton.dispatchEvent(new Event("click"));
-                this.viewContainer.setAttribute('active', 'postswap');
             }
         });
         this.addEventListener('htmx:afterSwap', (event) => {
