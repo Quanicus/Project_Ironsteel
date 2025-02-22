@@ -399,7 +399,8 @@ class MailApp extends HTMLElement {
     connectedCallback() {
         this.activateHandle();
         this.activateReplyForm();
-        this.displayMessages();
+
+        this.addEventListener("logged-in", this.handleLoggedIn);
     }
     handleNavSelection = (event) => {
         const navEntry = event.detail;
@@ -415,12 +416,11 @@ class MailApp extends HTMLElement {
         }
     }
 
-    async displayMessages() {
-        if (await this.isLoggedIn()) {
-            this.getRecievedMessages("/api/v1/messages/recieved");
-            this.getSentMessages();
-            this.activateMessagePreviews();
-        }
+    async handleLoggedIn() {
+        this.getRecievedMessages("/api/v1/messages/recieved");
+        this.getSentMessages();
+        this.activateMessagePreviews();   
+        this.nav.entries[0].dispatchEvent(new Event("click"));
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
@@ -441,7 +441,7 @@ class MailApp extends HTMLElement {
         .then(async (response) => {
             const messages = await response.json();
             this.recievedMessagePreviews = messages.map(msg => this.makePreview(msg));
-            this.displayMessagePreviews(this.recievedMessagePreviews);
+            //this.displayMessagePreviews(this.recievedMessagePreviews);
         }).catch(error => console.log(error));
     }
     getSentMessages() {
@@ -597,15 +597,6 @@ class MailApp extends HTMLElement {
         this.handle.style.cursor = "";
         document.body.style.userSelect = "";
         document.removeEventListener("mousemove", this.resize);
-    }
-
-    async isLoggedIn() {
-        try {
-            const response = await fetch("/api/v1/users/status");
-            return response.ok;
-        } catch (error) {
-            console.log("Error checking login status");
-        }
     }
 }
 customElements.define("mail-app", MailApp);

@@ -198,8 +198,7 @@ class SideNav extends HTMLElement {
         htmxModal.setAttribute("slot", "login");
         
         if (await this.checkLoginStatus()) {
-            htmxModal.setAttribute("data-label", "Log Out");
-            htmxModal.setAttribute("data-url", "views/logout.html");
+            this.handleLoggedIn();
         } else {
             htmxModal.setAttribute("data-label", "Login");
             htmxModal.setAttribute("data-url", "views/login.html");
@@ -209,8 +208,7 @@ class SideNav extends HTMLElement {
 
         htmxModal.addEventListener("closed", async (event) => {
             if (await this.checkLoginStatus()) {
-                htmxModal.setAttribute("data-label", "Logout");
-                htmxModal.setAttribute("data-url", "views/logout.html");
+                this.handleLoggedIn();
             } else {
                 htmxModal.setAttribute("data-label", "Login");
                 htmxModal.setAttribute("data-url", "views/login.html");
@@ -219,6 +217,14 @@ class SideNav extends HTMLElement {
             this.appendChild(htmxModal);
         });
         
+    }
+    handleLoggedIn() {
+        htmxModal.setAttribute("data-label", "Logout");
+        htmxModal.setAttribute("data-url", "views/logout.html");
+
+        this.querySelectorAll(".login-reactive").forEach(app => {
+            app.dispatchEvent(new Event("logged-in"));
+        });
     }
     async checkLoginStatus() {
         try {
