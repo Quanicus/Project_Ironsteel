@@ -127,7 +127,7 @@ function authenticateToken(req, res, next) {
     if (!refreshToken) {//user not logged in
         //req.isGuest = true;
         //return next();
-        return res.status(101).send("Authorization failed, please log in");
+        return res.status(401).send("Authorization failed, please log in");
     } 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {//access token denied
