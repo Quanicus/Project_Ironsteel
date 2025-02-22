@@ -216,6 +216,7 @@ class SideNav extends HTMLElement {
                 htmxModal.setAttribute("data-url", "views/login.html");
                 console.log("i need the login button");
             }
+            htmx.process(htmxModal);
         });
         this.appendChild(htmxModal);
     }
