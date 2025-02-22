@@ -230,7 +230,7 @@ class HTMXModal extends HTMLElement {
         this.activateButton.setAttribute("hx-target", `global #${id}`);
 
         const url = this.getAttribute("data-url");
-        //if (!url) throw new Error("must provide a data-url to htmx-modal");
+        if (!url) throw new Error("must provide a data-url to htmx-modal");
         this.activateButton.setAttribute("hx-get", url);
     }    
     activateButtons() {

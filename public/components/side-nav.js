@@ -194,35 +194,33 @@ class SideNav extends HTMLElement {
         this.activateDisplays();
     }
     async createLoginModal() {
-        const htmxModal = document.createElement("htmx-modal");
-        this.appendChild(htmxModal);
-        htmxModal.setAttribute("slot", "login");
+        this.htmxModal = document.createElement("htmx-modal");
+        this.htmxModal.setAttribute("slot", "login");
         
         if (await this.checkLoginStatus()) {
             this.handleLoggedIn();
         } else {
-            htmxModal.setAttribute("data-label", "Login");
-            htmxModal.setAttribute("data-url", "views/login.html");
+            this.htmxModal.setAttribute("data-label", "Login");
+            this.htmxModal.setAttribute("data-url", "views/login.html");
         }
         
-        
+        this.appendChild(htmxModal);
 
-        htmxModal.addEventListener("closed", async (event) => {
+        this.htmxModal.addEventListener("closed", async (event) => {
             if (await this.checkLoginStatus()) {
                 this.handleLoggedIn();
             } else {
-                htmxModal.setAttribute("data-label", "Login");
-                htmxModal.setAttribute("data-url", "views/login.html");
+                this.htmxModal.setAttribute("data-label", "Login");
+                this.htmxModal.setAttribute("data-url", "views/login.html");
             }
-            this.removeChild(htmxModal);
-            this.appendChild(htmxModal);
+            this.removeChild(this.htmxModal);
+            this.appendChild(this.htmxModal);
         });
         
     }
     handleLoggedIn() {
-        const htmxModal = this.querySelector("htmx-modal");
-        htmxModal.setAttribute("data-label", "Logout");
-        htmxModal.setAttribute("data-url", "views/logout.html");
+        this.htmxModal.setAttribute("data-label", "Logout");
+        this.htmxModal.setAttribute("data-url", "views/logout.html");
 
         this.querySelectorAll(".login-reactive").forEach(app => {
             app.dispatchEvent(new Event("logged-in"));
