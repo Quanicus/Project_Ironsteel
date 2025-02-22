@@ -208,9 +208,6 @@ class HTMXModal extends HTMLElement {
         if (name == "data-url") {
             const parent = this.activateButton.parentNode;
             this.activateButton.setAttribute("hx-get", newValue);
-            //parent.removeChild(this.activateButton);
-            //parent.appendChild(this.activateButton);
-            //htmx.process(this.activateButton);
         }
     }
     connectedCallback() {
