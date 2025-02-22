@@ -204,7 +204,7 @@ class SideNav extends HTMLElement {
             this.htmxModal.setAttribute("data-url", "views/login.html");
         }
         
-        this.appendChild(htmxModal);
+        this.appendChild(this.htmxModal);
 
         this.htmxModal.addEventListener("closed", async (event) => {
             if (await this.checkLoginStatus()) {
