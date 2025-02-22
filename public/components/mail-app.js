@@ -419,8 +419,14 @@ class MailApp extends HTMLElement {
     async handleLoggedIn() {
         this.getRecievedMessages("/api/v1/messages/recieved");
         this.getSentMessages();
-        this.activateMessagePreviews();   
-        this.nav.entries[0].dispatchEvent(new Event("click"));
+        this.activateMessagePreviews();
+        
+        if (this.nav.entries[0]) {
+            this.nav.entries[0].dispatchEvent(new Event("click"));
+        } else {
+            this.displayMessagePreviews(this.recievedMessagePreviews);
+        }
+        
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
