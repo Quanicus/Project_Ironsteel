@@ -1,6 +1,6 @@
 <section id="logout-form">
     <h1>Do you want to log out?</h1>
-    <shad-button hx-post="api/v1/users/logout" hx-target="#logout-form">
+    <shad-button hx-post="api/v1/users/logout" hx-swap="outerHTML swap:1.2s" hx-target="#logout-form">
         Get me outta here
     </shad-button>
 </section>
