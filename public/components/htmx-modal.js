@@ -181,7 +181,7 @@ template.innerHTML = `
         </div>
         <div class="close-button"></div>
     </div>
-    <shad-button class="activate-button" hx-swap="innerHTML swap:.5s" hx-trigger="click">
+    <shad-button class="activate-button" hx-swap="innerHTML swap:.5s" hx-trigger="click delay:.5s">
     </shad-button>
 `;
 class HTMXModal extends HTMLElement {
