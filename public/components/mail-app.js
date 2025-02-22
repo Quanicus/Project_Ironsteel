@@ -424,6 +424,7 @@ class MailApp extends HTMLElement {
         if (this.nav.entries[0]) {
             this.nav.entries[0].dispatchEvent(new Event("click"));
         } else {
+            console.log("displaying recieved messages");
             this.displayMessagePreviews(this.recievedMessagePreviews);
         }  
     }
