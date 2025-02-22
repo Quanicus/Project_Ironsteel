@@ -225,7 +225,7 @@ class SideNav extends HTMLElement {
             const response = await fetch("/api/v1/users/status");
             return response.ok;
         } catch (error) {
-            console.error("Error checking login status");
+            console.log("Error checking login status");
         }
     }
     activateDisplays() {
