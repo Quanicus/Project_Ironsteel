@@ -195,6 +195,7 @@ class SideNav extends HTMLElement {
     }
     async createLoginModal() {
         const htmxModal = document.createElement("htmx-modal");
+        this.appendChild(htmxModal);
         htmxModal.setAttribute("slot", "login");
         
         if (await this.checkLoginStatus()) {
@@ -204,7 +205,7 @@ class SideNav extends HTMLElement {
             htmxModal.setAttribute("data-url", "views/login.html");
         }
         
-        this.appendChild(htmxModal);
+        
 
         htmxModal.addEventListener("closed", async (event) => {
             if (await this.checkLoginStatus()) {
