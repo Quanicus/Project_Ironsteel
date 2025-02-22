@@ -399,10 +399,7 @@ class MailApp extends HTMLElement {
     connectedCallback() {
         this.activateHandle();
         this.activateReplyForm();
-        this.getRecievedMessages("/api/v1/messages/recieved");
-        this.getSentMessages();
-        this.activateMessagePreviews();
-        
+        this.displayMessages();
     }
     handleNavSelection = (event) => {
         const navEntry = event.detail;
@@ -416,6 +413,51 @@ class MailApp extends HTMLElement {
                 this.displayMessagePreviews(this.sentMessagePreviews);
                 break;
         }
+    }
+
+    async displayMessages() {
+        if (await this.isLoggedIn()) {
+            this.getRecievedMessages("/api/v1/messages/recieved");
+            this.getSentMessages();
+            this.activateMessagePreviews();
+        }
+    }
+
+    updateMessageDisplay(message = this.selectedMessage) {
+        const display = this.display;
+        const profileIcon = display.querySelector("profile-icon");
+        const name = message.getAttribute("data-name");
+        display.querySelector(".name").textContent = name;
+        display.querySelector(".body").textContent = message.textContent;
+        display.querySelector(".subject").textContent = message.getAttribute("data-subject");
+        display.querySelector(".reply-addr").textContent = message.replyAddr;
+        profileIcon.setAttribute("data-name", name);
+        profileIcon.setInitials();
+
+    }
+
+    getRecievedMessages(url) {
+        fetch(url)
+        .then(async (response) => {
+            const messages = await response.json();
+            this.recievedMessagePreviews = messages.map(msg => this.makePreview(msg));
+            this.displayMessagePreviews(this.recievedMessagePreviews);
+        }).catch(error => console.log(error));
+    }
+    getSentMessages() {
+        fetch("/api/v1/messages/sent")
+        .then(async (response) => {
+            const messages = await response.json();
+            this.sentMessagePreviews = messages.map(msg => this.makePreview(msg));
+        }).catch(error => console.log(error));
+    }
+
+    displayMessagePreviews(messagePreviews) {
+        const container = this.shadowRoot.querySelector(".preview-window .content");
+        container.innerHTML = "";
+        messagePreviews.forEach(preview => {
+            container.appendChild(preview);
+        });
     }
     activateMessagePreviews() {
         const container = this.shadowRoot.querySelector(".preview-window .content");
@@ -443,18 +485,15 @@ class MailApp extends HTMLElement {
             }
         });
     }
-    updateMessageDisplay(message = this.selectedMessage) {
-        const display = this.display;
-        const profileIcon = display.querySelector("profile-icon");
-        const name = message.getAttribute("data-name");
-        display.querySelector(".name").textContent = name;
-        display.querySelector(".body").textContent = message.textContent;
-        display.querySelector(".subject").textContent = message.getAttribute("data-subject");
-        display.querySelector(".reply-addr").textContent = message.replyAddr;
-        profileIcon.setAttribute("data-name", name);
-        profileIcon.setInitials();
-
+    makePreview(message) {
+        const msgPreview = document.createElement("message-preview");
+        msgPreview.setAttribute("data-name", message.name);
+        msgPreview.setAttribute("data-subject", message.subject);
+        msgPreview.setAttribute("data-reply-addr", message.email);
+        msgPreview.textContent = message.content;
+        return msgPreview;
     }
+
     updateReplyForm(message = this.selectedMessage) {
         const form = this.display.querySelector("#send-message-form");
         form.querySelector("#reply-addr-field").value = message.replyAddr;
@@ -559,35 +598,14 @@ class MailApp extends HTMLElement {
         document.body.style.userSelect = "";
         document.removeEventListener("mousemove", this.resize);
     }
-    getRecievedMessages(url) {
-        fetch(url)
-        .then(async (response) => {
-            const messages = await response.json();
-            this.recievedMessagePreviews = messages.map(msg => this.makePreview(msg));
-            this.displayMessagePreviews(this.recievedMessagePreviews);
-        }).catch(error => console.log(error));
-    }
-    getSentMessages() {
-        fetch("/api/v1/messages/sent")
-        .then(async (response) => {
-            const messages = await response.json();
-            this.sentMessagePreviews = messages.map(msg => this.makePreview(msg));
-        }).catch(error => console.log(error));
-    }
-    displayMessagePreviews(messagePreviews) {
-        const container = this.shadowRoot.querySelector(".preview-window .content");
-        container.innerHTML = "";
-        messagePreviews.forEach(preview => {
-            container.appendChild(preview);
-        });
-    }
-    makePreview(message) {
-        const msgPreview = document.createElement("message-preview");
-        msgPreview.setAttribute("data-name", message.name);
-        msgPreview.setAttribute("data-subject", message.subject);
-        msgPreview.setAttribute("data-reply-addr", message.email);
-        msgPreview.textContent = message.content;
-        return msgPreview;
+
+    async isLoggedIn() {
+        try {
+            const response = await fetch("/api/v1/users/status");
+            return response.ok;
+        } catch (error) {
+            console.log("Error checking login status");
+        }
     }
 }
 customElements.define("mail-app", MailApp);
