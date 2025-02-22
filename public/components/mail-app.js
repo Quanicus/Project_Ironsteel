@@ -444,7 +444,7 @@ class MailApp extends HTMLElement {
     async getRecievedMessages(url) {
         try {
             const response = await fetch(url);
-            const messages = response.json();
+            const messages = await response.json();
             
             this.recievedMessagePreviews = messages.map(msg => this.makePreview(msg));
         } catch (error) {
