@@ -421,11 +421,8 @@ class MailApp extends HTMLElement {
         this.getSentMessages();
         this.activateMessagePreviews();
         
-
-            this.nav.entries[0].dispatchEvent(new Event("click"));
-
-            this.displayMessagePreviews(this.recievedMessagePreviews);
-        
+        this.nav.entries[0].dispatchEvent(new Event("click"));
+        this.displayMessagePreviews(this.recievedMessagePreviews); 
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
