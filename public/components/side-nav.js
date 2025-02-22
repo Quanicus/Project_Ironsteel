@@ -219,6 +219,7 @@ class SideNav extends HTMLElement {
         
     }
     handleLoggedIn() {
+        const htmxModal = this.querySelector("htmx-modal");
         htmxModal.setAttribute("data-label", "Logout");
         htmxModal.setAttribute("data-url", "views/logout.html");
 
