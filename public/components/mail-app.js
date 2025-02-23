@@ -170,7 +170,7 @@ template.innerHTML = `
                 padding: 1rem;
                 border-top: 1px solid #303030;
                 
-                .new-message {
+                .new-message & {
                     position: absolute;
                     bottom: 0;
                     left: 0;
