@@ -397,12 +397,12 @@ class MailApp extends HTMLElement {
     static get observedAttributes() {
         return ["logged-in"];
     }
-    attributeChangedCallback(name, oldValue, newValue) {
+    async attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue == newValue) return;
         if (name == "logged-in") {
             console.log("logged-in attribute changed");
             if (newValue) {
-                this.handleLoggedIn();
+                await this.handleLoggedIn();
             } else {
                 this.handleLoggedOut();
             }
