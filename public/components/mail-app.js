@@ -170,6 +170,12 @@ template.innerHTML = `
                 padding: 1rem;
                 border-top: 1px solid #303030;
                 
+                .new-message {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                }
+
                 & shad-input-text {
                     display: none;
                     .new-message & {
@@ -191,7 +197,7 @@ template.innerHTML = `
                     max-height: 45vh;
 
                     .new-message & {
-                        max-height: 65vh;
+                        max-height: 70vh;
                     }
 
                     &:focus {
