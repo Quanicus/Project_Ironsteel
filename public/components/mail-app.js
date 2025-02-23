@@ -400,9 +400,9 @@ class MailApp extends HTMLElement {
     attributeChangedCallback(name, oldValue, newValue) {
         if (name == "logged-in") {
             if (newValue) {
-                this.handleLoggedIn;
+                this.handleLoggedIn();
             } else {
-                this.handleLoggedOut;
+                this.handleLoggedOut();
             }
         }
     }
