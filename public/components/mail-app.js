@@ -190,6 +190,10 @@ template.innerHTML = `
                     min-height: 4rem;
                     max-height: 300px;
 
+                    .new-message & {
+                        max-height: none;
+                    }
+                        
                     &:focus {
                         border-color: white;
                     }
