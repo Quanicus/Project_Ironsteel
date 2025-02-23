@@ -390,9 +390,7 @@ class MailApp extends HTMLElement {
         this.nav = shadow.querySelector("icon-nav");
         this.display = shadow.querySelector(".mail-display");
         this.handle = shadow.querySelector(".resize-handle");
-        this.selectedMessage = null;
-        this.recievedMessagePreviews = [];
-        this.sentMessagePreviews = [];
+        this.initMessages();
 
         this.addEventListener("nav-entry-selected", this.handleNavSelection);
     }
@@ -401,7 +399,15 @@ class MailApp extends HTMLElement {
         this.activateReplyForm();
 
         this.addEventListener("logged-in", this.handleLoggedIn);
+        this.addEventListener("logged-out", this.handleLoggedOut);
     }
+
+    initMessages() {
+        this.selectedMessage = null;
+        this.recievedMessagePreviews = [];
+        this.sentMessagePreviews = [];
+    }
+
     handleNavSelection = (event) => {
         const navEntry = event.detail;
         const title = this.shadowRoot.querySelector(".preview-window .header .title");
@@ -423,6 +429,12 @@ class MailApp extends HTMLElement {
         
         this.nav.entries[0].dispatchEvent(new Event("click"));
         this.displayMessagePreviews(this.recievedMessagePreviews); 
+    }
+    handleLoggedOut() {
+        this.initMessages();
+        this.display.querySelector(".cover").style.opacity = "0";
+        this.shadowRoot.querySelector(".preview-window .content")
+            .container.innerHTML = "";
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
