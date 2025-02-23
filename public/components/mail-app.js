@@ -399,6 +399,7 @@ class MailApp extends HTMLElement {
     }
     attributeChangedCallback(name, oldValue, newValue) {
         if (name == "logged-in") {
+            console.log("logged-in attribute changed");
             if (newValue) {
                 this.handleLoggedIn();
             } else {
