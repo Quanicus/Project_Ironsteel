@@ -394,6 +394,18 @@ class MailApp extends HTMLElement {
 
         this.addEventListener("nav-entry-selected", this.handleNavSelection);
     }
+    static get observedAttributes() {
+        return ["logged-in"];
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name == "logged-in") {
+            if (newValue) {
+                this.handleLoggedIn;
+            } else {
+                this.handleLoggedOut;
+            }
+        }
+    }
     connectedCallback() {
         this.activateHandle();
         this.activateReplyForm();

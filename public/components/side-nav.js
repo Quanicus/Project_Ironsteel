@@ -221,7 +221,8 @@ class SideNav extends HTMLElement {
         this.htmxModal.setAttribute("data-url", "views/logout.html");
 
         this.querySelectorAll(".login-reactive").forEach(app => {
-            app.dispatchEvent(new Event("logged-in"));
+            //app.dispatchEvent(new Event("logged-in"));
+            app.setAttribute("logged-in", "true");
         });
     }
     handleLoggedOut() {
@@ -229,7 +230,8 @@ class SideNav extends HTMLElement {
         this.htmxModal.setAttribute("data-url", "views/login.html");
 
         this.querySelectorAll(".login-reactive").forEach(app => {
-            app.dispatchEvent(new Event("logged-out"));
+            //app.dispatchEvent(new Event("logged-out"));
+            app.removeAttribute("logged-in");
         });
     }
     async checkLoginStatus() {
