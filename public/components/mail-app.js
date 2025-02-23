@@ -406,6 +406,9 @@ class MailApp extends HTMLElement {
             } else {
                 this.handleLoggedOut();
             }
+            this.nav.entries[0].dispatchEvent(new Event("click"));
+            this.nav.entries[0].setAttribute("selected", true);
+            this.displayMessagePreviews(this.recievedMessagePreviews); 
         }
     }
     connectedCallback() {
@@ -441,16 +444,11 @@ class MailApp extends HTMLElement {
         this.getSentMessages();
         this.activateMessagePreviews();
         
-        this.nav.entries[0].dispatchEvent(new Event("click"));
-        this.nav.entries[0].setAttribute("selected", true);
-        this.displayMessagePreviews(this.recievedMessagePreviews); 
     }
     handleLoggedOut() {
         this.initMessages();
         this.display.querySelector(".cover").style.opacity = "100";
-        this.displayMessagePreviews([]);
-        this.nav.entries[0].dispatchEvent(new Event("click"));
-        this.nav.entries[0].removeAttribute("selected");
+        //this.displayMessagePreviews([]);
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
