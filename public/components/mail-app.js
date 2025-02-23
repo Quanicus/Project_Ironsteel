@@ -188,12 +188,12 @@ template.innerHTML = `
                     padding: .5rem;
                     overflow: auto;
                     min-height: 4rem;
-                    max-height: 300px;
+                    max-height: 45vh;
 
                     .new-message & {
-                        max-height: none;
+                        max-height: 80vh;
                     }
-                        
+
                     &:focus {
                         border-color: white;
                     }
