@@ -243,7 +243,7 @@ class HTMXModal extends HTMLElement {
         });        
         this.addEventListener("htmx:afterRequest", (event) => {
             const response = event.detail.xhr.response;
-            if (response === "User successfully logged in.") {         
+            if (response === "User successfully logged in." || response == "User successfully logged out.") {         
                 this.closeButton.dispatchEvent(new Event("click"));
             }
         });

@@ -154,8 +154,9 @@ function authenticateToken(req, res, next) {
 function logout(req, res){
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
-    const filePath = path.join(__dirname, "../../..", "public", "views", "login.html");
-    res.sendFile(filePath);
+    //const filePath = path.join(__dirname, "../../..", "public", "views", "login.html");
+    //res.sendFile(filePath);
+    res.send("User successfully logged out.");
 }
 module.exports = {
     authenticateToken,
