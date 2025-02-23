@@ -432,9 +432,8 @@ class MailApp extends HTMLElement {
     }
     handleLoggedOut() {
         this.initMessages();
-        this.display.querySelector(".cover").style.opacity = "0";
-        this.shadowRoot.querySelector(".preview-window .content")
-            .container.innerHTML = "";
+        this.display.querySelector(".cover").style.opacity = "100";
+        this.displayMessagePreviews([]);
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
