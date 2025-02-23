@@ -198,7 +198,7 @@ template.innerHTML = `
                     max-height: 45vh;
 
                     .new-message & {
-                        max-height: 70vh;
+                        max-height: none;
                     }
 
                     &:focus {
@@ -375,7 +375,7 @@ template.innerHTML = `
             <input type="hidden" name="msgId" id="msg-id" />
             <textarea id="reply" name="content" placeholder="Type your message here..."></textarea>
             <div class="submit_container">
-                <shad-input-toggle type="switch" id="new-message-toggle">New message</shad-input-toggle>
+                <shad-input-toggle type="switch" id="new-message-toggle"> New message</shad-input-toggle>
                 <shad-button id="send_message" type="submit">Send</shad-button>
             </div>
         </form>
