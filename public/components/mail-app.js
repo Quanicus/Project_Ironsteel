@@ -448,6 +448,8 @@ class MailApp extends HTMLElement {
         this.initMessages();
         this.display.querySelector(".cover").style.opacity = "100";
         this.displayMessagePreviews([]);
+        this.nav.entries[0].dispatchEvent(new Event("click"));
+        this.nav.entries[0].removeAttribute("selected");
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
