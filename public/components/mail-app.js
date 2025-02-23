@@ -442,7 +442,7 @@ class MailApp extends HTMLElement {
         this.activateMessagePreviews();
         
         this.nav.entries[0].dispatchEvent(new Event("click"));
-        this.nav.entries[0].selected = true;
+        this.nav.entries[0].setAttribute("selected", true);
         this.displayMessagePreviews(this.recievedMessagePreviews); 
     }
     handleLoggedOut() {
@@ -450,7 +450,7 @@ class MailApp extends HTMLElement {
         this.display.querySelector(".cover").style.opacity = "100";
         this.displayMessagePreviews([]);
         this.nav.entries[0].dispatchEvent(new Event("click"));
-        this.nav.entries[0].selected = false;
+        this.nav.entries[0].removeAttribute("selected");
     }
 
     updateMessageDisplay(message = this.selectedMessage) {
