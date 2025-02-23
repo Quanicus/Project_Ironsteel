@@ -191,7 +191,7 @@ template.innerHTML = `
                     max-height: 45vh;
 
                     .new-message & {
-                        max-height: 80vh;
+                        max-height: 65vh;
                     }
 
                     &:focus {
@@ -215,15 +215,6 @@ template.innerHTML = `
                     
                     }
                 } 
-            }
-            & .cover {
-                position: absolute;
-                height: 100%;
-                width: 100%;
-                top: 0;
-                background-color: black;
-                pointer-events: none;
-                transition: opacity 0.2s ease-in-out;
             }
         }
         .header {
@@ -381,7 +372,6 @@ template.innerHTML = `
                 <shad-button id="send_message" type="submit">Send</shad-button>
             </div>
         </form>
-        <div class="cover"></div>
     </div>
 `;
 class MailApp extends HTMLElement {
@@ -451,7 +441,6 @@ class MailApp extends HTMLElement {
     }
     handleLoggedOut() {
         this.initMessages();
-        this.display.querySelector(".cover").style.opacity = "100";
         //this.displayMessagePreviews([]);
     }
 
@@ -501,7 +490,6 @@ class MailApp extends HTMLElement {
         container.addEventListener("click", (event) => {
             const message_preview = event.target
             if (message_preview.tagName.toLowerCase() !== "message-preview") return;
-            this.display.querySelector(".cover").style.opacity = "0";
 
             if (this.selectedMessage) {
                 this.selectedMessage.removeAttribute("active");
