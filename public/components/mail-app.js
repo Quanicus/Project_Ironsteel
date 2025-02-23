@@ -175,6 +175,7 @@ template.innerHTML = `
                     bottom: 0;
                     left: 0;
                     width: 100%;
+                    max-height: 100%;
                 }
 
                 & shad-input-text {
