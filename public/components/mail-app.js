@@ -402,7 +402,6 @@ class MailApp extends HTMLElement {
     async attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue == newValue) return;
         if (name == "logged-in") {
-            console.log("logged-in attribute changed");
             if (newValue) {
                 await this.handleLoggedIn();
             } else {
@@ -411,7 +410,11 @@ class MailApp extends HTMLElement {
             this.nav.entries[0].dispatchEvent(new Event("click"));
             this.nav.entries[0].setAttribute("selected", true);
             this.displayMessagePreviews(this.recievedMessagePreviews); 
+            this.clearReplyForm();
+            this.selectedMessage = null;
+            this.updateMessageDisplay();
         }
+        
     }
     connectedCallback() {
         this.activateHandle();
@@ -455,14 +458,16 @@ class MailApp extends HTMLElement {
     updateMessageDisplay(message = this.selectedMessage) {
         const display = this.display;
         const profileIcon = display.querySelector("profile-icon");
-        const name = message.getAttribute("data-name");
+        const name = message ? message.getAttribute("data-name") : " ";
+        const subject = message ? message.getAttribute("data-subject") : " ";
+        const content = message ? message.textContent : " ";
+        const replyAddr = message ? message.replyAddr : " ";
         display.querySelector(".name").textContent = name;
-        display.querySelector(".body").textContent = message.textContent;
-        display.querySelector(".subject").textContent = message.getAttribute("data-subject");
-        display.querySelector(".reply-addr").textContent = message.replyAddr;
+        display.querySelector(".body").textContent = content;
+        display.querySelector(".subject").textContent = subject;
+        display.querySelector(".reply-addr").textContent = replyAddr;
         profileIcon.setAttribute("data-name", name);
         profileIcon.setInitials();
-
     }
 
     async getRecievedMessages(url) {
