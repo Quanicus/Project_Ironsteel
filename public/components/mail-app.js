@@ -365,7 +365,7 @@ template.innerHTML = `
                     <span class="name"></span>
                     <span class="date">july 19, 1996</span>
                 </div>
-                <div class="subject">Login to see your messages</div>
+                <div class="subject"></div>
                 <div class="reply-addr"></div>
             </div>
         </div>
