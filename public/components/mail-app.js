@@ -359,14 +359,14 @@ template.innerHTML = `
             </div>
         </div> 
         <div class="head">
-            <profile-icon data-name="quan pham"></profile-icon>
+            <profile-icon data-name=""></profile-icon>
             <div class="info_container">
                 <div class="heading">
                     <span class="name"></span>
                     <span class="date">july 19, 1996</span>
                 </div>
-                <div class="subject">need a hand</div>
-                <div class="reply-addr">jade@softhands.com</div>
+                <div class="subject">Login to see your messages</div>
+                <div class="reply-addr"></div>
             </div>
         </div>
         <div class="body"></div>
