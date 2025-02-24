@@ -359,7 +359,7 @@ template.innerHTML = `
             </div>
         </div> 
         <div class="head">
-            <profile-icon data-name="></profile-icon>
+            <profile-icon data-name=""></profile-icon>
             <div class="info_container">
                 <div class="heading">
                     <span class="name"></span>
