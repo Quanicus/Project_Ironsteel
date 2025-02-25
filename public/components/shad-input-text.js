@@ -209,7 +209,7 @@ export class ShadInputText extends HTMLElement {
         this.tabIndex = this.getAttribute("tabindex") ?? "0";
         this.default = this.getAttribute("default");
         this.value = this.default;
-        //this.input.tabIndex = this.tabIndex;
+        this.input.tabIndex = "-1";
         
         //console.log("initial value: ", this.value);
         
