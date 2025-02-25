@@ -157,7 +157,7 @@ export class ShadInputText extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({ mode: "open", delegatesFocus: true }).
+        this.attachShadow({ mode: "open"}).
         appendChild(template.content.cloneNode(true));
 
         this._internals = this.attachInternals();
@@ -256,7 +256,7 @@ export class ShadInputText extends HTMLElement {
             }
         });
         //input.addEventListener("keydown", () => console.log("keydown"));
-        //this.addEventListener("focus", () => this.input.focus());
+        this.addEventListener("focus", () => this.input.focus());
         //this.addEventListener("input", () => console.log("custom element inputted"));
         // input.addEventListener("paste", this.handlePaste);
         
