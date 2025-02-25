@@ -721,9 +721,9 @@ class MessagePreview extends HTMLElement {
         this.subject.textContent = this.getAttribute("data-subject");
         this.replyAddr = this.getAttribute("data-reply-addr");
         this.msgId = this.getAttribute("data-msg-id");
-        this.setTimeAgo();
+        this.date.textContent = this.timeAgo();
     }
-    setTimeAgo() {
+    timeAgo() {
         const now = new Date();
         const past = new Date(this.getAttribute("data-date"));
         const seconds = Math.round((now - past) / 1000);
