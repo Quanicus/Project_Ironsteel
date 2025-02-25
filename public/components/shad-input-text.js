@@ -157,7 +157,7 @@ export class ShadInputText extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({ mode: "open"}).
+        this.attachShadow({ mode: "open", delegatesFocus: true }).
         appendChild(template.content.cloneNode(true));
 
         this._internals = this.attachInternals();
@@ -209,7 +209,7 @@ export class ShadInputText extends HTMLElement {
         //this.tabIndex = this.getAttribute("tabindex") ?? "0";
         this.default = this.getAttribute("default");
         this.value = this.default;
-        this.input.tabIndex = "-1";
+        //this.input.tabIndex = "-1";
         
         //console.log("initial value: ", this.value);
         
@@ -256,7 +256,7 @@ export class ShadInputText extends HTMLElement {
             }
         });
         //input.addEventListener("keydown", () => console.log("keydown"));
-        this.addEventListener("focus", () => this.input.focus());
+        //this.addEventListener("focus", () => this.input.focus());
         //this.addEventListener("input", () => console.log("custom element inputted"));
         // input.addEventListener("paste", this.handlePaste);
         
