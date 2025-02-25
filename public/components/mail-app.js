@@ -724,13 +724,30 @@ class MessagePreview extends HTMLElement {
         this.setTimeAgo();
     }
     setTimeAgo() {
-        const date = new Date(this.getAttribute("data-date"));
-        const formattedDate = date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        });
-        this.date.textContent = formattedDate;
+        const now = new Date();
+        const past = new Date(this.getAttribute("data-date"));
+        const seconds = Math.round((now - past) / 1000);
+    
+        const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    
+        const units = [
+            { name: 'year', value: 31536000 },
+            { name: 'month', value: 2592000 },
+            { name: 'week', value: 604800 },
+            { name: 'day', value: 86400 },
+            { name: 'hour', value: 3600 },
+            { name: 'minute', value: 60 },
+            { name: 'second', value: 1 }
+        ];
+    
+        for (const unit of units) {
+            if (Math.abs(seconds) >= unit.value) {
+                const count = Math.round(seconds / unit.value);
+                return rtf.format(count, unit.name);
+            }
+        }
+    
+        return 'just now';
     }
 }
 customElements.define("message-preview", MessagePreview);
