@@ -419,9 +419,6 @@ class MailApp extends HTMLElement {
     connectedCallback() {
         this.activateHandle();
         this.activateReplyForm();
-
-        this.addEventListener("logged-in", this.handleLoggedIn);
-        this.addEventListener("logged-out", this.handleLoggedOut);
     }
 
     initMessages() {
@@ -462,12 +459,23 @@ class MailApp extends HTMLElement {
         const subject = message ? message.getAttribute("data-subject") : " ";
         const content = message ? message.textContent : " ";
         const replyAddr = message ? message.replyAddr : " ";
+        const date = message ? message.getAttribute("data-date") : this.today();
+
+        display.querySelector(".date").textContent = date;
         display.querySelector(".name").textContent = name;
         display.querySelector(".body").textContent = content;
         display.querySelector(".subject").textContent = subject;
         display.querySelector(".reply-addr").textContent = replyAddr;
         profileIcon.setAttribute("data-name", name);
         profileIcon.setInitials();
+    }
+    today() {
+        const today = new Date();
+        return today.toLocaleDateString('en-US', { 
+            month: 'long', 
+            day: 'numeric', 
+            year: 'numeric' 
+        });
     }
 
     async getRecievedMessages(url) {
@@ -525,6 +533,7 @@ class MailApp extends HTMLElement {
         msgPreview.setAttribute("data-name", message.name);
         msgPreview.setAttribute("data-subject", message.subject);
         msgPreview.setAttribute("data-reply-addr", message.email);
+        msgPreview.setAttribute("data-date", message.date);
         msgPreview.textContent = message.content;
         return msgPreview;
     }
@@ -716,7 +725,8 @@ class MessagePreview extends HTMLElement {
         this.setTimeAgo();
     }
     setTimeAgo() {
-        this.date.textContent = "at some time";
+        const date = this.getAttribute("data-date");
+        this.date.textContent = date;
     }
 }
 customElements.define("message-preview", MessagePreview);

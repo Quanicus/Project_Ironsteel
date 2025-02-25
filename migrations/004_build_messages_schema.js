@@ -7,7 +7,7 @@ async function up(client) {
             recipient_id INT NOT NULL,
             subject VARCHAR(255) DEFAULT 'message',
             content TEXT DEFAULT 'i love you ehe',
-            sent_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (original_msg_id) REFERENCES messages(id) ON DELETE CASCADE, 
             FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
             FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
