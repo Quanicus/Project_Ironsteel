@@ -459,7 +459,7 @@ class MailApp extends HTMLElement {
         const subject = message ? message.getAttribute("data-subject") : " ";
         const content = message ? message.textContent : " ";
         const replyAddr = message ? message.replyAddr : " ";
-        const date = message ? message.getAttribute("data-date") : this.today();
+        const date = message ? this.formatDate(new Date(message.getAttribute("data-date"))) : this.formatDate(new Date());
 
         display.querySelector(".date").textContent = date;
         display.querySelector(".name").textContent = name;
@@ -469,9 +469,8 @@ class MailApp extends HTMLElement {
         profileIcon.setAttribute("data-name", name);
         profileIcon.setInitials();
     }
-    today() {
-        const today = new Date();
-        return today.toLocaleDateString('en-US', { 
+    formatDate(date) {
+        return date.toLocaleDateString('en-US', { 
             month: 'long', 
             day: 'numeric', 
             year: 'numeric' 
