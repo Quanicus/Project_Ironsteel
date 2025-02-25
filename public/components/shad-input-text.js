@@ -157,7 +157,7 @@ export class ShadInputText extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({ mode: "open", delegatesFocus: true }).
+        this.attachShadow({ mode: "open"}).
         appendChild(template.content.cloneNode(true));
 
         this._internals = this.attachInternals();
