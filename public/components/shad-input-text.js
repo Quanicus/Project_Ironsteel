@@ -103,7 +103,7 @@ template.innerHTML = `
             border-radius: 5px;
             width: 100%;
             height: 100%;
-            
+            pointer-events: none;
             overflow: auto;
 
             & span {
