@@ -143,7 +143,7 @@ template.innerHTML = `
     </style>
     <div class="placeholder">
         <input class="input" spellcheck="false"/>
-        <div class="text-display"></div>
+        <div class="text-display" tabindex="-1"></div>
     </div>
     <audio id="click" src="./audio/click.mp3"></audio>
     <audio id="clack" src="./audio/clack.mp3"></audio>
