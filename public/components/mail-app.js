@@ -726,7 +726,7 @@ class MessagePreview extends HTMLElement {
     timeAgo() {
         const now = new Date();
         const past = new Date(this.getAttribute("data-date"));
-        const seconds = Math.round((now - past) / 1000);
+        const seconds = Math.round((past - now) / 1000);
     
         const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
     
