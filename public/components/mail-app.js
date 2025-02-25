@@ -725,8 +725,13 @@ class MessagePreview extends HTMLElement {
         this.setTimeAgo();
     }
     setTimeAgo() {
-        const date = this.getAttribute("data-date");
-        this.date.textContent = date;
+        const date = new Date(this.getAttribute("data-date"));
+        const formattedDate = date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+        this.date.textContent = formattedDate;
     }
 }
 customElements.define("message-preview", MessagePreview);
