@@ -370,7 +370,7 @@ template.innerHTML = `
         <form class="message-form" id="send-message-form" action="api/v1/messages/send" method="POST">
             <shad-input-text id="reply-addr-field" name="replyAddr" placeholder="Recipient" required></shad-input-text>
             <shad-input-text id="subject" name="subject" placeholder="Subject" value="default" required></shad-input-text>
-            <input type="hidden" name="msgId" id="msg-id" />
+            <input type="hidden" name="parentId" id="parent-id" />
             <input type="hidden" name="threadId" id="thread-id"/>
             <textarea id="reply" name="content" placeholder="Type your message here..." required></textarea>
             <div class="submit_container">
@@ -516,6 +516,7 @@ class MailApp extends HTMLElement {
     }
     makePreview(messageQueryResult) {
         const msgPreview = document.createElement("message-preview");
+        msgPreview.setAttribute("data-msgId", messageQueryResult.id);
         msgPreview.setAttribute("data-name", messageQueryResult.name);
         msgPreview.setAttribute("data-subject", messageQueryResult.subject);
         msgPreview.setAttribute("data-reply-addr", messageQueryResult.email);
@@ -528,14 +529,14 @@ class MailApp extends HTMLElement {
     updateReplyForm(messageElement = this.selectedMessage) {
         const form = this.display.querySelector("#send-message-form");
         form.querySelector("#reply-addr-field").value = messageElement.replyAddr;
-        form.querySelector("#msg-id").value = messageElement.msgId;
+        form.querySelector("#parent-id").value = messageElement.msgId;
         form.querySelector("#subject").value = "Re: " + messageElement.subject.textContent;
         form.querySelector("#thread-id").value = messageElement.getAttribute("data-threadId");
     }
     clearReplyForm() {
         const form = this.display.querySelector("#send-message-form");
         form.querySelector("#reply-addr-field").value = "";
-        form.querySelector("#msg-id").value = "";
+        form.querySelector("#parent-id").value = "";
         form.querySelector("#subject").value = "";
         form.querySelector("#thread-id").value = "";
     }
@@ -705,7 +706,7 @@ class MessagePreview extends HTMLElement {
         this.name.textContent = this.getAttribute("data-name");
         this.subject.textContent = this.getAttribute("data-subject");
         this.replyAddr = this.getAttribute("data-reply-addr");
-        this.msgId = this.getAttribute("data-msg-id");
+        this.msgId = this.getAttribute("data-msgId");
         this.date.textContent = this.timeAgo();
     }
     timeAgo() {
