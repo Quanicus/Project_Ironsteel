@@ -706,6 +706,7 @@ class MessagePreview extends HTMLElement {
         this.subject.textContent = this.getAttribute("data-subject");
         this.replyAddr = this.getAttribute("data-reply-addr");
         this.msgId = this.getAttribute("data-msg-id");
+        this.threadId = this.getAttribute("data-threadId");
         this.date.textContent = this.timeAgo();
     }
     timeAgo() {
