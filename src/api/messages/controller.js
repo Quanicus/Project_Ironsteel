@@ -26,26 +26,21 @@ const getSentMessages = (req, res) => {
 }
 const sendMessage = async (req, res) => {
     //console.log("sending?");
-    if (req.isGuest || !req.user) {
-        res.status(401).send('Access Denied: Authentication Required');
-    }
     const senderId = req.user.id;
-    let recipientId = null;
-    const {subject, content, replyAddr} = req.body;
-    if(!replyAddr || replyAddr === "guest") {
-        recipientId = 1;
-    } else {
-        const results = await pool.query(userQueries.getUserByEmail, [replyAddr]);
-        const recipient = results.rows[0];
-        if (!recipient) {
-            return res.status(404).send(`Target recipient: ${replyAddr} not found.`);
-        }
-        recipientId = recipient.id;
+    const {subject, content, replyAddr, threadId} = req.body;
+
+    const results = await pool.query(userQueries.getUserByEmail, [replyAddr]);
+    const recipient = results.rows[0];
+    if (!recipient) {
+        return res.status(404).send(`Target recipient: ${replyAddr} not found.`);
     }
-    const args = [senderId, recipientId, subject, content];
-    console.log(req.body);
-    console.log(`sender: ${senderId}, recipient: ${recipientId}, subject: ${subject}, content: ${content}`);
-    pool.query(messageQueries.sendMessage, args, (error, results) => {
+    const recipientId = recipient.id;
+    const sendMessage = `
+    INSERT INTO messages (sender_id, recipient_id, subject, content, thread_id)
+    VALUES ($1, $2, $3, $4, ${threadId ? "$5" : "DEFAULT"})
+`;
+    const args = [senderId, recipientId, subject, content, threadId];
+    pool.query(sendMessage, args, (error, results) => {
         if (error) {
             console.error(error);
             return res.status(400).send("bad request");

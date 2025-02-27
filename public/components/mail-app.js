@@ -305,10 +305,7 @@ template.innerHTML = `
                 <span class="title"></span>
                 <div class="filter_options">sup</div>
             </div>
-            <div class="content">
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-reply-addr="guest" data-subject="where's my money" data-name="Timmy">Hey you stop looking at me, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-                <message-preview data-timestamp="2023-01-01 14:45:30" data-reply-addr="jim@cob.bum" data-subject="i love you" data-name="Jimmy">I love your cookies, consectetur adipiscing elit. Sed ullamcorper, erat eget eleifend varius, metus ex luctus quam, eu egestas arcu nisi in lacus. Quisque ultrices ante nibh, at elementum nunc imperdiet id. Nulla ornare velit sed ex laoreet pretium. Vestibulum elementum lorem dui, eu placerat metus dapibus rutrum. Nullam imperdiet semper mauris, sed tristique orci sagittis ac. Suspendisse ultrices libero non tellus venenatis, in tincidunt mauris vulputate. In aliquam, ligula tempus tempus convallis, tortor nunc faucibus enim, eget luctus mi nisi non justo. Donec auctor pulvinar pellentesque. Suspendisse dolor massa, condimentum vitae convallis a, consectetur ac tortor. Aenean eget consectetur diam. Sed vel erat at eros euismod vulputate accumsan ut nunc. Etiam purus libero, rutrum non aliquet consectetur, feugiat sed lacus. Nulla nunc dolor, tincidunt a dignissim ac, iaculis non tellus. Duis facilisis lobortis augue ut faucibus. Sed aliquam turpis ligula, varius blandit arcu ornare nec. Vestibulum semper, ipsum vel vehicula aliquam, libero augue luctus lorem, id tincidunt neque sapien nec neque.</message-preview>
-            </div>
+            <div class="content"></div>
             <div class="resize-handle">
                 <div class="handle-icon">
                     <svg width="10" height="10" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5">
@@ -363,7 +360,7 @@ template.innerHTML = `
             <div class="info_container">
                 <div class="heading">
                     <span class="name"></span>
-                    <span class="date">july 19, 1996</span>
+                    <span class="date"></span>
                 </div>
                 <div class="subject">&nbsp</div>
                 <div class="reply-addr">&nbsp</div>
@@ -371,10 +368,11 @@ template.innerHTML = `
         </div>
         <div class="body"></div>
         <form class="message-form" id="send-message-form" action="api/v1/messages/send" method="POST">
-            <shad-input-text id="reply-addr-field" name="replyAddr" placeholder="Recipient" value="guest"></shad-input-text>
-            <shad-input-text id="subject" name="subject" placeholder="Subject" value="default"></shad-input-text>
+            <shad-input-text id="reply-addr-field" name="replyAddr" placeholder="Recipient" required></shad-input-text>
+            <shad-input-text id="subject" name="subject" placeholder="Subject" value="default" required></shad-input-text>
             <input type="hidden" name="msgId" id="msg-id" />
-            <textarea id="reply" name="content" placeholder="Type your message here..."></textarea>
+            <input type="hidden" name="threadId id="thread-id"/>
+            <textarea id="reply" name="content" placeholder="Type your message here..." required></textarea>
             <div class="submit_container">
                 <shad-input-toggle type="switch" id="new-message-toggle"> New message</shad-input-toggle>
                 <shad-button id="send_message" type="submit">Send</shad-button>
@@ -403,9 +401,10 @@ class MailApp extends HTMLElement {
         if (oldValue == newValue) return;
         if (name == "logged-in") {
             if (newValue) {
-                await this.handleLoggedIn();
+                await this.getRecievedMessages("/api/v1/messages/recieved");
+                this.getSentMessages();
             } else {
-                this.handleLoggedOut();
+                this.initMessages();
             }
             this.nav.entries[0].dispatchEvent(new Event("click"));
             this.nav.entries[0].setAttribute("selected", true);
@@ -419,6 +418,7 @@ class MailApp extends HTMLElement {
     connectedCallback() {
         this.activateHandle();
         this.activateReplyForm();
+        this.activateMessagePreviews(); 
     }
 
     initMessages() {
@@ -441,25 +441,14 @@ class MailApp extends HTMLElement {
         }
     }
 
-    async handleLoggedIn() {
-        await this.getRecievedMessages("/api/v1/messages/recieved");
-        this.getSentMessages();
-        this.activateMessagePreviews();
-        
-    }
-    handleLoggedOut() {
-        this.initMessages();
-        //this.displayMessagePreviews([]);
-    }
-
-    updateMessageDisplay(message = this.selectedMessage) {
+    updateMessageDisplay(messagePreview = this.selectedMessage) {
         const display = this.display;
         const profileIcon = display.querySelector("profile-icon");
-        const name = message ? message.getAttribute("data-name") : " ";
-        const subject = message ? message.getAttribute("data-subject") : " ";
-        const content = message ? message.textContent : " ";
-        const replyAddr = message ? message.replyAddr : " ";
-        const date = message ? this.formatDate(new Date(message.getAttribute("data-date"))) : this.formatDate(new Date());
+        const name = messagePreview ? messagePreview.getAttribute("data-name") : " ";
+        const subject = messagePreview ? messagePreview.getAttribute("data-subject") : " ";
+        const content = messagePreview ? messagePreview.textContent : " ";
+        const replyAddr = messagePreview ? messagePreview.replyAddr : " ";
+        const date = messagePreview ? this.formatDate(new Date(messagePreview.getAttribute("data-date"))) : this.formatDate(new Date());
 
         display.querySelector(".date").textContent = date;
         display.querySelector(".name").textContent = name;
@@ -520,48 +509,44 @@ class MailApp extends HTMLElement {
             this.updateReplyForm();
             
             const newMsgToggle = this.shadowRoot.getElementById("new-message-toggle");
-            //console.log(newMsgToggle);
             if (newMsgToggle.checked) {
-                //console.log("chiggy");
                 newMsgToggle.dispatchEvent(new Event("click"));
             }
         });
     }
-    makePreview(message) {
+    makePreview(messageQueryResult) {
         const msgPreview = document.createElement("message-preview");
-        msgPreview.setAttribute("data-name", message.name);
-        msgPreview.setAttribute("data-subject", message.subject);
-        msgPreview.setAttribute("data-reply-addr", message.email);
-        msgPreview.setAttribute("data-date", message.date);
-        msgPreview.textContent = message.content;
+        msgPreview.setAttribute("data-name", messageQueryResult.name);
+        msgPreview.setAttribute("data-subject", messageQueryResult.subject);
+        msgPreview.setAttribute("data-reply-addr", messageQueryResult.email);
+        msgPreview.setAttribute("data-date", messageQueryResult.date);
+        msgPreview.setAttribute("data-threadId", messageQueryResult.thread_id);
+        msgPreview.textContent = messageQueryResult.content;
         return msgPreview;
     }
 
-    updateReplyForm(message = this.selectedMessage) {
+    updateReplyForm(messageElement = this.selectedMessage) {
         const form = this.display.querySelector("#send-message-form");
-        form.querySelector("#reply-addr-field").value = message.replyAddr;
-        form.querySelector("#msg-id").value = message.msgId;
-        //form.querySelector("#subject").value = "Re: " + message.subject;
+        form.querySelector("#reply-addr-field").value = messageElement.replyAddr;
+        form.querySelector("#msg-id").value = messageElement.msgId;
+        form.querySelector("#subject").value = "Re: " + messageElement.subject;
+        form.querySelector("#thread-id").value = messageElement.threadId;
     }
     clearReplyForm() {
         const form = this.display.querySelector("#send-message-form");
         form.querySelector("#reply-addr-field").value = "";
         form.querySelector("#msg-id").value = "";
         form.querySelector("#subject").value = "";
+        form.querySelector("#thread-id").value = "";
     }
     activateReplyForm() {
         const form = this.display.querySelector("#send-message-form");
         form.addEventListener("submit", async (event) => {
-            event.preventDefault(); // Prevent the default form submission behavior
-
-            //const form = event.target;
-            //console.log(form.action, form.method);
+            event.preventDefault();
+            //TODO: if new-msg toggle checked, append selectedMessage text context
             const formData = new FormData(form);
             const urlEncodedData = new URLSearchParams(formData).toString();
-            //console.log(form.body);
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`); // Logs all form values
-            }
+        
             try {
                 const response = await fetch(form.action, {
                     method: form.method,
