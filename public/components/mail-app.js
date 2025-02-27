@@ -518,7 +518,7 @@ class MailApp extends HTMLElement {
         const msgPreview = document.createElement("message-preview");
         msgPreview.setAttribute("data-name", messageQueryResult.name);
         msgPreview.setAttribute("data-subject", messageQueryResult.subject);
-        msgPreview.setAttribute("data-reply-addr", messageQueryResult.email);
+        msgPreview.setAttribute("data-replyAddr", messageQueryResult.email);
         msgPreview.setAttribute("data-date", messageQueryResult.date);
         msgPreview.setAttribute("data-threadId", messageQueryResult.thread_id);
         msgPreview.textContent = messageQueryResult.content;
@@ -527,10 +527,10 @@ class MailApp extends HTMLElement {
 
     updateReplyForm(messageElement = this.selectedMessage) {
         const form = this.display.querySelector("#send-message-form");
-        form.querySelector("#reply-addr-field").value = messageElement.replyAddr;
+        form.querySelector("#reply-addr-field").value = messageElement.getAttribute("data-replyAddr");
         form.querySelector("#msg-id").value = messageElement.msgId;
-        form.querySelector("#subject").value = "Re: " + messageElement.subject;
-        form.querySelector("#thread-id").value = messageElement.threadId;
+        form.querySelector("#subject").value = "Re: " + messageElement.subject.textContent;
+        form.querySelector("#thread-id").value = messageElement.getAttribute("data-replyAddr");
     }
     clearReplyForm() {
         const form = this.display.querySelector("#send-message-form");
@@ -704,9 +704,7 @@ class MessagePreview extends HTMLElement {
     connectedCallback() {
         this.name.textContent = this.getAttribute("data-name");
         this.subject.textContent = this.getAttribute("data-subject");
-        this.replyAddr = this.getAttribute("data-reply-addr");
         this.msgId = this.getAttribute("data-msg-id");
-        this.threadId = this.getAttribute("data-threadId");
         this.date.textContent = this.timeAgo();
     }
     timeAgo() {
