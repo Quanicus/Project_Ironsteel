@@ -446,8 +446,9 @@ class MailApp extends HTMLElement {
         const profileIcon = display.querySelector("profile-icon");
         const name = messagePreview ? messagePreview.getAttribute("data-name") : " ";
         const subject = messagePreview ? messagePreview.getAttribute("data-subject") : " ";
+        const replyAddr = messagePreview ? messagePreview.getAttribute("data-replyAddr") : " ";
         const content = messagePreview ? messagePreview.textContent : " ";
-        const replyAddr = messagePreview ? messagePreview.replyAddr : " ";
+        
         const date = messagePreview ? this.formatDate(new Date(messagePreview.getAttribute("data-date"))) : this.formatDate(new Date());
 
         display.querySelector(".date").textContent = date;
@@ -519,7 +520,7 @@ class MailApp extends HTMLElement {
         msgPreview.setAttribute("data-msgId", messageQueryResult.id);
         msgPreview.setAttribute("data-name", messageQueryResult.name);
         msgPreview.setAttribute("data-subject", messageQueryResult.subject);
-        msgPreview.setAttribute("data-reply-addr", messageQueryResult.email);
+        msgPreview.setAttribute("data-replyAddr", messageQueryResult.email);
         msgPreview.setAttribute("data-date", messageQueryResult.date);
         msgPreview.setAttribute("data-threadId", messageQueryResult.thread_id);
         msgPreview.textContent = messageQueryResult.content;
@@ -528,10 +529,10 @@ class MailApp extends HTMLElement {
 
     updateReplyForm(messageElement = this.selectedMessage) {
         const form = this.display.querySelector("#send-message-form");
-        form.querySelector("#reply-addr-field").value = messageElement.replyAddr;
-        form.querySelector("#parent-id").value = messageElement.msgId;
-        form.querySelector("#subject").value = "Re: " + messageElement.subject.textContent;
+        form.querySelector("#reply-addr-field").value = messageElement.getAttribute("data-replyAddr");
+        form.querySelector("#parent-id").value = messageElement.getAttribute("data-msgId");
         form.querySelector("#thread-id").value = messageElement.getAttribute("data-threadId");
+        form.querySelector("#subject").value = "Re: " + messageElement.subject.textContent;
     }
     clearReplyForm() {
         const form = this.display.querySelector("#send-message-form");
@@ -705,8 +706,6 @@ class MessagePreview extends HTMLElement {
     connectedCallback() {
         this.name.textContent = this.getAttribute("data-name");
         this.subject.textContent = this.getAttribute("data-subject");
-        this.replyAddr = this.getAttribute("data-reply-addr");
-        this.msgId = this.getAttribute("data-msgId");
         this.date.textContent = this.timeAgo();
     }
     timeAgo() {
