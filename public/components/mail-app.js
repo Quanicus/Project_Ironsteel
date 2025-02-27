@@ -371,7 +371,7 @@ template.innerHTML = `
             <shad-input-text id="reply-addr-field" name="replyAddr" placeholder="Recipient" required></shad-input-text>
             <shad-input-text id="subject" name="subject" placeholder="Subject" value="default" required></shad-input-text>
             <input type="hidden" name="msgId" id="msg-id" />
-            <input type="hidden" name="threadId id="thread-id"/>
+            <input type="hidden" name="threadId" id="thread-id"/>
             <textarea id="reply" name="content" placeholder="Type your message here..." required></textarea>
             <div class="submit_container">
                 <shad-input-toggle type="switch" id="new-message-toggle"> New message</shad-input-toggle>
