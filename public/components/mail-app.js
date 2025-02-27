@@ -530,7 +530,7 @@ class MailApp extends HTMLElement {
         form.querySelector("#reply-addr-field").value = messageElement.replyAddr;
         form.querySelector("#msg-id").value = messageElement.msgId;
         form.querySelector("#subject").value = "Re: " + messageElement.subject.textContent;
-        form.querySelector("#thread-id").value = messageElement.threadId;
+        form.querySelector("#thread-id").value = messageElement.getAttribute("data-threadId");
     }
     clearReplyForm() {
         const form = this.display.querySelector("#send-message-form");
