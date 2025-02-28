@@ -8,7 +8,7 @@ const getRecievedMessagesById = `
     FROM messages m
     JOIN users u ON m.sender_id = u.id
     WHERE m.recipient_id = $1
-    ORDER BY m.thread_id, m.received_at DESC;
+    ORDER BY m.thread_id, m.date DESC;
 `;
 const getSentMessagesById = `
     SELECT *
