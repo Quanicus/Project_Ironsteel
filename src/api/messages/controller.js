@@ -36,7 +36,7 @@ const sendMessage = async (req, res) => {
     }
     const recipientId = recipient.id;
     const sendMessage = `
-    INSERT INTO messages (sender_id, recipient_id, subject, content, thread_id)
+    INSERT INTO messages (sender_id, recipient_id, subject, content, thread_id, parent_id)
     VALUES ($1, $2, $3, $4, ${threadId ? "$5, $6" : "DEFAULT, NULL"})
 `;
     const args = [senderId, recipientId, subject, content];
