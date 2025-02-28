@@ -37,10 +37,10 @@ const sendMessage = async (req, res) => {
     const recipientId = recipient.id;
     const sendMessage = `
     INSERT INTO messages (sender_id, recipient_id, subject, content, thread_id)
-    VALUES ($1, $2, $3, $4, ${threadId ? "$5" : "DEFAULT"})
+    VALUES ($1, $2, $3, $4, ${threadId ? "$5, $6" : "DEFAULT, NULL"})
 `;
     const args = [senderId, recipientId, subject, content];
-    if (threadId) args.push(threadId);
+    if (threadId) args.push(threadId, parentId);
     console.log(args);
     pool.query(sendMessage, args, (error, results) => {
         if (error) {
