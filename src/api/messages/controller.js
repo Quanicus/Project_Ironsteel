@@ -42,7 +42,7 @@ const sendMessage = async (req, res) => {
     const args = [senderId, recipientId, subject, content];
     if (threadId) args.push(threadId);
     console.log(args);
-    pool.query(sendMessage, (error, results) => {
+    pool.query(sendMessage, args, (error, results) => {
         if (error) {
             console.error(error);
             return res.status(400).send("bad request");
