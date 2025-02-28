@@ -4,7 +4,7 @@ const getMessagesById = `
     WHERE sender_id = $1 OR recipient_id = $1
 `;
 const getRecievedMessagesById = `
-    SELECT *
+    SELECT messages.*, users.email
     FROM messages JOIN users
     ON messages.sender_id = users.id
     WHERE recipient_id = $1
