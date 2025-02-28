@@ -27,7 +27,7 @@ const getSentMessages = (req, res) => {
 const sendMessage = async (req, res) => {
     //console.log("sending?");
     const senderId = req.user.id;
-    const {subject, content, replyAddr, threadId} = req.body;
+    const {subject, content, replyAddr, threadId, parentId} = req.body;
 
     const results = await pool.query(userQueries.getUserByEmail, [replyAddr]);
     const recipient = results.rows[0];
@@ -41,7 +41,8 @@ const sendMessage = async (req, res) => {
 `;
     const args = [senderId, recipientId, subject, content];
     if (threadId) args.push(threadId);
-    pool.query(sendMessage, args, (error, results) => {
+    console.log(args);
+    pool.query(sendMessage, (error, results) => {
         if (error) {
             console.error(error);
             return res.status(400).send("bad request");
