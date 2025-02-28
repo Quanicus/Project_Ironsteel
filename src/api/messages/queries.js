@@ -4,10 +4,11 @@ const getMessagesById = `
     WHERE sender_id = $1 OR recipient_id = $1
 `;
 const getRecievedMessagesById = `
-    SELECT messages.*, users.email
-    FROM messages JOIN users
-    ON messages.sender_id = users.id
-    WHERE recipient_id = $1
+    SELECT DISTINCT ON (m.thread_id) m.*, u.email
+    FROM messages m
+    JOIN users u ON m.sender_id = u.id
+    WHERE m.recipient_id = $1
+    ORDER BY m.thread_id, m.received_at DESC;
 `;
 const getSentMessagesById = `
     SELECT *
