@@ -497,6 +497,7 @@ class MailApp extends HTMLElement {
                 content += `Sent by ${sender}\nOn ${date}\n\n${msg.content}\n`;
                 content += "-------------------------------\n\n";
             });
+            console.log(content);
         } catch (error) {
             console.log(error);
             return "Unable to retrieve message thread";
