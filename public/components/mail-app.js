@@ -366,7 +366,7 @@ template.innerHTML = `
                 <div class="reply-addr">&nbsp</div>
             </div>
         </div>
-        <div class="body"></div>
+        <pre class="body"></pre>
         <form class="message-form" id="send-message-form" action="api/v1/messages/send" method="POST">
             <shad-input-text id="reply-addr-field" name="replyAddr" placeholder="Recipient" required></shad-input-text>
             <shad-input-text id="subject" name="subject" placeholder="Subject" value="default" required></shad-input-text>
