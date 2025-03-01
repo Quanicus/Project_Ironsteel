@@ -487,7 +487,7 @@ class MailApp extends HTMLElement {
         }
     }
     async getThreadContent(messagePreview = this.selectedMessage) {
-        const content = "";
+        let content = "";
         try {
             const response = await fetch(`/api/v1/messages/thread?threadId=${messagePreview.getAttribute("data-threadId")}`);
             const messages = await response.json();
