@@ -493,7 +493,7 @@ class MailApp extends HTMLElement {
             const messages = await response.json();
             messages.forEach(msg => {
                 const sender = (msg.name == messagePreview.getAttribute("data-name")) ? msg.name : "you";
-                const date = this.formatDate(msg.date);
+                const date = this.formatDate(new Date(msg.date));
                 content += `Sent by ${sender}\nOn ${date}\n\n${msg.content}\n`;
                 content += "-------------------------------\n\n";
             });
