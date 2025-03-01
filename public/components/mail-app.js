@@ -458,7 +458,7 @@ class MailApp extends HTMLElement {
         profileIcon.setAttribute("data-name", name);
         profileIcon.setInitials();
         
-        if (messagePreview.getAttribute("data-parentId") == "null" || messagePreview.getAttribute("data-contentLoaded")) {
+        if (!messagePreview || messagePreview.getAttribute("data-parentId") == "null" || messagePreview.getAttribute("data-contentLoaded")) {
             display.querySelector(".body").textContent = content;
         } else {
             const threadContent = await this.getThreadContent();
@@ -495,7 +495,7 @@ class MailApp extends HTMLElement {
                 const sender = (msg.name == messagePreview.getAttribute("data-name")) ? msg.name : "you";
                 const date = this.formatDate(new Date(msg.date));
                 content += `Sent by ${sender}\n${date}\n\n${msg.content}\n\n`;
-                content += "-------------------------------\n";
+                content += "-----------------------------------\n";
             });
         } catch (error) {
             console.log(error);
