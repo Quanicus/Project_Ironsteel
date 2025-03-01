@@ -523,6 +523,7 @@ class MailApp extends HTMLElement {
         msgPreview.setAttribute("data-replyAddr", messageQueryResult.email);
         msgPreview.setAttribute("data-date", messageQueryResult.date);
         msgPreview.setAttribute("data-threadId", messageQueryResult.thread_id);
+        msgPreview.setAttribute("data-parentId", messageQueryResult.parent_id);
         msgPreview.textContent = messageQueryResult.content;
         return msgPreview;
     }
