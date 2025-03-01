@@ -10,6 +10,13 @@ const getRecievedMessagesById = `
     WHERE m.recipient_id = $1
     ORDER BY m.thread_id, m.date DESC;
 `;
+const getMessageThread = `
+    SELECT m.*, u.name
+    FROM messages m
+    JOIN users u ON m.sender_id = u.id
+    WHERE thread_id = $1
+    ORDER BY date DESC;
+`;
 const getSentMessagesById = `
     SELECT *
     FROM messages JOIN users
@@ -25,5 +32,6 @@ module.exports = {
     getMessagesById,
     getRecievedMessagesById,
     getSentMessagesById,
-    sendMessage
+    sendMessage,
+    getMessageThread
 }

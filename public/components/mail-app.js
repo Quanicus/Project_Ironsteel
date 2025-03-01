@@ -441,7 +441,7 @@ class MailApp extends HTMLElement {
         }
     }
 
-    updateMessageDisplay(messagePreview = this.selectedMessage) {
+    async updateMessageDisplay(messagePreview = this.selectedMessage) {
         const display = this.display;
         const profileIcon = display.querySelector("profile-icon");
         const name = messagePreview ? messagePreview.getAttribute("data-name") : " ";
@@ -453,11 +453,21 @@ class MailApp extends HTMLElement {
 
         display.querySelector(".date").textContent = date;
         display.querySelector(".name").textContent = name;
-        display.querySelector(".body").textContent = content;
         display.querySelector(".subject").textContent = subject;
         display.querySelector(".reply-addr").textContent = replyAddr;
         profileIcon.setAttribute("data-name", name);
         profileIcon.setInitials();
+        
+        if (messagePreview.getAttribute("data-parentId") == "null" || messagePreview.getAttribute("data-contentLoaded")) {
+            display.querySelector(".body").textContent = content;
+        } else {
+            const threadContent = await this.getThreadContent();
+            messagePreview.textContent = threadContent;
+            display.querySelector(".body").textContent = threadContent;
+
+            messagePreview.setAttribute("data-contentLoaded", true);
+        }
+       
     }
     formatDate(date) {
         return date.toLocaleDateString('en-US', { 
@@ -466,7 +476,6 @@ class MailApp extends HTMLElement {
             year: 'numeric' 
         });
     }
-
     async getRecievedMessages(url) {
         try {
             const response = await fetch(url);
@@ -476,6 +485,23 @@ class MailApp extends HTMLElement {
         } catch (error) {
             console.log(error);
         }
+    }
+    async getThreadContent(messsagePreview = this.selectedMessage) {
+        const content = "";
+        try {
+            const response = await fetch("/api/v1/messages/thread");
+            const messages = await response.json();
+            messages.forEach(msg => {
+                const sender = (msg.name == messsagePreview.getAttribute("data-name")) ? msg.name : "you";
+                const date = this.formatDate(msg.date);
+                content += `Sent by ${sender}\nOn ${date}\n\n${msg.content}\n`;
+                content += "-------------------------------\n\n";
+            });
+        } catch (error) {
+            console.log(error);
+            return "Unable to retrieve message thread";
+        }
+        return content;
     }
     getSentMessages() {
         fetch("/api/v1/messages/sent")

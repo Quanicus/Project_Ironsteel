@@ -7,18 +7,18 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const getRecievedMessages = (req, res) => {
-    if (req.isGuest) {
-        return res.status(200).send("ur a guest");
-    } 
     pool.query(messageQueries.getRecievedMessagesById, [req.user.id], (error, results) => {
        if (error) throw error;
        return res.status(200).json(results.rows); 
     });
 }
+const getMessageThread = (req, res) => {
+    pool.query(messageQueries.getMessageThread, [req.body.threadId], (error, results) => {
+        if (error) throw error;
+        return res.status(200).json(results.rows);
+    });
+}
 const getSentMessages = (req, res) => {
-    if (req.isGuest) {
-        return res.status(200).send("ur a guest");
-    } 
     pool.query(messageQueries.getSentMessagesById, [req.user.id], (error, results) => {
        if (error) throw error;
        return res.status(200).json(results.rows); 
@@ -81,6 +81,7 @@ const sendContactMessage = async (req, res) => {
 }
 
 module.exports = {
+    getMessageThread,
     getRecievedMessages,
     getSentMessages,
     sendMessage,
