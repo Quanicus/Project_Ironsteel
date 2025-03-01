@@ -486,16 +486,13 @@ class MailApp extends HTMLElement {
             console.log(error);
         }
     }
-    async getThreadContent(messsagePreview = this.selectedMessage) {
+    async getThreadContent(messagePreview = this.selectedMessage) {
         const content = "";
         try {
-            const response = await fetch("/api/v1/messages/thread", {
-                headers: {"Content-Type": "text/plain"}, 
-                body: messsagePreview.getAttribute("data-threadId")
-            });
+            const response = await fetch(`/api/v1/messages/thread?threadId=${messagePreview.getAttribute("data-threadId")}`);
             const messages = await response.json();
             messages.forEach(msg => {
-                const sender = (msg.name == messsagePreview.getAttribute("data-name")) ? msg.name : "you";
+                const sender = (msg.name == messagePreview.getAttribute("data-name")) ? msg.name : "you";
                 const date = this.formatDate(msg.date);
                 content += `Sent by ${sender}\nOn ${date}\n\n${msg.content}\n`;
                 content += "-------------------------------\n\n";

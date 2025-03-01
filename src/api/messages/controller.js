@@ -13,7 +13,7 @@ const getRecievedMessages = (req, res) => {
     });
 }
 const getMessageThread = (req, res) => {
-    pool.query(messageQueries.getMessageThread, [req.body.threadId], (error, results) => {
+    pool.query(messageQueries.getMessageThread, [req.query.threadId], (error, results) => {
         if (error) throw error;
         return res.status(200).json(results.rows);
     });
