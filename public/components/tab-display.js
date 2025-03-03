@@ -34,6 +34,8 @@ class TabDisplay extends HTMLElement {
                 ::slotted(section) {
                     width: 100%;
                     height: 100%;
+                    justify-items: center;
+                    align-content: center;
                 }
                 .tab_container {
                     display: flex;
@@ -50,7 +52,7 @@ class TabDisplay extends HTMLElement {
             </style>
             <div class="tab_container"></div>
             <div class="page_container">
-                <slot ></slot>
+                <slot></slot>
             </div>
             
         `;
