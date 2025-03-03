@@ -19,7 +19,6 @@ class ShadRadio extends HTMLElement {
                     height: 16px;
                     justify-items: center;
                     align-content: center;
-                    transform: translate(20px, 20px);
                 }
                 .label {
                     position: absolute;
