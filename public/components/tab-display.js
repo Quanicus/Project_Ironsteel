@@ -32,10 +32,19 @@ class TabDisplay extends HTMLElement {
                     }
                 }
                 ::slotted(section) {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
                     width: 100%;
                     height: 100%;
                     justify-items: center;
                     align-content: center;
+                    visibility: hidden;
+                    opacity: 0;
+                }
+                ::slotted(section[active]) {
+                    visibility: visible;
+                    opacity: 1;
                 }
                 .tab_container {
                     display: flex;
@@ -43,6 +52,7 @@ class TabDisplay extends HTMLElement {
                     padding: 1em;
                 }
                 .page_container {
+                    position: relative;
                     margin: 0 1em 1em 1em;
                     border: 1px solid #303030;
                     border-radius: 8px;
@@ -78,17 +88,15 @@ class TabDisplay extends HTMLElement {
                     this.activeTab = tab;
                     page.setAttribute("active", "true");
                     tab.setAttribute("active", "true");
-                } else {
-                    page.style.setProperty("display", "none");
                 }
         
                 tab.addEventListener("click", () => {
                     this.activeTab.removeAttribute("active");
-                    tab.setAttribute("active", "true");
+                    tab.setAttribute("active", "");
                     this.activeTab = tab;
 
-                    this.activePage.style.setProperty("display", "none");
-                    page.style.setProperty("display", "block");
+                    this.activePage.removeAttribute("active");
+                    page.setAttribute("active", "");
                     this.activePage = page;
                     
                 });

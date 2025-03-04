@@ -26,6 +26,7 @@ class ShadCarousel extends HTMLElement {
                 .scroll-left, .scroll-right {
                     position: absolute;
                     top: calc((100% - 40px)/2);
+                    transform: translateY(-50%);
                     border: 1px solid #303030;
                     border-radius: 50%;
                     display: grid;
