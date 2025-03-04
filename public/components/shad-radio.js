@@ -109,9 +109,7 @@ class ShadRadio extends HTMLElement {
             // Fire input & change events
             this.dispatchEvent(new Event("input", { bubbles: true }));
             this.dispatchEvent(new Event("change", { bubbles: true }));
-        } else {
-            this.checked = false;
-        }
+        } 
     };
 
     syncCheckedState = () => {
