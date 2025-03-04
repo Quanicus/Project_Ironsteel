@@ -11,7 +11,6 @@ class ShadCarousel extends HTMLElement {
                     height: 100%;
                     justify-items: center;
                     overflow: hidden;
-                    border: 1px solid red;
                 }
                 .window {
                     position: relative;
