@@ -41,10 +41,12 @@ class TabDisplay extends HTMLElement {
                     align-content: center;
                     visibility: hidden;
                     opacity: 0;
+                    pointer-events: none;
                 }
                 ::slotted(section[active]) {
                     visibility: visible;
                     opacity: 1;
+                    pointer-events: auto;
                 }
                 .tab_container {
                     display: flex;
