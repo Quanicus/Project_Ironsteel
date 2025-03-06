@@ -12,13 +12,12 @@ class ShadRadio extends HTMLElement {
                     box-sizing: border-box;
                 }
                 :host {
-	                display: block;	
+	                display: grid;	
                     position: relative;
                     cursor: pointer;
                     width: 16px;
                     height: 16px;
-                    justify-items: center;
-                    align-content: center;
+                    place-items: center;
                 }
                 .label {
                     position: absolute;
@@ -27,12 +26,12 @@ class ShadRadio extends HTMLElement {
                     transform: translateY(-50%);
                 }
                 .radio {
+                    display: grid;
                     width: 100%;
                     height: 100%;
                     border: 1px solid #888888;
                     border-radius: 50%;
-                    justify-items: center;
-                    align-content: center;
+                    place-items: center;
                 }
                 .fill {
                     width: 65%;
