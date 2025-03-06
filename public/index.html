@@ -13,6 +13,7 @@
 
         <script src="components/shad-radio.js"></script>
         <script src="components/shad-carousel.js"></script>
+        <script src="components/shad-accordion.js"></script>
 
         <script src="main.js" type="module"></script>
         <!-- <script src="https://cdn.jsdelivr.net/gh/quanicus/shad-clone@v0.1.3-alpha/component_bundle.js"></script> -->
@@ -92,6 +93,25 @@
                         <div>2</div>
                         <div>3</div>
                     </shad-carousel>
+                </section>
+                <section>
+                    <style>
+                        shad-accordion {
+                            width: 400px;
+                        }
+                    </style>
+                    <shad-accordion>
+                        <div slot="panel">Accordion Sample 1</div>
+                        <div slot="content">Accordion content</div>
+                    </shad-accordion>
+                    <shad-accordion>
+                        <div slot="panel">Accordion Sample 2</div>
+                        <div slot="content">Accordion content</div>
+                    </shad-accordion>
+                    <shad-accordion>
+                        <div slot="panel">Accordion Sample 3</div>
+                        <div slot="content">Accordion content</div>
+                    </shad-accordion>
                 </section>
             </tab-display>
         </side-nav>
