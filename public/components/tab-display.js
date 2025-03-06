@@ -32,13 +32,13 @@ class TabDisplay extends HTMLElement {
                     }
                 }
                 ::slotted(section) {
+                    display: grid;
                     position: absolute;
                     top: 0;
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    justify-items: center;
-                    align-content: center;
+                    place-items: center;
                     visibility: hidden;
                     opacity: 0;
                     pointer-events: none;

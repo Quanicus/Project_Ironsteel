@@ -5,11 +5,12 @@ class ShadCarousel extends HTMLElement {
         this.shadowRoot.innerHTML = `
             <style>
                 :host {
-                    display: block;
+                    display: flex;
+                    flex-direction: column;
                     position: relative;
                     width: 100%;
                     height: 100%;
-                    justify-items: center;
+                    align-items: center;
                     overflow: hidden;
                 }
                 .window {
@@ -75,6 +76,54 @@ class ShadCarousel extends HTMLElement {
                     animation: shad-carousel-slideOutRight .8s ease-in-out forwards;
                 }
 
+                @keyframes shad-carousel-slideInLeft {
+                    from { 
+                        visibility: hidden;
+                        opacity: 0;
+                        transform: translateX(100%); 
+                    }
+                    to { 
+                        visibility: visible;
+                        opacity: 1;
+                        transform: translateX(0); 
+                    }
+                }
+                @keyframes shad-carousel-slideInRight {
+                    from { 
+                        visibility: hidden;
+                        opacity: 0;
+                        transform: translateX(-100%); 
+                    }
+                    to { 
+                        visibility: visible;
+                        opacity: 1;
+                        transform: translateX(0); 
+                    }
+                }
+                @keyframes shad-carousel-slideOutLeft {
+                    from { 
+                        visibility: visible;
+                        opacity: 1;
+                        transform: translateX(0); 
+                    }
+                    to { 
+                        visibility: hidden;
+                        opacity: 0;
+                        transform: translateX(-100%); 
+                    }
+                }
+                @keyframes shad-carousel-slideOutRight {
+                    from { 
+                        visibility: visible;
+                        opacity: 1;
+                        transform: translateX(0); 
+                    }
+                    to { 
+                        visibility: hidden;
+                        opacity: 0;
+                        transform: translateX(100%); 
+                    }
+                }
             </style>
             <div class="window">
                 <slot></slot>
