@@ -24,6 +24,7 @@ class ShadRadio extends HTMLElement {
                     top: 50%;
                     left: calc(100% + .5em);
                     transform: translateY(-50%);
+                    white-space: nowrap;
                 }
                 .radio {
                     display: grid;
@@ -69,9 +70,9 @@ class ShadRadio extends HTMLElement {
             <div class="radio">
                 <div class="fill"></div>
             </div>
-            <div class="label">
+            <span class="label">
                 <slot></slot>
-            </div>
+            </span>
             <svg class="circle-container" viewBox="0 0 50 50">
                 <circle class="circle" cx="25" cy="25" r="23" />
             </svg>

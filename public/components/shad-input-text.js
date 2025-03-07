@@ -13,6 +13,7 @@ template.innerHTML = `
             width: 100%;
             max-width: 100%;
             color: white;
+            width: 177px;
         }
         :host(:focus) {
             & .placeholder::after {

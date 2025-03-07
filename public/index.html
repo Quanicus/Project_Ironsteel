@@ -84,34 +84,132 @@
                     <mail-app class="login-reactive"></mail-app>
                 </section>
                 <section data-tab-name="Components">
-                </section>
-                <section data-tab-name="carousel">
-                    <shad-carousel>
-                        <div>1</div>
-                        <div>2</div>
-                        <div>3</div>
-                    </shad-carousel>
-                </section>
-                <section>
                     <style>
-                        shad-accordion {
-                            width: 400px;
+                        .component-showcase {
+                            display: flex;
+                            width: 100%;
+                            height: 100%;
+                        }
+                        .components-sidebar {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.5em;
+                            padding: 1em;
+                            background-color: #151515;
+                            min-width: 200px;
+                        }
+                        .component-trigger {
+                            padding: 0.5em 1em;
+                            cursor: pointer;
+                            border-radius: 5px;
+
+                            &:hover, &[selected] {
+                                background-color: #303030;
+                            }
+                        }
+                        .component-display {
+                            position: relative;
+                            display: grid;
+                            flex-grow: 1;
+                        }
+                        .component-page {
+                            position: absolute;
+                            inset: 1em;
+                            display: grid;
+                            place-items: center;
+                            border-radius: 9px;
+                            border: 1px solid #303030;
+                            width: calc(100% - 2em);
+                            height: calc(100% - 2em);
+                            visibility: hidden;
+                            opacity: 0;
+                            pointer-events: none;
+                            transition: all 0.2s ease-in-out;
+
+                            &[status="open"] {
+                                visibility: visible;
+                                opacity: 1;
+                                transition-delay: 0.2s;
+                                pointer-events: auto;
+                            }
+                            &[status="close"] {
+                                visibility: hidden;
+                                opacity: 0;
+                            }
                         }
                     </style>
-                    <div class="accordion">
-                        <shad-accordion>
-                            <div slot="panel">Accordion Sample 1</div>
-                            <div slot="content">Accordion content</div>
-                        </shad-accordion>
-                        <shad-accordion>
-                            <div slot="panel">Accordion Sample 2</div>
-                            <div slot="content">Accordion content</div>
-                        </shad-accordion>
-                        <shad-accordion>
-                            <div slot="panel">Accordion Sample 3</div>
-                            <div slot="content">Accordion content</div>
-                        </shad-accordion>
+                    <div class="component-showcase">
+                        <nav class="components-sidebar">
+                            <div class="component-trigger">Accordion</div>
+                            <div class="component-trigger">Button</div>
+                            <div class="component-trigger">Carousel</div>
+                            <div class="component-trigger">Input</div>
+                            <div class="component-trigger">Radio</div>
+                            <div class="component-trigger">Toggle</div>
+                        </nav>
+                        <div class="component-display">
+                            <div class="component-page" data-component="Accordion" status="open">
+                                <style>
+                                    shad-accordion {
+                                        width: 400px;
+                                    }
+                                </style>
+                                <div class="accordion">
+                                    <shad-accordion>
+                                        <div slot="panel">Accordion Sample 1</div>
+                                        <div slot="content">Accordion content</div>
+                                    </shad-accordion>
+                                    <shad-accordion>
+                                        <div slot="panel">Accordion Sample 2</div>
+                                        <div slot="content">Accordion content</div>
+                                    </shad-accordion>
+                                    <shad-accordion>
+                                        <div slot="panel">Accordion Sample 3</div>
+                                        <div slot="content">Accordion content</div>
+                                    </shad-accordion>
+                                </div>
+                            </div>
+                            <div class="component-page" data-component="Button">
+                                <shad-button>Button</shad-button>
+                            </div>
+                            <div class="component-page" data-component="Carousel">
+                                <shad-carousel>
+                                    <div>1</div>
+                                    <div>2</div>
+                                    <div>3</div>
+                                </shad-carousel>
+                            </div>
+                            <div class="component-page" data-component="Input">
+                                <shad-input-text placeholder="placeholder"></shad-input-text>
+                            </div>
+                            <div class="component-page" data-component="Radio">
+                                <div style="display: flex; flex-direction: column; gap: 1em;">
+                                    <shad-radio name="radio-example">Radio 1</shad-radio>
+                                    <shad-radio name="radio-example">Radio 2</shad-radio>
+                                    <shad-radio name="radio-example">Radio 3</shad-radio>
+                                </div>
+                            </div>
+                            <div class="component-page" data-component="Toggle">shoggle</div>
+                        </div>
                     </div>
+                    <script>
+                        let currentSelection = document.querySelector(".component-trigger");
+                        currentSelection.setAttribute("selected", "");
+                        let currentPage = document.querySelector(".component-page");
+
+                        document.querySelectorAll(".component-trigger").forEach(trigger => {
+                            trigger.addEventListener("click", () => {
+                                currentSelection.removeAttribute("selected");
+                                trigger.setAttribute("selected", "");
+                                currentSelection = trigger;
+
+                                const page = document.querySelector(`[data-component="${trigger.textContent}"]`);
+                                page.setAttribute("status", "open");
+                                currentPage.setAttribute("status", "close");
+                                currentPage = page;
+                            });
+                        });
+                    </script>
                 </section>
             </tab-display>
         </side-nav>
