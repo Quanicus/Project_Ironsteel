@@ -374,7 +374,7 @@ template.innerHTML = `
             <input type="hidden" name="threadId" id="thread-id"/>
             <textarea id="reply" name="content" placeholder="Type your message here..." required></textarea>
             <div class="submit_container">
-                <shad-input-toggle type="switch" id="new-message-toggle"> New message</shad-input-toggle>
+                <shad-toggle type="switch" id="new-message-toggle"> New message</shad-toggle>
                 <shad-button id="send_message" type="submit">Send</shad-button>
             </div>
         </form>

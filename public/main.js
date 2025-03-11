@@ -13,7 +13,7 @@ import "./components/shad-textarea.js";
 import "./components/scroll-bar.js";
 import "./components/shad-button.js";
 import "./components/shad-input-text.js";
-import "./components/shad-input-toggle.js";
+import "./components/shad-toggle.js";
 import "./components/shad-tooltip.js";
 
 document.body.addEventListener('htmx:beforeSwap', function(evt) {

@@ -2,7 +2,7 @@ const template = document.createElement("template");
 template.innerHTML = `
     <style>
         :host {
-            display: block;
+            display: inline-block;
             font-size: .75rem;
             padding: .5rem .75rem;
             border-radius: 5px;

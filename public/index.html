@@ -15,6 +15,8 @@
         <script src="components/shad-carousel.js"></script>
         <script src="components/shad-accordion.js"></script>
 
+        <script src="components/scroll-container.js"></script>
+
         <script src="main.js" type="module"></script>
         <!-- <script src="https://cdn.jsdelivr.net/gh/quanicus/shad-clone@v0.1.3-alpha/component_bundle.js"></script> -->
         
@@ -123,18 +125,17 @@
                             height: calc(100% - 2em);
                             visibility: hidden;
                             opacity: 0;
-                            pointer-events: none;
                             transition: all 0.2s ease-in-out;
 
                             &[status="open"] {
                                 visibility: visible;
                                 opacity: 1;
                                 transition-delay: 0.2s;
-                                pointer-events: auto;
                             }
                             &[status="close"] {
                                 visibility: hidden;
                                 opacity: 0;
+                                pointer-events: none;
                             }
                         }
                     </style>
@@ -143,9 +144,12 @@
                             <div class="component-trigger">Accordion</div>
                             <div class="component-trigger">Button</div>
                             <div class="component-trigger">Carousel</div>
+                            <div class="component-trigger">Checkbox</div>
                             <div class="component-trigger">Input</div>
+                            <div class="component-trigger">Modal</div>
                             <div class="component-trigger">Radio</div>
                             <div class="component-trigger">Toggle</div>
+                            <div class="component-trigger">Scroll Container</div>
                         </nav>
                         <div class="component-display">
                             <div class="component-page" data-component="Accordion" status="open">
@@ -169,27 +173,53 @@
                                     </shad-accordion>
                                 </div>
                             </div>
-                            <div class="component-page" data-component="Button">
+                            <div class="component-page" data-component="Button" status="close">
                                 <shad-button>Button</shad-button>
                             </div>
-                            <div class="component-page" data-component="Carousel">
+                            <div class="component-page" data-component="Carousel" status="close">
                                 <shad-carousel>
                                     <div>1</div>
                                     <div>2</div>
                                     <div>3</div>
                                 </shad-carousel>
                             </div>
-                            <div class="component-page" data-component="Input">
+                            <div class="component-page" data-component="Checkbox" status="close">
+                                <shad-toggle>Checkbox</shad-toggle>
+                            </div>
+                            <div class="component-page" data-component="Input" status="close">
                                 <shad-input-text placeholder="placeholder"></shad-input-text>
                             </div>
-                            <div class="component-page" data-component="Radio">
+                            <div class="component-page" data-component="Modal" status="close">
+                                <shad-modal label="Open Modal">
+                                    <div style="display: grid; gap: 1em;">
+                                        <shad-input-text placeholder="Username"></shad-input-text>
+                                        <shad-input-text type="password" placeholder="Password"></shad-input-text>
+                                        <span>
+                                            <shad-button>Submit</shad-button>
+                                            <shad-button type="cancel">Cancel</shad-button>
+                                        </span>
+                                    </div>
+                                </shad-modal>
+                            </div>
+                            <div class="component-page" data-component="Radio" status="close">
                                 <div style="display: flex; flex-direction: column; gap: 1em;">
                                     <shad-radio name="radio-example">Radio 1</shad-radio>
                                     <shad-radio name="radio-example">Radio 2</shad-radio>
                                     <shad-radio name="radio-example">Radio 3</shad-radio>
                                 </div>
                             </div>
-                            <div class="component-page" data-component="Toggle">shoggle</div>
+                            <div class="component-page" data-component="Toggle" status="close">
+                                <shad-toggle type="switch">Toggle</shad-toggle>
+                            </div>
+                            <div class="component-page" data-component="Scroll Container">
+                                <scroll-container>
+                                    <div scroll-page></div>
+                                    <div scroll-page></div>
+                                    <div scroll-page></div>
+                                    <div style="height: 900px;" scroll-page></div>
+                                    <div style="eight: 900px;" scroll-page></div>
+                                </scroll-container>
+                            </div>
                         </div>
                     </div>
                     <script>

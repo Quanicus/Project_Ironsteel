@@ -99,7 +99,7 @@ template.innerHTML = `
             transition-duration: 400ms;
         }
         :host(:not([type="radio"]):hover),
-        :host(:not([type="radio"]):focus) {
+        :host(:not([type="radio"]):active) {
             box-shadow: 0 0 1px 2px white;
         }
         input {
@@ -149,7 +149,7 @@ radioSvgTemplate.innerHTML = `
         </svg>
     </div>
 `;
-class ShadInputToggle extends HTMLElement {
+class ShadToggle extends HTMLElement {
     static formAssociated = true;
     static inputTypes = ["checkbox", "radio", "switch"];
     static radioGroups = {};
@@ -167,7 +167,7 @@ class ShadInputToggle extends HTMLElement {
         //console.log("attr changed: ", name, newValue);
         switch(name) {
             case "type":
-                if (!ShadInputToggle.inputTypes.includes(newValue)) {
+                if (!ShadToggle.inputTypes.includes(newValue)) {
                     throw Error(`shad-input-toggle must be of type: ${ShadInputToggle.inputTypes}`);
                 } 
                 this.input.type = "checkbox";
@@ -278,4 +278,4 @@ class ShadInputToggle extends HTMLElement {
         return this._internals.form;
     }
 }
-customElements.define('shad-input-toggle', ShadInputToggle);
+customElements.define('shad-toggle', ShadToggle);

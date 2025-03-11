@@ -1,95 +1,158 @@
-import { ShadButton } from "./shad-button.js";
-const template = document.createElement("template");
-template.innerHTML = `
-    <style>
-        dialog {
-            position: relative;
-            opacity: 0;
-            border: 1px solid white;
-            border-radius: 5px;
-            outline: none;
-            min-width: 300px;
-            min-height: 200px;
-            background-color: black;
-            color: white;
-            place-content: center;
-            transform: translateX(150px);
-            transition: all 0.35s ease-in;
-            overflow: visible;
-            cursor: auto;
-            gap: 0.5em;
-
-            &.show {
-                opacity: 1;
-                transform: translateX(0);
-            }
-
-            &::backdrop {
-                background-color: transparent;
-                transition: background-color 0.35s linear;
-            }
-            &.show::backdrop {
-                background-color: rgba(0,0,0,0.8); 
-            }
-        }
-        .close-button {
-            position: absolute;
-            right: 1em;
-            top: 1em;
-        }
-    </style>
-    <dialog>
-        <slot name="modal"></slot>
-        <shad-button class="close-button">X</shad-button>
-    </dialog>
-`;
-class ShadModal extends ShadButton {
+class ShadModal extends HTMLElement {
     constructor() {
         super();
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
-        this.dialog = this.shadowRoot.querySelector("dialog");
-        this.dialog.addEventListener("click", (event) => event.stopPropagation());
-        this.dialog.addEventListener("mousedown", (event) => event.stopPropagation());
-        this.shadowRoot.querySelector(".close-button").addEventListener("click", this.close);
-        this.addEventListener("click", this.showModal);
-        this.addEventListener("htmx:afterRequest", (event) => {
-            const xhr = event.detail.xhr;
-            const status = xhr.status;
-            this.querySelector("form").reset();
+        this.attachShadow({mode: "open"});
+        this.shadowRoot.innerHTML = `
+            <style>
+                :host {
+                    display: inline-block;
+                }
+                .overlay {
+                    position: fixed;
+                    display: grid;
+                    place-items: center;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    background-color: rgba(0,0,0,0.7);
+                    visibility: hidden;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: all 0.8s ease-in-out;
+                    
+                    &[status="open"] {
+                        visibility: visible;
+                        opacity: 1;
+                        pointer-events: auto;
+                    }
+                    &[status="close"] {
+                        visibility: hidden;
+                        opacity: 0;
+                        pointer-events: none;
+                    }
+                }
+                .open-button {
+                    display: grid;
+                    place-items: center;
+                    font-size: 0.75em;
+                    padding: 1em;
+                    border: 1px solid #303030;
+                    border-radius: 9px;
+                    cursor: pointer;
+                    
+                    &:hover {
+                        background-color: #303030;
+                    }
 
-            if (status >= 200 && status < 300) {
-                this.close();
-            } else {
-                // The request failed (status code outside 2xx range)
-                console.log('Request failed with status:', status);
+                    &:active {
+                        border-color: white;
+                        background-color: black;
+                    }
+                }
+                .close-button {
+                    position: absolute;
+                    display: grid;
+                    place-items: center;
+                    top: 1em;
+                    right: 1em;
+                    border-radius: 5px;
+                    color: #909090;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: white;
+                    }
+
+                    &:active {
+                        border: 1px solid white;
+                        box-shadow: 0px 0px 10px 3px white;
+                    }
+                }
+                .content {
+                    position: relative;
+                    display: grid;
+                    place-items: center;
+                    gap: 1em;
+                    min-width: 30vw;
+                    min-height: 30vh;
+                    border: 1px solid #303030;
+                    border-radius: 9px;
+                    background-color: black;
+
+                    [status="open"] & {
+                        animation: modalSlideIn 0.6s ease-in-out forwards;
+                    } 
+                    [status="close"] & {
+                        animation: modalSlideOut 0.6s ease-in-out forwards;
+                    } 
+                }
+                @keyframes modalSlideIn {
+                    from {
+                        transform: translateY(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes modalSlideOut {
+                    from {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateY(-100%);
+                        opacity: 0;
+                    }
+                }
+            </style>
+            <section class="overlay">
+                <div class="content">
+                    <slot></slot>
+                    <div class="close-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+            <div class="open-button">Modal</div>
+        `;
+        this.overlay = this.shadowRoot.querySelector(".overlay");
+        const closeButton = this.shadowRoot.querySelector(".close-button");
+        const button = this.shadowRoot.querySelector(".open-button"); 
+        button.textContent = this.getAttribute("label");
+
+        button.addEventListener("click", () => {
+            this.overlay.setAttribute("status", "open");
+        });
+
+        closeButton.addEventListener("click", () => {
+            this.overlay.setAttribute("status", "close");
+        });
+
+        this.overlay.addEventListener("click", (event) => {
+            if (event.target === this.overlay) {
+                this.overlay.setAttribute("status", "close");
             }
         });
     }
     connectedCallback() {
-        super.connectedCallback();
-
-    }
-    showModal = () => {
-        const dialog = this.dialog;
-        dialog.showModal();
-        dialog.classList.add("show");
-        dialog.style.display = "grid";
-    }
-    close = () => {
-        const dialog = this.dialog;
-        dialog.style.transform = "translateX(-150px)";
-        dialog.classList.remove("show");
-
-        const transitionEndHandler = (event) => {
-            if (event.propertyName === "opacity") {
-                dialog.style.removeProperty("display");
-                dialog.style.removeProperty("transform");
-                dialog.close();
-                dialog.removeEventListener('transitionend', transitionEndHandler);
-            }
-        };
-        dialog.addEventListener('transitionend', transitionEndHandler);
-
+        const cancelButton = this.querySelector('[type="cancel"]');
+        if (cancelButton) {
+            cancelButton.addEventListener("click", ()  => {
+                this.overlay.setAttribute("status", "close");
+            });
+        }
+        const submitButton = this.querySelector('[type="submit"]');
+        if (submitButton) {
+            submitButton.addEventListener("click", ()  => {
+                this.overlay.setAttribute("status", "close");
+            });
+        }
     }
 }
 customElements.define("shad-modal", ShadModal);
