@@ -17,6 +17,7 @@ export default class Renderer {
         canvas.setAttribute("width", `${width}`); 
         canvas.setAttribute("height", `${height}`);
         canvas.setAttribute("tabindex", "0");
+        canvas.style.borderRadius = "9px";
         canvas.style.background = "white";
         return canvas;
     }

@@ -135,7 +135,7 @@ class ShadModal extends HTMLElement {
         });
 
         this.overlay.addEventListener("click", (event) => {
-            if (event.target === this.overlay) {
+            if (event.target === event.currentTarget) {
                 this.overlay.setAttribute("status", "close");
             }
         });

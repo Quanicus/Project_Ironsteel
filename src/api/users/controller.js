@@ -82,20 +82,17 @@ const checkEmailForm = (req, res) => {
         if (error) throw error;
         console.log(results.rows);
         res.send(`
-            <div id="email-wrap">
-                <input 
-                    hx-post="/api/v1/users/checkEmail" 
-                    hx-trigger="validateEmail" 
-                    hx-target="#email-wrap" 
-                    hx-swap="outerHTML swap:0s" 
-                    valid="${results.rows.length === 0}" 
-                    value="${email.value}"
-                    type="email" id="email" name="email" placeholder="Email" 
-                        required>
-                <span>
-                    ${results.rows.length === 0 ? "this seems legit" : "she's taken" }
-                </span>
-            </div>
+            <shad-input-text 
+                hx-post="/api/v1/users/checkEmail" 
+                hx-trigger="validateEmail"
+                hx-swap="outerHTML swap:0s"
+                hx-target="this" 
+                valid="${results.rows.length === 0}" 
+                value="${email.value}"
+                placeholder="Email - ${(results.rows.length === 0) ? "Available" : "Already taken"}"
+                type="email" id="register-email" name="email"  
+                    required>
+            </shad-input-text>
         `);
     });
 }

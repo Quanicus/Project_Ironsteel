@@ -20,20 +20,21 @@ class ScrollContainer extends HTMLElement {
                     height: 100%;
                     width: 2em;
                     border: 1px solid #303030;
+                    background-color: rgba(0,0,0,0.6); 
                 }
                 .scrollbar {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
                     width: 1em;
-                    gap: .5em; 
+                    gap: .5em;
                 }
                 .page-button {
-                    color: #696969;
+                    color: #B0B0B0;
                     cursor: pointer;
     
                     &[status="close"] {
-                        color: #696969;
+                        color: #B0B0B0;
                     }
                     &[status="open"] {
                         color: white;
@@ -44,8 +45,9 @@ class ScrollContainer extends HTMLElement {
                 }
                 .page-scrollbar {
                     width: 3px;
-                    border: 1px solid #696969;
+                    border: 1px solid #B0B0B0;
                     border-radius: 3px;
+                    transition: height 0.4s ease-in-out;
                     
                     &[status="open"] {
                         height: 50px;
@@ -71,7 +73,7 @@ class ScrollContainer extends HTMLElement {
                 ::slotted([scroll-page]) {
                     width: 100%;
                     min-height: 100%;
-                    border: 1px solid red;
+                    border: 1px solid #696969;
                 }
             </style>
             <section class="content-container">

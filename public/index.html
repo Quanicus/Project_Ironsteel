@@ -16,7 +16,15 @@
         <script src="components/shad-accordion.js"></script>
 
         <script src="components/scroll-container.js"></script>
-
+        <script src="components/text-reveal.js" defer></script>
+        <script src="components/container-expand.js"></script>
+        <script src="components/parallax-card.js"></script>
+        <script src="components/tilt-card.js"></script>
+        <script src="components/carousel-3d.js"></script>
+        <script src="components/flip-card.js"></script>
+        <script src="components/shad-sonner.js"></script>
+        <script src="components/carousel-3d-auto.js"></script>
+        
         <script src="main.js" type="module"></script>
         <!-- <script src="https://cdn.jsdelivr.net/gh/quanicus/shad-clone@v0.1.3-alpha/component_bundle.js"></script> -->
         
@@ -59,6 +67,15 @@
                     <scroll-element>
                         <img src="../images/blood-skull.png" class="blood-skull">
                     </scroll-element>
+
+                    <text-reveal style="width: 80%; transform: translateX(20%)">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </text-reveal>
+                    <text-reveal style="font-size: 4em; width: 80%; transform: translateX(20%);">
+                        Welcome to Project Ironsteel
+                    </text-reveal>
                 </article>
                 
                 <article id="page-1" class="scroll-page page grid-center">
@@ -125,6 +142,7 @@
                             height: calc(100% - 2em);
                             visibility: hidden;
                             opacity: 0;
+                            overflow: hidden;
                             transition: all 0.2s ease-in-out;
 
                             &[status="open"] {
@@ -144,12 +162,20 @@
                             <div class="component-trigger">Accordion</div>
                             <div class="component-trigger">Button</div>
                             <div class="component-trigger">Carousel</div>
+                            <div class="component-trigger">Carousel 3D</div>
+                            <div class="component-trigger">Carousel 3D Auto</div>
                             <div class="component-trigger">Checkbox</div>
+                            <div class="component-trigger">Container Expand</div>
+                            <div class="component-trigger">Flip Card</div>
                             <div class="component-trigger">Input</div>
                             <div class="component-trigger">Modal</div>
+                            <div class="component-trigger">Parallax Card</div>
                             <div class="component-trigger">Radio</div>
-                            <div class="component-trigger">Toggle</div>
                             <div class="component-trigger">Scroll Container</div>
+                            <div class="component-trigger">Sonner</div>
+                            <div class="component-trigger">Text Reveal</div>
+                            <div class="component-trigger">Tilt Card</div>
+                            <div class="component-trigger">Toggle</div>
                         </nav>
                         <div class="component-display">
                             <div class="component-page" data-component="Accordion" status="open">
@@ -161,7 +187,9 @@
                                 <div class="accordion">
                                     <shad-accordion>
                                         <div slot="panel">Accordion Sample 1</div>
-                                        <div slot="content">Accordion content</div>
+                                        <div slot="content">
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                        </div>
                                     </shad-accordion>
                                     <shad-accordion>
                                         <div slot="panel">Accordion Sample 2</div>
@@ -183,8 +211,61 @@
                                     <div>3</div>
                                 </shad-carousel>
                             </div>
+                            <div class="component-page" data-component="Carousel 3D" status="close">
+                                <style>
+                                    carousel-3d > img:hover {
+                                        translate: 0 -10% 0;
+                                    }
+                                </style>
+                                <carousel-3d>
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1740768081818-9bec14cdaa6e?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742360171643-a6ab84c507b1?q=80&w=2400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742387436246-a7288481be39?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742321162269-b68f2d95367a?q=80&w=2207&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742336960947-d70838aa9614?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742129726461-ea9c742d3860?q=80&w=2202&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742162559631-c91caabb9989?q=80&w=2487&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1741850820082-ba5c8fdf4c8e?q=80&w=2667&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://plus.unsplash.com/premium_photo-1669748151567-f2c4c55be354?q=80&w=2938&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1741097631619-acc37546c841?q=80&w=2905&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                </carousel-3d>
+                            </div>
+                            <div class="component-page" data-component="Carousel 3D Auto" status="close">
+                                <carousel-3d-auto>
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1740768081818-9bec14cdaa6e?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742360171643-a6ab84c507b1?q=80&w=2400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742387436246-a7288481be39?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742321162269-b68f2d95367a?q=80&w=2207&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742336960947-d70838aa9614?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742129726461-ea9c742d3860?q=80&w=2202&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742162559631-c91caabb9989?q=80&w=2487&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1741850820082-ba5c8fdf4c8e?q=80&w=2667&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://plus.unsplash.com/premium_photo-1669748151567-f2c4c55be354?q=80&w=2938&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1741097631619-acc37546c841?q=80&w=2905&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                </carousel-3d-auto>
+                            </div>
                             <div class="component-page" data-component="Checkbox" status="close">
                                 <shad-toggle>Checkbox</shad-toggle>
+                            </div>
+                            <div class="component-page" data-component="Container Expand" status="close">
+                                <scroll-container>
+                                    <div scroll-page></div>
+                                    <div scroll-page style="padding: 100px;">
+                                        <container-expand>
+                                            <div style="width: 200px; height: 300px; background-color: #303030;"></div>
+                                        </container-expand>
+                                    </div>
+                                </scroll-container>
+                            </div>
+                            <div class="component-page" data-component="Flip Card" status="close">
+                                <flip-card>
+                                    <div slot="back">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                    </div>
+                                    <div slot="front">
+                                        Hover to flip the card.
+                                    </div>
+                                </flip-card>
                             </div>
                             <div class="component-page" data-component="Input" status="close">
                                 <shad-input-text placeholder="placeholder"></shad-input-text>
@@ -201,6 +282,18 @@
                                     </div>
                                 </shad-modal>
                             </div>
+                            <div class="component-page" data-component="Parallax Card" status="close" style="background-color: #303030; display: flex; justify-content: space-evenly">
+                                <parallax-card>
+                                    <img slot="background" src="https://ggayane.github.io/css-experiments/cards/dark_rider-cover.jpg" />
+                                    <img slot="foreground" src="https://ggayane.github.io/css-experiments/cards/dark_rider-character.webp" />
+                                    <img slot="logo" src="https://ggayane.github.io/css-experiments/cards/dark_rider-title.png" style="width: 65%;"  />
+                                </parallax-card>
+                                <parallax-card>
+                                    <img slot="background" src="https://ggayane.github.io/css-experiments/cards/force_mage-cover.jpg" />
+                                    <img slot="foreground" src="https://ggayane.github.io/css-experiments/cards/force_mage-character.webp" />
+                                    <img slot="logo" src="https://ggayane.github.io/css-experiments/cards/force_mage-title.png" style="width: 65%;" />
+                                </parallax-card>
+                            </div>
                             <div class="component-page" data-component="Radio" status="close">
                                 <div style="display: flex; flex-direction: column; gap: 1em;">
                                     <shad-radio name="radio-example">Radio 1</shad-radio>
@@ -208,17 +301,37 @@
                                     <shad-radio name="radio-example">Radio 3</shad-radio>
                                 </div>
                             </div>
-                            <div class="component-page" data-component="Toggle" status="close">
-                                <shad-toggle type="switch">Toggle</shad-toggle>
-                            </div>
-                            <div class="component-page" data-component="Scroll Container">
+                            <div class="component-page" data-component="Scroll Container" status="close">
                                 <scroll-container>
                                     <div scroll-page></div>
-                                    <div scroll-page></div>
-                                    <div scroll-page></div>
-                                    <div style="height: 900px;" scroll-page></div>
+                                    <div style="background-color: #C0C0C0;" scroll-page></div>
+                                    <div style="background-color: black;" scroll-page></div>
+                                    <div style="height: 1200px;" scroll-page></div>
                                     <div style="eight: 900px;" scroll-page></div>
                                 </scroll-container>
+                            </div>
+                            <div class="component-page" data-component="Sonner" status="close">
+                                <shad-sonner data-label="Sonner">
+                                    Event has been created
+                                </shad-sonner>
+                            </div>
+                            <div class="component-page" data-component="Text Reveal" status="close">
+                                <scroll-container>
+                                    <div scroll-page></div>
+                                    <div scroll-page style="display: grid; place-items: center;">
+                                        <text-reveal style="width: 80%">
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                        </text-reveal>
+                                    </div>
+                                </scroll-container>
+                            </div>
+                            <div class="component-page" data-component="Tilt Card" style="background-color: white;" status="close">
+                                <tilt-card>
+                                    <img style="width: 100%; height: 100%; border-radius: 9px; fit-object: cover;" src="https://images.unsplash.com/photo-1520262494112-9fe481d36ec3?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                </tilt-card>
+                            </div>
+                            <div class="component-page" data-component="Toggle" status="close">
+                                <shad-toggle type="switch">Toggle</shad-toggle>
                             </div>
                         </div>
                     </div>

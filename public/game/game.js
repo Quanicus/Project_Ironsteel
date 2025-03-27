@@ -64,18 +64,10 @@ class Game {
     }
 
     async openWebSocket() {
-        //FETCH GAME KEY FROM HTTP SERVER TO USE IN WEBSOCKET
-        let gameKey;
-        try {
-            const keyResponse = await fetch("/game/v1/game-key");
-            gameKey = await keyResponse.json();
-            console.log("gamekey:", gameKey);
-        } catch (error) {
-            console.error("failed to acquire game key", error);
-        }
-        const local = `ws://localhost:9001?game-key=${gameKey}`;
-        const deploy = `wss://project-fireflame.onrender.com?game-key=${gameKey}`;
-        this.ws = new WebSocket(deploy);
+        const domain = window.location.hostname;
+        const port = window.location.port;
+        const url = `ws://${domain}:${port}/gameServer`;
+        this.ws = new WebSocket(url);
         // Event handler: WebSocket connection established
         this.ws.onopen = () => {
             console.log('WebSocket connection established');

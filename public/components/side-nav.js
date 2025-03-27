@@ -53,7 +53,7 @@ template.innerHTML = `
             position: absolute;
             width: 100vw;
             height: 100vh;
-            background-color: grey;
+            background-color: black;
             transform: translateX(-100%);
             transition: transform 0.6s ease-in-out;
             transition-delay: 0.25s;

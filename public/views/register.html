@@ -5,14 +5,13 @@
         <div>
             <shad-input-text type="text" id="name" name="name" placeholder="Name" tabindex="1"></shad-input-text>
         </div>
-        <div id="email-wrap">
-            <shad-input-text 
-                hx-post="/api/v1/users/checkEmail" 
-                hx-trigger="validateEmail" 
-                hx-target="#email-wrap"
-                hx-swap="outerHTML swap:0s"
-                type="email" id="email" name="email" placeholder="Email" required tabindex="2"></shad-input-text>
-        </div>
+        <shad-input-text 
+            hx-post="/api/v1/users/checkEmail" 
+            hx-trigger="validateEmail" 
+            hx-swap="outerHTML swap:0s"
+            hx-target="this"
+            type="email" id="register-email" name="email" placeholder="Email" required tabindex="2">
+        </shad-input-text>
         <div>
             <shad-input-text type="password" id="password" name="password" placeholder="Password" tabindex="3"></shad-input-text>
         </div>
@@ -35,7 +34,7 @@
     <script>
         {
             const name = document.getElementById("name");
-            let email = document.getElementById("email");
+            let email = document.getElementById("register-email");
             const password = document.getElementById("password");
             const passwordConfirm = document.getElementById("password-confirm");
             const submitButton = document.getElementById("submit-new-user-form");
@@ -56,7 +55,7 @@
             });
 
             function addEmailListener() {
-                email = document.getElementById("email");
+                email = document.getElementById("register-email");
                 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 email.addEventListener("change", (event) => {
                     email.value = email.value.trim();

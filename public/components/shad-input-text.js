@@ -14,6 +14,7 @@ template.innerHTML = `
             max-width: 100%;
             color: white;
             width: 177px;
+            pointer-events: none;
         }
         :host(:focus) {
             & .placeholder::after {
@@ -68,6 +69,7 @@ template.innerHTML = `
             width: fit-content;
             border-radius: 5px;
             background-color: black;
+            pointer-events: none;
 
             &::after {
                 content: var(--placeholder);
@@ -140,6 +142,7 @@ template.innerHTML = `
             height: 100%;
             overflow: auto;
             opacity: 0;
+            pointer-events: auto;
         }
     </style>
     <div class="placeholder">
@@ -171,7 +174,8 @@ export class ShadInputText extends HTMLElement {
         this.recentCharInput = document.createElement("div");
 
         this.selectedCards = [];
-        
+        this.default = "";
+ 
         this.bubbleEvents(['change']);
         //, 'input', 'focus', 'blur'
         this.propsToBind = ["value", 'disabled', 'required', 'maxlength',
@@ -180,7 +184,7 @@ export class ShadInputText extends HTMLElement {
         this.attachListeners();
     }    
     static get observedAttributes() {
-        return ["value", 'type', 'disabled', 'required', 'maxlength', 'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus', 'name', 'size'];
+        return ["value", "placeholder", 'type', 'disabled', 'required', 'maxlength', 'minlength', 'pattern', 'readonly', 'autocomplete', 'autofocus', 'name', 'size'];
     }
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue === newValue) return;//mostly serves to initialize shadow input attributes
@@ -194,9 +198,8 @@ export class ShadInputText extends HTMLElement {
                 }
                 this.input.type = newValue;
                 break;
-            case "value":
-                this.input.value = newValue;
-                this.input.dispatchEvent(new Event("input"));
+            case "placeholder":
+                this.setPlaceholder();
                 break;
             default:
                 this.input[name] = newValue;
@@ -207,20 +210,16 @@ export class ShadInputText extends HTMLElement {
         this._internals.setFormValue(this.value);
         this._internals.setValidity(this.input.validity, this.input.validationMessage, this.input);
         
-        //this.tabIndex = this.getAttribute("tabindex") ?? "0";
-        this.default = this.getAttribute("default");
+        if (this.hasAttribute("value")) {
+            this.default = this.getAttribute("value");
+        } 
         this.value = this.default;
-        //this.input.tabIndex = "-1";
-        
-        //console.log("initial value: ", this.value);
         
         this.activateSoundEffects();
-        this.setPlaceholder();
 
         if (!this._caretElement) this.initCaret();
         
 
-        // this.attachListeners();
     }
     bubbleEvents(events) {
         events.forEach(eventName => {
@@ -241,13 +240,13 @@ export class ShadInputText extends HTMLElement {
     }
     attachListeners() {
         const input = this.input;
-        input.addEventListener("beforeinput", this.handleBeforeInput);
-        input.addEventListener('input', this.handleAfterInput);
-        input.addEventListener("scroll", this.syncScroll);
-        input.addEventListener("mousedown", this.startSelecting);
-        input.addEventListener('mouseup', this.captureSelection);
-        input.addEventListener("click", this.captureSelection);
-        input.addEventListener('keyup', this.captureSelection);
+        input.addEventListener("beforeinput", this.handleBeforeInput.bind(this));
+        input.addEventListener('input', this.handleAfterInput.bind(this));
+        input.addEventListener("scroll", this.syncScroll.bind(this));
+        input.addEventListener("mousedown", this.startSelecting.bind(this));
+        input.addEventListener('mouseup', this.captureSelection.bind(this));
+        input.addEventListener("click", this.captureSelection.bind(this));
+        input.addEventListener('keyup', this.captureSelection.bind(this));
         input.addEventListener("keyup", () => {
             this.recentCharInput.classList.remove("float");
             if (this.needClack) {
@@ -257,7 +256,6 @@ export class ShadInputText extends HTMLElement {
             }
         });
         //input.addEventListener("keydown", () => console.log("keydown"));
-        //this.addEventListener("focus", () => this.input.focus());
         //this.addEventListener("input", () => console.log("custom element inputted"));
         // input.addEventListener("paste", this.handlePaste);
         
@@ -282,7 +280,6 @@ export class ShadInputText extends HTMLElement {
             });
         });
     }
-    get value() { return this.input.value };
     get caretElement() { return this._caretElement; }
     set caretElement(caret) {
         if (this._caretElement === caret) return;
