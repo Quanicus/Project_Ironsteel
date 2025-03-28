@@ -46,7 +46,7 @@ class TiltCard extends HTMLElement {
             </div>
         `;
         this.container = this.shadowRoot.querySelector(".container");
-        this.maxTilt = 0.1;
+        this.maxTilt = 0.05;
     }
     connectedCallback() {
         document.addEventListener("DOMContentLoaded", () => {

@@ -86,6 +86,7 @@ class Carousel3dAuto extends HTMLElement {
                     height: 100%;
                     border-radius: 5px;
                     background-color: lightblue;
+                    transition: opacity 0.5s;
                 }
                 ::slotted(*) {
                     cursor: pointer;
@@ -102,6 +103,7 @@ class Carousel3dAuto extends HTMLElement {
             <div class="overlay">
             </div>
         `;
+        this.frames = [];
         this.currentAngle = 0;
         this.increment = 0;
         this.frameWidth = frameWidth;
@@ -126,9 +128,12 @@ class Carousel3dAuto extends HTMLElement {
                 const shadow = frame.cloneNode(true);
                 shadow.classList.add("shadow");
 
+                this.frames.push(frame)
                 frame.style.transformOrigin = `50% 50% ${-radius}px`;
                 frame.style.translate = `0 0 ${radius}px`;
-                frame.style.rotate = `y ${360 / frames.length * i}deg`;
+                frame.initialRotation = 360 / frames.length * i;
+                frame.rotation = this.initialRotation;
+                frame.style.rotate = `y ${frame.initialRotation}deg`;
                 
                 frame.addEventListener("click", () => {
                     this.overlay.classList.add("open");
@@ -175,15 +180,38 @@ class Carousel3dAuto extends HTMLElement {
             this.carouselContainer.style.perspectiveOrigin = "50% 30%"
             this.carouselContainer.style.transition = "perspective-origin .5s ease-in-out";
         });
+
+        window.addEventListener("resize", () => {
+            this.midX = this.clientWidth / 2;
+            this.midY = this.clientHeight / 2;
+        });
     }
 
     rotateCarousel() {
         if (this.currentAngle % 360 > -Math.abs(this.increment) && this.currentAngle % 360 < Math.abs(this.increment)) {
             this.currentAngle = 0;
+            this.frames.forEach(frame => frame.rotation = frame.initialRotation);
         }
+        this.frames.forEach(frame => {
+            frame.rotation += this.increment
+            this.applyOpacity(frame);
+        });
         this.currentAngle += this.increment;
         this.frameContainer.style.transform = `rotateY(${this.currentAngle}deg)`;
         requestAnimationFrame(() => this.rotateCarousel());
+    }
+    applyOpacity(frame) {
+        const rotation = frame.rotation % 360;
+        
+        if ((rotation >= 0 && rotation <= 45) || (rotation <= 360 && rotation >= 315) || (rotation >= -360 && rotation <= -315) || (rotation <= 0 && rotation >= -45)) {
+            frame.style.opacity = "1";
+        } else if ((rotation > 45 && rotation <= 90) || (rotation < 315 && rotation >= 270) || (rotation < -315 && rotation >= -270) || (rotation < -45 && rotation >= -90)) {
+            frame.style.opacity = "0.8";
+        } else if ((rotation > 90 && rotation <= 135) || (rotation < 270 && rotation >= 225) || (rotation < -270 && rotation >= -255) || (rotation < -90 && rotation >= -135)) {
+            frame.style.opacity = "0.6";
+        } else {
+            frame.style.opacity = "0.4";
+        }
     }
 }
 customElements.define("carousel-3d-auto", Carousel3dAuto);
