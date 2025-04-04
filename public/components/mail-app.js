@@ -390,7 +390,9 @@ class MailApp extends HTMLElement {
         this.nav = shadow.querySelector("icon-nav");
         this.display = shadow.querySelector(".mail-display");
         this.handle = shadow.querySelector(".resize-handle");
-        this.initMessages();
+        this.selectedMessage = null;
+        this.recievedMessagePreviews = [];
+        this.sentMessagePreviews = [];
 
         this.addEventListener("nav-entry-selected", this.handleNavSelection);
     }
@@ -480,8 +482,12 @@ class MailApp extends HTMLElement {
         try {
             const response = await fetch(url);
             const messages = await response.json();
-            
-            this.recievedMessagePreviews = messages.map(msg => this.makePreview(msg));
+            this.recievedMessagePreviews = messages.map(msg => {
+                const msgPreview = this.makePreview(msg);
+                if (!msg.read) msgPreview.setAttribute("unread","");
+                return msgPreview;
+            });
+            this.countUnread();
         } catch (error) {
             console.log(error);
         }
@@ -539,6 +545,8 @@ class MailApp extends HTMLElement {
             if (newMsgToggle.checked) {
                 newMsgToggle.dispatchEvent(new Event("click"));
             }
+
+            this.markAsRead(this.selectedMessage);
         });
     }
     makePreview(messageQueryResult) {
@@ -553,7 +561,28 @@ class MailApp extends HTMLElement {
         msgPreview.textContent = messageQueryResult.content;
         return msgPreview;
     }
+    countUnread() {
+        const messages = this.recievedMessagePreviews;
+        const count = messages.filter(msg => msg.hasAttribute("unread")).length;
+        this.shadowRoot.querySelector("icon-nav")
+            .shadowRoot.querySelector(".label.Inbox .data").textContent = count || "";
+    }
+    async markAsRead(messagePreview) {
+        if (!messagePreview.hasAttribute("unread")) return;
 
+        try {
+            const data = JSON.stringify({msgId: messagePreview.getAttribute("data-msgId")});
+            await fetch("api/v1/messages/readMessage", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: data
+            });
+            messagePreview.removeAttribute("unread");
+            this.countUnread();
+        } catch(error) {
+            console.error("Failed to mark msg as read:", error);
+        }
+    }
     updateReplyForm(messageElement = this.selectedMessage) {
         const form = this.display.querySelector("#send-message-form");
         form.querySelector("#reply-addr-field").value = messageElement.getAttribute("data-replyAddr");
@@ -587,13 +616,17 @@ class MailApp extends HTMLElement {
 
                 if (response.ok) {
                     form.reset();
+                    this.selectedMessage.removeAttribute("active");
+                    this.selectedMessage = null;
+                    this.updateMessageDisplay();
+                    toast("message sent");
                 } else {
                     // Handle errors
                     alert('Failed to submit form');
                 }
             } catch (error) {
                 // Handle network errors
-                alert('An error occurred while submitting the form');
+                console.log('An error occurred while submitting the form', error);
             }
         });
 
@@ -672,9 +705,10 @@ class MessagePreview extends HTMLElement {
                     border: 1px solid #303030;
                     background-color: black;
                     border-radius: 8px;
-                    color: #808080;
-
-                    
+                    color: #808080; 
+                }
+                :host([unread]) {
+                    border-color: white;
                 }
                 :host([active]) {
                     background-color: #303030;

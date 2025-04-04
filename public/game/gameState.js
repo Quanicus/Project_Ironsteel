@@ -5,37 +5,39 @@ class GameState {
     constructor() {
         this.terrrain = [];
         this.myHero = {};
-        this.herosOnline = new Map();
+        this.heroesOnline = new Map();
         this.myHero.sprite =  new ArcherSprite("blue");
+        this.projectiles = [];
     }
 
     updateState(serverMsg) {
-        const herosUpdate = serverMsg.playersOnline;
+        const heroesUpdate = serverMsg.playersOnline;
         const onlineIds = [];
-        herosUpdate.forEach(hero => {
+        heroesUpdate.forEach(hero => {
             const id = hero.id;
             onlineIds.push(id);
-            if (this.herosOnline.has(id)) {
+            if (this.heroesOnline.has(id)) {
                 // If hero exists in herosOnline map, update its properties
-                Object.assign(this.herosOnline.get(id), hero);
+                Object.assign(this.heroesOnline.get(id), hero);
             } else {
                 // If hero does not exist in herosOnline map
                 if (serverMsg.myHero.id === id) {
                     // If hero is the player's own hero
                     Object.assign(this.myHero, hero);
-                    this.herosOnline.set(id, this.myHero);
+                    this.heroesOnline.set(id, this.myHero);
                 } else {
                     // If hero is not the player's own hero
                     hero.sprite = new ArcherSprite("red"); // Assuming "red" is the color for archer sprite
-                    this.herosOnline.set(id, hero);
+                    this.heroesOnline.set(id, hero);
                 }
             }
         });
-        for (const id of this.herosOnline.keys()) {
+        for (const id of this.heroesOnline.keys()) {
             if (!onlineIds.includes(id)) {
-                this.herosOnline.delete(id);
+                this.heroesOnline.delete(id);
             }
         }
+        this.projectiles = serverMsg.projectiles;
     }
 }
 const gameState = new GameState();

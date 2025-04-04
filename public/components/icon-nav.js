@@ -113,9 +113,10 @@ class IconNav extends HTMLElement {
             name.textContent = entry.getAttribute("data-name");
             name.classList.add("name");
             label.classList.add("label");
+            label.classList.add(name.textContent);
             navEntry.classList.add("nav_item");
             data.classList.add("data");
-            data.textContent = "c:"
+            //data.textContent = "c:"
 
             this.resizeObserver.observe(label);
 

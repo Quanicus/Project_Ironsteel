@@ -8,5 +8,7 @@ const router = Router();
 router.get("/resource/terrainMatrix", (req, res) => {
     res.send(terrainMatrix);
 });
-router.get("/game-key", auth.authenticateToken, controller.issueGameKey);
+router.get("/verify-character", controller.verifyCharacter);
+router.post("/make-character", controller.makeCharacter);
+
 module.exports = router;

@@ -34,7 +34,7 @@ class Game {
         //animate sprites at every interval, currently set to every 10sec aka 10fps
         if (timestamp - this.lastAnimateTime > this.animateInterval) {
             //increment animation frames of each online hero
-            gameState.herosOnline.forEach(hero => {
+            gameState.heroesOnline.forEach(hero => {
                 const keyFrames = hero.sprite.keyFrames;
                 const currentAction = hero.current_action;
                 let currentFrame = hero.sprite.currentFrame;
@@ -60,7 +60,7 @@ class Game {
         //update canvas
         this.renderer.updateCanvas();
         //send input
-        console.log(gameState.myHero.direction_aiming);
+        //console.log(gameState.myHero.direction_aiming);
     }
 
     async openWebSocket() {

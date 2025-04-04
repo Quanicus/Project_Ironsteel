@@ -1,11 +1,11 @@
 async function up(client) {
     await client.query(`
-        CREATE TABLE IF NOT EXISTS heros (
+        CREATE TABLE IF NOT EXISTS heroes (
             id SERIAL PRIMARY KEY,
             player_id INT UNIQUE NOT NULL,
             name VARCHAR(16) DEFAULT 'Random Minion',
-            position_x REAL DEFAULT 50,
-            position_y REAL DEFAULT 50,
+            position_x REAL DEFAULT 500,
+            position_y REAL DEFAULT 500,
             direction_facing VARCHAR(5),
             direction_aiming VARCHAR(2),
             current_action VARCHAR(16) DEFAULT 'idle',
@@ -14,10 +14,10 @@ async function up(client) {
             level INT DEFAULT 1,
             next_level INT DEFAULT 100,
             experience INT DEFAULT 0,
-            max_hp INT DEFAULT 100,
-            current_hp INT DEFAULT 100,
-            atk INT DEFAULT 5,
-            def INT DEFAULT 5,
+            max_hp INT DEFAULT 16,
+            current_hp INT DEFAULT 16,
+            atk INT DEFAULT 1,
+            def INT DEFAULT 1,
             isOnline BOOLEAN DEFAULT TRUE,
             
             FOREIGN KEY (player_id) REFERENCES users(id) ON DELETE CASCADE

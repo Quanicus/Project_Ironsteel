@@ -24,6 +24,22 @@ const getSentMessages = (req, res) => {
        return res.status(200).json(results.rows); 
     });
 }
+const readMessage = async (req, res) => {
+    const msgId = req.body.msgId;
+    const queryString = `
+        UPDATE messages
+        SET read = TRUE
+        WHERE id = $1
+    `;
+
+    pool.query(queryString, [msgId], (error) => {
+        if (error) {
+            console.log("Unable to mark message as read.");
+        } else {
+            return res.status(201).send("message read");
+        }
+    });
+};
 const sendMessage = async (req, res) => {
     //console.log("sending?");
     const senderId = req.user.id;
@@ -32,6 +48,7 @@ const sendMessage = async (req, res) => {
     const results = await pool.query(userQueries.getUserByEmail, [replyAddr]);
     const recipient = results.rows[0];
     if (!recipient) {
+        console.log("failed to find recipent:", recipient);
         return res.status(404).send(`Target recipient: ${replyAddr} not found.`);
     }
     const recipientId = recipient.id;
@@ -84,6 +101,7 @@ module.exports = {
     getMessageThread,
     getRecievedMessages,
     getSentMessages,
+    readMessage,
     sendMessage,
     sendContactMessage,
 }

@@ -22,6 +22,7 @@ const getSentMessagesById = `
     FROM messages JOIN users
     ON messages.recipient_id = users.id
     WHERE sender_id = $1
+    ORDER BY date DESC;
 `;
 const sendMessage = `
     INSERT INTO messages (sender_id, recipient_id, subject, content)

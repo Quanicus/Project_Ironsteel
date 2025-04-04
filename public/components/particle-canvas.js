@@ -377,7 +377,7 @@ class ParticleCanvas extends HTMLElement {
                 return;
             }
             const newPosition = event.clientX;
-            if (newPosition > this.width*0.04 && newPosition < this.width*0.96) {
+            if (newPosition > this.width*0.04 && newPosition < this.width) {
                 this.division.style.left = `${newPosition}px`;
             }
             

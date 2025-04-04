@@ -18,6 +18,21 @@ class Resources {
                     blue: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Blue.png",
                 },
             },
+            projectiles: {
+                arrow: "/game/sprites/Factions/Knights/Troops/Archer/Arrow/Arrow.png",
+            },
+            UI: {
+                banners: {
+                    connection_left: "/game/sprites/UI/Banners/Banner_Connection_Left.png",
+                    connection_right: "/game/sprites/UI/Banners/Banner_Connection_Right.png",
+                    connection_horizontal: "/game/sprites/UI/Banners/Banner_Horizontal.png",
+                },
+            },
+            health: {
+                hearts: "/game/sprites/Health/heart_container.png",   
+                bar_deco: "/game/sprites/Health/health_bar_decoration.png",
+                bar: "/game/sprites/Health/health_bar.png"
+            },
         }
         this.images = {};
         this.terrainMatrix = null;
@@ -25,7 +40,9 @@ class Resources {
         this.loadTerrain();
         this.loadTerrainMatrix();
         this.loadFactions();
-        
+        this.loadProjectiles(); 
+        this.loadUI();
+        this.loadHealth();
     }
 
     loadTerrain() {
@@ -48,6 +65,39 @@ class Resources {
                 this.images.factions[color][troop] = img;
             });
         })
+    }
+
+    loadProjectiles() {
+        this.images.projectiles = {};
+        const projectiles = this.toLoad.projectiles;
+        Object.keys(projectiles).forEach(projectile => {
+            const img = new Image();
+            img.src = this.toLoad.projectiles[projectile];
+            this.images.projectiles[projectile] = img;
+        });
+    }
+
+    loadUI() {
+        this.images.UI = {};
+        const UI = this.toLoad.UI;
+        Object.keys(UI).forEach(feature => {
+            this.images.UI[feature] = {};
+            Object.keys(UI[feature]).forEach(element => {
+                const img = new Image();
+                img.src = UI[feature][element];
+                this.images.UI[feature][element] = img;
+            });
+        });
+    }
+
+    loadHealth() {
+        this.images.health = {};
+        const health = this.toLoad.health;
+        Object.keys(health).forEach(display => {
+            const img = new Image();
+            img.src = health[display];
+            this.images.health[display] = img;
+        });
     }
 
     async loadTerrainMatrix() {

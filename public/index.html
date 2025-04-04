@@ -33,74 +33,26 @@
         <section class="main-content">
             <article class="sticky-page background-wrap page no-mouse">
                 <img src="../images/gold-mewn.png" class="gold-moon">
-                <div class="grid-center page">
-                    
-                </div>
             </article>
-
-    
             <particle-canvas backdrop-url="../images/night-sky.webp" intermediate-url="../images/white-hill-1.png"></particle-canvas>
-                
-            <section class="scroll-container" >
-
-                <article id="home-page" class="sticky-page page layer-1">
-                    <div class="greeting">
-                        <h2 class="particle-intersector">I AM QUANICUS</h2>
-                        <h2 class="particle-intersector">SOFTWARE ENGINEER/<span>FULL-STACK DEVELOPER</span></h2>
-                    
-                        <shad-modal>Contact Me
-                            <div slot="modal">
-                                <form hx-post="api/v1/messages/contact-message" hx-swap="none" id="hire-me" method="POST"> 
-                                    <h1>Send me a message</h1>
-                                    <shad-input-text type="email" name="email" placeholder="Email" required="true"></shad-input-text>
-                                    <shad-input-text type="text" name="subject" placeholder="Subject" default="You're hired!" required="true"></shad-input-text>
-                                    <!-- <shad-textarea name="message" id="" placeholder="woahdude"></shad-textarea> -->
-                                    <textarea name="message" id="" required></textarea>
-                                    <shad-button type="submit">Send</shad-button>
-                                </form>
-                            </div>
-                        </shad-modal>
-                    </div>
-                </article>
-
-                <article class="sticky-page page">
-                    <scroll-element>
-                        <img src="../images/blood-skull.png" class="blood-skull">
-                    </scroll-element>
-
-                    <text-reveal style="width: 80%; transform: translateX(20%)">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </text-reveal>
-                    <text-reveal style="font-size: 4em; width: 80%; transform: translateX(20%);">
-                        Welcome to Project Ironsteel
-                    </text-reveal>
-                </article>
-                
-                <article id="page-1" class="scroll-page page grid-center">
-                    
-                </article>
-
-                <article id="page-2" class="scroll-page page layer-1">
-                    <scroll-element>
-                    <span class="page-title particle-intersector">
-                        WELCOME TO THE CLICKITY CLACK EXPERIENCE
-                    </span></scroll-element>  
-                </article>
-
-
-                <footer></footer>
-            </section>
-            <scroll-bar></scroll-bar>
         </section>
         
         <side-nav>
             <!-- <htmx-modal-button slot="top" hx-get="views/login.html"></htmx-modal-button> -->
-            <game-console slot="top"></game-console>
             <tab-display slot="main">
                 <section data-tab-name="Mail">
                     <mail-app class="login-reactive"></mail-app>
+                </section>
+                <section data-tab-name="Game">
+                    <game-console slot="top"></game-console>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            document.querySelector("game-console").addEventListener("activateLogin", () => {
+                                document.getElementById("login-modal")
+                                    .shadowRoot.querySelector(".activate-button").click();
+                            });
+                        });
+                    </script>
                 </section>
                 <section data-tab-name="Components">
                     <style>
@@ -206,9 +158,9 @@
                             </div>
                             <div class="component-page" data-component="Carousel" status="close">
                                 <shad-carousel>
-                                    <div>1</div>
-                                    <div>2</div>
-                                    <div>3</div>
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1740768081818-9bec14cdaa6e?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742360171643-a6ab84c507b1?q=80&w=2400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                                    <img style="object-fit: cover;" src="https://images.unsplash.com/photo-1742387436246-a7288481be39?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
                                 </shad-carousel>
                             </div>
                             <div class="component-page" data-component="Carousel 3D" status="close">
@@ -311,9 +263,12 @@
                                 </scroll-container>
                             </div>
                             <div class="component-page" data-component="Sonner" status="close">
-                                <shad-sonner data-label="Sonner">
-                                    Event has been created
-                                </shad-sonner>
+                                <shad-button id="sonner-showcase">Show Toast</shad-button>
+                                <script>
+                                    document.getElementById("sonner-showcase").addEventListener("click", () => {
+                                        toast("Event created");
+                                    });
+                                </script>
                             </div>
                             <div class="component-page" data-component="Text Reveal" status="close">
                                 <scroll-container>

@@ -196,7 +196,8 @@ class SideNav extends HTMLElement {
     async createLoginModal() {
         this.htmxModal = document.createElement("htmx-modal");
         this.htmxModal.setAttribute("slot", "login");
-        
+        this.htmxModal.setAttribute("id", "login-modal");
+
         if (await this.checkLoginStatus()) {
             this.handleLoggedIn();
         } else {

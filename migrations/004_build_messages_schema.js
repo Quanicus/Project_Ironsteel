@@ -10,6 +10,7 @@ async function up(client) {
             content TEXT DEFAULT 'i love you ehe',
             date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             is_deleted BOOLEAN DEFAULT FALSE,
+            read BOOLEAN DEFAULT FALSE,
             FOREIGN KEY (parent_id) REFERENCES messages(id), 
             FOREIGN KEY (sender_id) REFERENCES users(id),
             FOREIGN KEY (recipient_id) REFERENCES users(id)

@@ -64,7 +64,7 @@ class ShadToastDisplay extends HTMLElement {
     }
     assignOrder() {
         const children = this.children;
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 4 && i < this.children.length; i++) {
             children[i].setAttribute("order", i);
             void children[i].offsetHeight;//force repaint on safari
         }
@@ -162,7 +162,7 @@ class ShadToast extends HTMLElement {
             }
         });
 
-        const now = new Date('2025-03-22T22:16:38-05:00'); // Your example date
+        const now = new Date(); // Your example date
         const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -185,57 +185,21 @@ class ShadToast extends HTMLElement {
 }
 customElements.define("shad-toast", ShadToast);
 
-{
-const display = document.createElement("shad-toast-display");
-display.classList.add("hidden");
+const shadToastDisplay = document.createElement("shad-toast-display");
+shadToastDisplay.classList.add("hidden");
 document.addEventListener("DOMContentLoaded", () => {
-    document.body.appendChild(display);
+    document.body.appendChild(shadToastDisplay);
 });
 
-class Sonner extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({mode: "open"});
-        this.shadowRoot.innerHTML =`
-            <style>
-                :host {
-                    display: inline-block;
-                    padding: .6em;
-                    border: 1px solid #303030;
-                    border-radius: 5px;
-                    background-color: black;
-                    cursor: pointer;
-                }
-                :host(:hover) {
-                    background: #303030;
-                }
-                :host(:active) {
-                    background: black;
-                    border-color: white;
-                }
-                @keyframes slideIn {
-                
-                }
-            </style>
-            <span class="label"></span>
-        `;
-        this.label = this.shadowRoot.querySelector(".label");
-    }
-    connectedCallback() {
-        this.label.textContent = this.getAttribute("data-label");
-        this.addEventListener("click", () => {
-            const toast = document.createElement("shad-toast");
-            toast.setAttribute("event", this.textContent.trim());
-            toast.classList.add("new");
-            display.show();
-            display.prepend(toast);
-            requestAnimationFrame(() => {
-                toast.classList.remove("new");
-            });
-            display.assignOrder();
-            display.hide();
-        });
-    }
-}
-customElements.define("shad-sonner", Sonner);
+function toast(message) {   
+    const toast = document.createElement("shad-toast");
+    toast.setAttribute("event", message.trim());
+    toast.classList.add("new");
+    shadToastDisplay.show();
+    shadToastDisplay.prepend(toast);
+    requestAnimationFrame(() => {
+        toast.classList.remove("new");
+    });
+    shadToastDisplay.assignOrder();
+    shadToastDisplay.hide();
 }

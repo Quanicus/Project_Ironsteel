@@ -201,6 +201,9 @@ export class ShadInputText extends HTMLElement {
             case "placeholder":
                 this.setPlaceholder();
                 break;
+            case "required":
+                this.input.required = this.hasAttribute("required");
+                break;
             default:
                 this.input[name] = newValue;
         }
