@@ -44,6 +44,33 @@ const spriteKeyframes = {
             },
         }
     },
+    goblin: {
+        idle: {
+            animationRow: 0,
+            minAnimationCol: 0,
+            maxAnimationCol: 6
+        },
+        running: {
+            animationRow: 1,
+            minAnimationCol: 0,
+            maxAnimationCol: 5
+        },
+        attack_right: {
+            animationRow: 2,
+            minAnimationCol: 0,
+            maxAnimationCol: 5
+        },
+        attack_up: {
+            animationRow: 3,
+            minAnimationCol: 0,
+            maxAnimationCol: 5
+        },
+        attack_down: {
+            animationRow: 4,
+            minAnimationCol: 0,
+            maxAnimationCol: 5
+        },
+    },
 
 }
 export default spriteKeyframes;

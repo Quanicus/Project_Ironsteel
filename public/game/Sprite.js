@@ -33,6 +33,23 @@ class ArcherSprite extends Sprite {
     }
 }
 
+class GoblinSprite extends Sprite {
+    constructor(color = "red") {
+        const img = resources.images.factions.goblin[color];
+        if (!img) {
+            throw new Error("No images loaded for archer: ", color);
+        }
+        super({
+            img: img,
+            currentFrame: {col: 0, row: 0},
+            centerOffset: {x: -38, y: -38},
+            sourceRectSize: {width: 192, height: 192},
+            destinationRectSize: {width: 112, height: 112},
+        });
+        this.keyFrames = spriteKeyframes.goblin;
+    }
+}
+
 class ArrowSprite extends Sprite {
     constructor() {
         const img = resources.images.projectiles.arrow;
@@ -52,5 +69,6 @@ class ArrowSprite extends Sprite {
 export {
     Sprite,
     ArcherSprite,
-    ArrowSprite
+    ArrowSprite,
+    GoblinSprite
 }

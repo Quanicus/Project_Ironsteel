@@ -17,6 +17,9 @@ class Resources {
                     red: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Red.png",
                     blue: "/game/sprites/Factions/Knights/Troops/Archer/Archer_Blue.png",
                 },
+                goblin: {
+                    red: "game/sprites/Factions/Goblins/Troops/Torch/Red/Torch_Red.png",
+                },
             },
             projectiles: {
                 arrow: "/game/sprites/Factions/Knights/Troops/Archer/Arrow/Arrow.png",

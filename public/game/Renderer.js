@@ -35,34 +35,41 @@ export default class Renderer {
                       (Math.floor(this.viewHeight/2) - this.resolution/2 - position_y));
                       
         this.drawTerrain(position_x, position_y);
-     
+        //ctx.strokeRect(position_x, position_y, this.resolution, this.resolution); 
+        
+        this.drawGoblins();
         this.drawOtherHeros();
         this.drawProjectiles();
         
-        this.drawHero(gameState.myHero, position_x, position_y);
+        this.drawHero(gameState.myHero);
         this.drawHearts(position_x, position_y);
         ctx.restore();
+    }
+
+    drawGoblins() {
+        gameState.goblins.forEach(goblin => {
+            this.drawHero(goblin);
+            this.drawHealthBar(goblin);
+        });
     }
 
     drawOtherHeros() {
         gameState.heroesOnline.forEach(hero => {
             if (hero.id === gameState.myHero.id) return;
-            const x = hero.position_x;
-            const y = hero.position_y;
-            this.drawHero(hero, x, y);
-            this.drawHealthBar(hero, x, y);
+            this.drawHero(hero);
+            this.drawHealthBar(hero);
         });
     }
 
-    drawHero(hero, position_x, position_y) {
+    drawHero(hero) {
         const ctx = this.canvasContext;
         const sprite = hero.sprite;
-        const sX = sprite.sourceRectSize.width * sprite.currentFrame.col;
-        const sY = sprite.sourceRectSize.height * sprite.currentFrame.row;
         const sWidth = sprite.sourceRectSize.width;
         const sHeight = sprite.sourceRectSize.height;
-        const dX = position_x + sprite.centerOffset.x;
-        const dY = position_y + sprite.centerOffset.y;
+        const sX = sWidth * sprite.currentFrame.col;
+        const sY = sHeight * sprite.currentFrame.row;
+        const dX = hero.position_x + sprite.centerOffset.x;
+        const dY = hero.position_y + sprite.centerOffset.y;
         const dWidth = sprite.destinationRectSize.width;
         const dHeight = sprite.destinationRectSize.height;
 
@@ -79,9 +86,11 @@ export default class Renderer {
         
     }
 
-    drawHealthBar(hero, position_x, position_y) {
+    drawHealthBar(enemy) {
         const ctx = this.canvasContext;
-        const percentHealth = hero.current_hp / 16;
+        const position_x = enemy.position_x;
+        const position_y = enemy.position_y;
+        const percentHealth = enemy.current_hp / enemy.max_hp;
         //const percentHealth = 1;
         ctx.drawImage(resources.images.health.bar_deco,
             0, 0, 64, 17,
@@ -91,7 +100,23 @@ export default class Renderer {
             0, 0, 47 * percentHealth, 17,
             position_x + 17 - this.resolution/2, position_y + this.resolution, (2 * this.resolution - 19) * percentHealth, this.resolution/2
         );
-        //ctx.strokeRect(position_x, position_y + this.resolution, 4 * this.resolution, this.resolution);
+        
+        let heartOffset = 0;
+        const hp = enemy.current_hp;
+        const hpBreakpoint = (enemy.max_hp - 1) / 3;
+        if (hp <= 0) {
+            heartOffset = 4;
+        } else if (hp <= hpBreakpoint) {
+            heartOffset = 3;
+        } else if (hp <= hpBreakpoint * 2) {
+            heartOffset = 2;
+        } else if (hp <= hpBreakpoint * 3) {
+            heartOffset = 1;
+        }
+        ctx.drawImage(resources.images.health.hearts,
+            heartOffset * 17, 0, 17, 17,
+            position_x - this.resolution/2, position_y + this.resolution, this.resolution/2, this.resolution/2
+        );
     }
 
     drawHearts(dX, dY) {
@@ -169,37 +194,72 @@ export default class Renderer {
         const sub_y = position_y % resolution;
         const start_x = tile_x - 14;
         const start_y = tile_y - 8;
-
+   
+        const elevatedImg = resources.images.terrain.elevatedGround;
+        const shadowImg = resources.images.terrain.shadow;
+        const waterImg = resources.images.terrain.water;
         for (let x = start_x; x < start_x + 30; x++) {
-            for (let y = start_y; y < start_y + 18; y++) {
+            for (let y = start_y + 17; y >= start_y; y--) {
                 //draw tileMatrix[x][y] at position (x*32, y*32) on the canvas
                 let tile = null;
-                if (x < 0 || y < 0 || x >= resources.terrainMatrix.length || y >= resources.terrainMatrix[0].length) {
-                    tile = {
-                        type: "water",
-                        frameStart: {x: 0, y: 0},
-                        frameSize: {x: resolution, y: resolution},
-                        elevation: 0,
-                        walls: ["N","S","E","W"],
-                        scale: 1
-                    };
-                } else {
+                ctx.drawImage(waterImg, 0, 0, resolution, resolution, 
+                    x * resolution, y * resolution, resolution + 1, resolution + 1);
+               
+                if (resources.terrainMatrix[x] && resources.terrainMatrix[x][y]) {
                     tile = resources.terrainMatrix[x][y];
-                }
-                
-                const imgElement = resources.images.terrain[tile.type];
+                    const imgElement = resources.images.terrain[tile.type];
+                    
+                    if (tile.type === "flatGround" && tile.frameStart.x === 0 && tile.frameStart.y === 2) {
+                        ctx.drawImage(elevatedImg,
+                            0, 64 * 2, 64, 64,
+                            x * resolution, y * resolution, resolution + 1, resolution + 1
+                        );
+                    }
+                    if (tile.type === "flatGround" && tile.frameStart.x === 2 && tile.frameStart.y === 2) {
+                        ctx.drawImage(elevatedImg,
+                            64 * 2, 64 * 2, 64, 64,
+                            x * resolution, y * resolution, resolution + 1, resolution + 1
+                        );
+                    }
+                    if (tile.type === "flatGround" && tile.frameStart.x === 0) {
+                        ctx.drawImage(shadowImg,
+                            2, 64, 64, 64,
+                            (x - 1) * resolution, y * resolution, resolution + 1, resolution + 1
+                        );
+                    }
+                    if (tile.type === "elevatedGround" && tile.frameStart.y === 3) {
+                        ctx.drawImage(shadowImg,
+                            58, 58, 76, 76,
+                            x * resolution - 4, y * resolution - 2, resolution + 9, resolution + 9 
+                        );
+                    }
+                    ctx.drawImage(
+                        imgElement, 
+                        tile.frameStart.x * tile.frameSize.x,
+                        tile.frameStart.y * tile.frameSize.y,
+                        tile.frameSize.x,
+                        tile.frameSize.y,
+                        x * resolution,
+                        y * resolution,
+                        resolution+1,
+                        resolution+1
+                    );
 
-                ctx.drawImage(
-                    imgElement, 
-                    tile.frameStart.x * tile.frameSize.x,
-                    tile.frameStart.y * tile.frameSize.y,
-                    tile.frameSize.x,
-                    tile.frameSize.y,
-                    x * resolution,
-                    y * resolution,
-                    resolution+1,
-                    resolution+1
-                );
+                    const previousTile = resources.terrainMatrix[x-1] ? resources.terrainMatrix[x-1][y] : null;
+                    if (previousTile && previousTile.type === "elevatedGround" && 
+                        previousTile.frameStart.x === 2 && previousTile.frameStart.y === 3) {
+                        ctx.drawImage(shadowImg,
+                            128, 64, 64, 64,
+                            x * resolution, y * resolution, resolution + 1, resolution + 5
+                        );
+                    }
+                    if (previousTile && previousTile.type === "flatGround" && previousTile.frameStart.x === 2) {
+                        ctx.drawImage(shadowImg,
+                            128, 64, 64, 64,
+                            x * resolution, y * resolution, resolution + 1, resolution + 1
+                        );
+                    }
+                }
                 //ctx.drawImage()
                 
             }

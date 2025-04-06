@@ -40,20 +40,22 @@ class Game {
                 let currentFrame = hero.sprite.currentFrame;
                 //if transitioning to another animation, set 
                 if (currentAction === "idle" || currentAction === "running") {
-                    if (keyFrames[currentAction] && keyFrames[currentAction].animationRow !== currentFrame.row) {
-                        currentFrame.row = keyFrames[currentAction].animationRow;
-                        currentFrame.col = keyFrames[currentAction].minAnimationCol;
-                    }
-                    if (keyFrames[currentAction] && currentFrame.col >= keyFrames[currentAction].maxAnimationCol) {
-                        currentFrame.col = keyFrames[currentAction].minAnimationCol;
-                    } else {
-                        currentFrame.col += 1;
-                    }
+                    this.incrementIdleAndRunningFrames(currentAction, currentFrame, keyFrames);
                 } else if (currentAction === "chargingBow") {
                     currentFrame.row = keyFrames.chargeBow[hero.direction_aiming].animationRow;//direction facing (like NE or E)
                     currentFrame.col = hero.charge_lvl;//chargelvl
                 }
                 this.lastAnimateTime = timestamp;
+            });
+
+            //increment animation frames of each live goblin
+            gameState.goblins.forEach(goblin => {
+                const keyFrames = goblin.sprite.keyFrames;
+                const currentAction = goblin.current_action;
+                let currentFrame = goblin.sprite.currentFrame;
+                if (currentAction === "idle" || currentAction === "running") {
+                    this.incrementIdleAndRunningFrames(currentAction, currentFrame, keyFrames);
+                }
             });
         }
 
@@ -61,6 +63,17 @@ class Game {
         this.renderer.updateCanvas();
         //send input
         //console.log(gameState.myHero.direction_aiming);
+    }
+
+    incrementIdleAndRunningFrames(currentAction, currentFrame, keyFrames) {
+        if (keyFrames[currentAction].animationRow !== currentFrame.row) {
+            currentFrame.row = keyFrames[currentAction].animationRow;
+            currentFrame.col = keyFrames[currentAction].minAnimationCol;
+        } else if (currentFrame.col >= keyFrames[currentAction].maxAnimationCol) {
+            currentFrame.col = keyFrames[currentAction].minAnimationCol;
+        } else {
+            currentFrame.col += 1;
+        }
     }
 
     async openWebSocket() {

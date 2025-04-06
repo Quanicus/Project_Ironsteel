@@ -1,21 +1,22 @@
 import resources from "./resources.js";
-import { ArcherSprite } from "./Sprite.js";
+import { ArcherSprite, GoblinSprite } from "./Sprite.js";
 
 class GameState {
     constructor() {
         this.terrrain = [];
         this.myHero = {};
         this.heroesOnline = new Map();
+        this.goblins = new Map();
         this.myHero.sprite =  new ArcherSprite("blue");
         this.projectiles = [];
     }
 
     updateState(serverMsg) {
         const heroesUpdate = serverMsg.playersOnline;
-        const onlineIds = [];
+        const onlineHeroIds = [];
         heroesUpdate.forEach(hero => {
             const id = hero.id;
-            onlineIds.push(id);
+            onlineHeroIds.push(id);
             if (this.heroesOnline.has(id)) {
                 // If hero exists in herosOnline map, update its properties
                 Object.assign(this.heroesOnline.get(id), hero);
@@ -32,8 +33,25 @@ class GameState {
                 }
             }
         });
+        
+        const liveGoblinIds = [];
+        serverMsg.goblins.forEach(goblin => {
+            liveGoblinIds.push(goblin.id);
+            if (this.goblins.has(goblin.id)) {
+                Object.assign(this.goblins.get(goblin.id), goblin);
+            } else {
+                goblin.sprite = new GoblinSprite();
+                this.goblins.set(goblin.id, goblin);
+            }
+        });
+        
+        for (const id of this.goblins.keys()) {
+            if (!liveGoblinIds.includes(id)) {
+                this.goblins.delete(id);
+            }
+        }
         for (const id of this.heroesOnline.keys()) {
-            if (!onlineIds.includes(id)) {
+            if (!onlineHeroIds.includes(id)) {
                 this.heroesOnline.delete(id);
             }
         }
